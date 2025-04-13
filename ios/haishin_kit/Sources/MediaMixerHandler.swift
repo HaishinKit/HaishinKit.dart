@@ -1,15 +1,29 @@
 import Foundation
+#if canImport(Flutter)
 import Flutter
+#endif
+#if canImport(FlutterMacOS)
+import FlutterMacOS
+#endif
 import HaishinKit
 import AVFoundation
 import VideoToolbox
+#if canImport(UIKit)
+import UIKit
+#endif
 
 final class MediaMixerHandler: NSObject {
+    #if os(macOS)
+    private lazy var instance = MediaMixer(multiTrackAudioMixingEnabled: false)
+    #else
     private lazy var instance = MediaMixer(multiCamSessionEnabled: false, multiTrackAudioMixingEnabled: false)
+    #endif
 
     override init() {
         super.init()
+        #if canImport(UIKit)
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+        #endif
     }
 
     func addOutput(_ output: some MediaMixerOutput) {
@@ -27,6 +41,7 @@ final class MediaMixerHandler: NSObject {
         }
     }
 
+    #if canImport(UIKit)
     @objc
     private func on(_ notification: Notification) {
         guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
@@ -34,6 +49,7 @@ final class MediaMixerHandler: NSObject {
         }
         Task { await instance.setVideoOrientation(orientation) }
     }
+    #endif
 }
 
 extension MediaMixerHandler: MethodCallHandler {

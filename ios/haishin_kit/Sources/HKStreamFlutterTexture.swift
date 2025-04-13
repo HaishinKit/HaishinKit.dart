@@ -1,4 +1,9 @@
+#if canImport(Flutter)
 import Flutter
+#endif
+#if canImport(FlutterMacOS)
+import FlutterMacOS
+#endif
 import Foundation
 import HaishinKit
 import AVFoundation

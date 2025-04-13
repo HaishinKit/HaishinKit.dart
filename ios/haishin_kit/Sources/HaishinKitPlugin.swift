@@ -1,5 +1,9 @@
+#if canImport(Flutter)
 import Flutter
-import UIKit
+#endif
+#if canImport(FlutterMacOS)
+import FlutterMacOS
+#endif
 import HaishinKit
 
 public final class HaishinKitPlugin: NSObject {
