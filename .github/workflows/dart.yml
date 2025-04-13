@@ -9,8 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup flutter
-        uses: subosito/flutter-action@v2.3.0
+        uses: subosito/flutter-action@v2
         with:
+          channel: stable
           flutter-version: '3.24.5'
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
