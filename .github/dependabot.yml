@@ -1,7 +1,15 @@
 version: 2
 updates:
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "gradle"
     directory: "/android"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "swift"
+    directory: "/ios/haishin_kit"
     schedule:
       interval: "weekly"
   - package-ecosystem: "pub"
