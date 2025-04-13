@@ -11,9 +11,8 @@ Pod::Spec.new do |s|
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'shogo4405' => 'shogo4405@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files     = 'haishin_kit/Sources/plugin_name/**/*.swift'
   s.dependency 'Flutter'
-  s.dependency 'HaishinKit', '2.0.4'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
