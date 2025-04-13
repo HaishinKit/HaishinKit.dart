@@ -1,5 +1,10 @@
 import Foundation
+#if canImport(Flutter)
 import Flutter
+#endif
+#if canImport(FlutterMacOS)
+import FlutterMacOS
+#endif
 import HaishinKit
 
 final class RTMPConnectionHandler: NSObject, MethodCallHandler {
