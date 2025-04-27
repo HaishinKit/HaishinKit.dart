@@ -60,7 +60,7 @@ Issues/Discussions with priority response.
 
 # 🐾 Example
 
-Examples project are available for iOS, Android.
+An example project is available for both iOS and Android.
 https://github.com/HaishinKit/HaishinKit.dart/tree/main/example
 
 ## 📜 License
