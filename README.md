@@ -8,9 +8,9 @@
 > This project is being developed with the goal of defining a Flutter interface for HaishinKit.
 > However, since development is progressing slowly, I recommend using other plugins if you need something stable or are in a hurry.
 
-|             | Android | iOS       | 
-|-------------|---------|-----------|
-| **Support** | SDK 21+ | iOS 13.0+ |
+|             | Android | iOS       |macOS      | 
+|-------------|---------|-----------|-----------|
+| **Support** | SDK 21+ | iOS 13.0+ |10.15+	    |
 
 ## 💖 Sponsors
 
