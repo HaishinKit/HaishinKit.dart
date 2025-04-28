@@ -158,9 +158,16 @@ extension MediaMixerHandler: MethodCallHandler {
                             break
                         }
                     }
+                    #if os(iOS)
                     if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition) {
                         try? await instance.attachVideo(device, track: 0)
                     }
+                    #else
+                    if let device = AVCaptureDevice.devices(for: .video).first {
+                        try? await instance.attachVideo(device, track: 0)
+                    }
+                    print(AVCaptureDevice.devices(for: .video))
+                    #endif
                 }
                 result(nil)
             default:

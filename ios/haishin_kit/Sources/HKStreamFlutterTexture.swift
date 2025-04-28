@@ -9,20 +9,20 @@ import HaishinKit
 import AVFoundation
 
 final class HKStreamFlutterTexture: NSObject, FlutterTexture {
-    static let defaultOptions: [String: Any] = [
+    private static let defaultOptions: [String: Any] = [
         kCVPixelBufferCGImageCompatibilityKey as String: true,
         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
         kCVPixelBufferIOSurfacePropertiesKey as String: NSDictionary()
     ]
 
-    private(set) var id: Int64 = 0
     var bounds: CGSize = .zero
     var videoGravity: AVLayerVideoGravity = .resizeAspectFill
     var videoOrientation: AVCaptureVideoOrientation = .portrait
     var isCaptureVideoPreviewEnabled: Bool = false
-    private var currentSampleBuffer: CMSampleBuffer?
-    private let registry: FlutterTextureRegistry
+    private(set) var id: Int64 = 0
     private let context = CIContext()
+    private let registry: FlutterTextureRegistry
+    private var currentSampleBuffer: CMSampleBuffer?
     private var queue = DispatchQueue(label: "com.haishinkit.HKStreamFlutterTexture")
 
     init(registry: FlutterTextureRegistry) {

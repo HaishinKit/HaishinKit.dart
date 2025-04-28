@@ -15,13 +15,13 @@ public final class HaishinKitPlugin: NSObject {
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
+    private var handlers: [Int: MethodCallHandler] = [:]
     private(set) var mixer: MediaMixerHandler? {
         didSet {
             oldValue?.stopRunning()
         }
     }
     private(set) var registrar: FlutterPluginRegistrar?
-    private var handlers: [Int: MethodCallHandler] = [:]
 
     func onDispose(id: Int) {
         handlers.removeValue(forKey: id)

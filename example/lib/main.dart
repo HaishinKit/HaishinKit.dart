@@ -6,7 +6,6 @@ import 'package:haishin_kit_example/preference_page.dart';
 import 'ingest_page.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(const HaishinKitExampleApp());
 }
 
@@ -31,10 +30,10 @@ class _HaishinKitExampleState extends State<HaishinKitExample> {
 
   final _childPageList = [IngestPage(), PlaybackPage(), PreferencePage()];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _initPlatformState();
   }
 
   @override
@@ -54,5 +53,15 @@ class _HaishinKitExampleState extends State<HaishinKitExample> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Future<void> _initPlatformState() async {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }

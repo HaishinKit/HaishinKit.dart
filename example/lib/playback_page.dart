@@ -1,4 +1,3 @@
-import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream.dart';
@@ -16,7 +15,6 @@ class PlaybackPage extends StatefulWidget {
 class _PlaybackState extends State<PlaybackPage> {
   RtmpConnection? _connection;
   RtmpStream? _stream;
-
   bool _isPlaying = false;
 
   @override
@@ -29,40 +27,39 @@ class _PlaybackState extends State<PlaybackPage> {
   void dispose() {
     super.dispose();
     _connection?.dispose();
+    _stream?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _stream == null
-            ? const Text("Initialization")
-            : StreamViewTexture(_stream),
-      ),
+          child: _stream == null
+              ? const Text("Initialization")
+              : StreamViewTexture(_stream)),
       floatingActionButton: FloatingActionButton(
         onPressed: _playback,
         child: _isPlaying
-            ? const Icon(Icons.fiber_smart_record)
-            : const Icon(Icons.not_started),
+            ? const Icon(Icons.stop_circle)
+            : const Icon(Icons.play_circle),
       ),
     );
   }
 
   void _playback() {
-    setState(() {
+    if (_isPlaying) {
+      _connection?.close();
+    } else {
       _connection?.connect(Preference.shared.url);
+    }
+    setState(() {
+      if (_isPlaying) {
+        _isPlaying = false;
+      }
     });
   }
 
   Future<void> _initPlatformState() async {
-    // Set up AVAudioSession for iOS.
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration(
-      avAudioSessionCategory: AVAudioSessionCategory.playback,
-      avAudioSessionCategoryOptions:
-          AVAudioSessionCategoryOptions.allowBluetooth,
-    ));
-
     var connection = await RtmpConnection.create();
     connection.eventChannel.receiveBroadcastStream().listen((event) {
       switch (event["data"]["code"]) {
@@ -75,7 +72,6 @@ class _PlaybackState extends State<PlaybackPage> {
       }
     });
     var stream = await RtmpStream.create(connection);
-
     setState(() {
       _connection = connection;
       _stream = stream;

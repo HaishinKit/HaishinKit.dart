@@ -140,9 +140,12 @@ extension RTMPStreamHandler: MethodCallHandler {
             case "RtmpStream#dispose":
                 if let instance {
                     plugin.mixer?.removeOutput(instance)
+                    self.instance = nil
                 }
-                _ = try? await instance?.close()
-                instance = nil
+                if let texture {
+                    plugin.registrar?.textures().unregisterTexture(texture.id)
+                    self.texture = nil
+                }
                 plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
                 result(nil)
             default:

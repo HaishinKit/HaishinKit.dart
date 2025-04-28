@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
@@ -19,7 +21,7 @@ class IngestPage extends StatefulWidget {
 class _IngestState extends State<IngestPage> {
   RtmpConnection? _connection;
   RtmpStream? _stream;
-  bool _recording = false;
+  bool _ingesting = false;
   CameraPosition currentPosition = CameraPosition.back;
 
   @override
@@ -32,6 +34,7 @@ class _IngestState extends State<IngestPage> {
   void dispose() {
     super.dispose();
     _connection?.dispose();
+    _stream?.dispose();
   }
 
   @override
@@ -57,27 +60,33 @@ class _IngestState extends State<IngestPage> {
               : StreamViewTexture(_stream),
         ),
         floatingActionButton: FloatingActionButton(
-          child: _recording
-              ? const Icon(Icons.fiber_smart_record)
-              : const Icon(Icons.not_started),
-          onPressed: () {
-            if (_recording) {
-              _connection?.close();
-              setState(() {
-                _recording = false;
-              });
-            } else {
-              _connection?.connect(Preference.shared.url);
-            }
-          },
+          onPressed: _ingest,
+          child: _ingesting
+              ? const Icon(Icons.stop_circle)
+              : const Icon(Icons.play_circle),
         ),
       ),
     );
   }
 
+  void _ingest() {
+    if (_ingesting) {
+      _connection?.close();
+    } else {
+      _connection?.connect(Preference.shared.url);
+    }
+    setState(() {
+      if (_ingesting) {
+        _ingesting = false;
+      }
+    });
+  }
+
   Future<void> _initPlatformState() async {
-    await Permission.camera.request();
-    await Permission.microphone.request();
+    if (Platform.isMacOS == false) {
+      await Permission.camera.request();
+      await Permission.microphone.request();
+    }
 
     // Set up AVAudioSession for iOS.
     final session = await AudioSession.instance;
@@ -93,7 +102,7 @@ class _IngestState extends State<IngestPage> {
         case 'NetConnection.Connect.Success':
           _stream?.publish(Preference.shared.streamName);
           setState(() {
-            _recording = true;
+            _ingesting = true;
           });
           break;
       }
@@ -101,8 +110,6 @@ class _IngestState extends State<IngestPage> {
     RtmpStream stream = await RtmpStream.create(connection);
     stream.attachAudio(AudioSource());
     stream.attachVideo(VideoSource(position: currentPosition));
-
-    if (!mounted) return;
 
     setState(() {
       _connection = connection;

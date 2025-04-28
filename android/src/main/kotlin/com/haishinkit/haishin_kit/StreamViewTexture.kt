@@ -63,4 +63,9 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
     override fun attachStream(stream: Stream?) {
         this.stream = stream
     }
+
+    fun dispose() {
+        pixelTransform.surface = null
+        entry?.release()
+    }
 }

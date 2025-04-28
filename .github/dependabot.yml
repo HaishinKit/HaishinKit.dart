@@ -12,6 +12,10 @@ updates:
     directory: "/ios/haishin_kit"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "swift"
+    directory: "/macos/haishin_kit"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "pub"
     directory: "/"
     schedule:

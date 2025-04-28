@@ -29,11 +29,16 @@ class RtmpStreamHandler(
 
     private var instance: RtmpStream? = null
         set(value) {
+            field?.view = null
             field?.dispose()
             field = value
         }
     private var channel: EventChannel
     private var eventSink: EventChannel.EventSink? = null
+        set(value) {
+            field?.endOfStream()
+            field = value
+        }
     private var camera: Camera2Source? = null
         set(value) {
             field?.close()
@@ -197,7 +202,9 @@ class RtmpStreamHandler(
 
             "$TAG#updateTextureSize" -> {
                 val netStream = instance
-                if (netStream?.view != null) {
+                if (netStream == null) {
+                    result.success(null)
+                } else {
                     val texture = (netStream.view as? StreamViewTexture)
                     val width = call.argument<Double>("width") ?: 0
                     val height = call.argument<Double>("height") ?: 0
@@ -206,8 +213,6 @@ class RtmpStreamHandler(
                         camera?.video?.deviceOrientation = it
                     }
                     result.success(texture?.id)
-                } else {
-                    result.success(null)
                 }
             }
 
@@ -230,12 +235,12 @@ class RtmpStreamHandler(
             }
 
             "$TAG#dispose" -> {
-                eventSink?.endOfStream()
-                instance?.close()
-                camera?.close()
-                instance?.dispose()
-                instance = null
+                eventSink = null
                 camera = null
+                (instance?.view as? StreamViewTexture)?.let {
+                    it.dispose()
+                }
+                instance = null
                 plugin.onDispose(hashCode())
                 result.success(null)
             }

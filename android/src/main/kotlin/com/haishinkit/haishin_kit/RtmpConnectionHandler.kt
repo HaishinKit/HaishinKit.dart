@@ -9,23 +9,27 @@ import io.flutter.plugin.common.MethodChannel
 
 class RtmpConnectionHandler(
     private val plugin: HaishinKitPlugin
-) : MethodChannel.MethodCallHandler, IEventListener,
-    EventChannel.StreamHandler {
+) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler {
     companion object {
         private const val TAG = "RtmpConnection"
     }
 
     var instance: RtmpConnection? = RtmpConnection()
-        private set
+        private set(value) {
+            field = value
+        }
 
     private var channel: EventChannel
     private var eventSink: EventChannel.EventSink? = null
+        set(value) {
+            field?.endOfStream()
+            field = value
+        }
 
     init {
         instance?.addEventListener(Event.RTMP_STATUS, this)
         channel = EventChannel(
-            plugin.flutterPluginBinding.binaryMessenger,
-            "com.haishinkit.eventchannel/${hashCode()}"
+            plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
         )
         channel.setStreamHandler(this)
     }
@@ -44,8 +48,7 @@ class RtmpConnectionHandler(
             }
 
             "$TAG#dispose" -> {
-                eventSink?.endOfStream()
-                instance?.dispose()
+                eventSink = null
                 instance = null
                 plugin.onDispose(hashCode())
                 result.success(null)

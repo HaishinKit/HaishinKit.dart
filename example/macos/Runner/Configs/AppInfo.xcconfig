@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = haishin_kit_example
+PRODUCT_NAME = haishin_kit
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.haishinKitExample
+PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.haishin_kit.example
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2025 com.haishinkit. All rights reserved.
