@@ -171,12 +171,6 @@ class RtmpStreamHandler(
                     camera?.let {
                         instance?.attachVideo(camera)
                     }
-                    val handler = Handler()
-                    handler.postDelayed({
-                        if (instance?.view != null) {
-                            camera?.open(facing)
-                        }
-                    }, 750)
                 }
                 result.success(null)
             }
