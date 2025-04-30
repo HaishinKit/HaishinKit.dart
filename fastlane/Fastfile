@@ -24,6 +24,11 @@ lane :document do |options|
   Dir.chdir("..") do
     sh "git clone git@github.com:HaishinKit/docs.haishinkit.com.git"
 
+    if Helper.is_ci?
+      sh "git config --global user.email 'action@github.com'"
+      sh "git config --global user.name 'GitHub Action'"
+    end
+
     sh "rm -rf ./docs.haishinkit.com/dart/latest"
     sh "dart doc . -o ./docs.haishinkit.com/dart/latest"
  
@@ -31,10 +36,12 @@ lane :document do |options|
     sh "dart doc . -o ./docs.haishinkit.com/dart/#{version}"
   end
 
-  Dir.chdir("./docs.haishinkit.com") do
-    sh "git add"
+  Dir.chdir("../docs.haishinkit.com") do
+    sh "git add ."
     sh "git commit -m 'Add HaishinKit.dart #{version}'"
     sh "git push origin main"
   end
+
+  sh "rm -rf ../docs.haishinkit.com"
 
 end
