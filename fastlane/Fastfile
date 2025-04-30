@@ -12,3 +12,29 @@ lane :review do
   end
 end
 
+desc "Creates documents."
+lane :document do |options|
+  if options[:version] == ""
+    UI.error("Version is a required argument!")
+    next
+  end
+
+  version = options[:version]
+
+  Dir.chdir("..") do
+    sh "git clone git@github.com:HaishinKit/docs.haishinkit.com.git"
+
+    sh "rm -rf ./docs.haishinkit.com/dart/latest"
+    sh "dart doc . -o ./docs.haishinkit.com/dart/latest"
+ 
+    sh "rm -rf ./docs.haishinkit.com/dart/#{version}"
+    sh "dart doc . -o ./docs.haishinkit.com/dart/#{version}"
+  end
+
+  Dir.chdir("./docs.haishinkit.com") do
+    sh "git add"
+    sh "git commit -m 'Add HaishinKit.dart #{version}'"
+    sh "git push origin main"
+  end
+
+end
