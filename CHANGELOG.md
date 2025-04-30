@@ -1,3 +1,7 @@
+## 0.14.3
+* Support macOS and SPM.
+* Bump up HaishinKit.swift to 2.0.7
+
 ## 0.14.2
 * fixed https://github.com/shogo4405/HaishinKit.dart/issues/78
 
