@@ -1,38 +1,33 @@
 name: Release
-
 on:
   push:
     tags:
       - '*.*.*'
   workflow_dispatch:
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: stable
-        flutter-version: '3.24.5'
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.0.6
-        bundler-cache: true
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-    - name: bundle install
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        bundle install
-        bundle exec fastlane document version:${{ github.ref_name }}
-
+      - uses: actions/checkout@v4
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.24.5'
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.6
+          bundler-cache: true
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: bundle install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bundle install
+          bundle exec fastlane document version:${{ github.ref_name }}
