@@ -46,21 +46,25 @@ enum ProfileLevel {
 }
 
 class VideoSettings {
-  int width;
-  int height;
-  int bitrate;
-  int frameInterval;
-  ProfileLevel profileLevel;
+  final int width;
+  final int height;
+  final int bitrate;
+  final int frameInterval;
+  final ProfileLevel profileLevel;
 
 //<editor-fold desc="Data Methods">
 
-  VideoSettings({
+  const VideoSettings({
     this.width = 480,
     this.height = 272,
     this.bitrate = 160 * 1000,
     this.frameInterval = 2,
     this.profileLevel = ProfileLevel.h264Baseline31,
   });
+
+  VideoSettings inverted() {
+    return copyWith(width: height, height: width);
+  }
 
   @override
   bool operator ==(Object other) =>

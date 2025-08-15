@@ -2,7 +2,7 @@ group = "com.haishinkit.haishin_kit"
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = "1.9.22"
+    ext.kotlin_version = "2.1.0"
 
     repositories {
         google()
@@ -68,5 +68,6 @@ android {
 }
 
 dependencies {
-    implementation('com.github.shogo4405.HaishinKit~kt:haishinkit:0.14.2')
+    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:0.16.0'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:0.16.0'
 }
