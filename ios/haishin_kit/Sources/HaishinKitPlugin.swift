@@ -30,6 +30,7 @@ public final class HaishinKitPlugin: NSObject {
             hasStreamHandler = true
         }
         if !hasStreamHandler {
+            mixer?.stopRunning()
             mixer = nil
         }
     }

@@ -12,7 +12,7 @@ import VideoToolbox
 final class RTMPStreamHandler: NSObject {
     private let plugin: HaishinKitPlugin
     private var texture: HKStreamFlutterTexture?
-    private var instance: RTMPStream?
+    private var rtmpStream: RTMPStream?
     private var eventSink: FlutterEventSink?
     private var eventChannel: FlutterEventChannel?
     private var subscription: Task<(), Error>?
@@ -28,9 +28,9 @@ final class RTMPStreamHandler: NSObject {
             self.eventChannel = nil
         }
         if let connection = handler.instance {
-            let instance = RTMPStream(connection: connection)
-            plugin.mixer?.addOutput(instance)
-            self.instance = instance
+            let rtmpStream = RTMPStream(connection: connection)
+            plugin.mixer?.addOutput(rtmpStream)
+            self.rtmpStream = rtmpStream
         }
     }
 }
@@ -38,43 +38,47 @@ final class RTMPStreamHandler: NSObject {
 extension RTMPStreamHandler: MethodCallHandler {
     // MARK: MethodCallHandler
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        Task {
+        guard
+            let arguments = call.arguments as? [String: Any?] else {
+            result(nil)
+            return
+        }
+        switch call.method {
+        case
+            "RtmpStream#getHasAudio",
+            "RtmpStream#setHasAudio",
+            "RtmpStream#getHasVideo",
+            "RtmpStream#setHasVideo",
+            "RtmpStream#setFrameRate",
+            "RtmpStream#setSessionPreset",
+            "RtmpStream#attachAudio",
+            "RtmpStream#attachVideo",
+            "RtmpStream#setScreenSettings":
+            plugin.mixer?.handle(call, result: result)
+        case "RtmpStream#setAudioSettings":
             guard
-                let arguments = call.arguments as? [String: Any?] else {
+                let settings = arguments["settings"] as? [String: Any?] else {
                 result(nil)
                 return
             }
-            switch call.method {
-            case
-                "RtmpStream#getHasAudio",
-                "RtmpStream#setHasAudio",
-                "RtmpStream#getHasVudio",
-                "RtmpStream#setHasVudio",
-                "RtmpStream#setFrameRate",
-                "RtmpStream#setSessionPreset",
-                "RtmpStream#attachAudio",
-                "RtmpStream#attachVideo",
-                "RtmpStream#setScreenSettings":
-                plugin.mixer?.handle(call, result: result)
-            case "RtmpStream#setAudioSettings":
-                guard
-                    let settings = arguments["settings"] as? [String: Any?] else {
-                    result(nil)
-                    return
-                }
-                if let bitrate = settings["bitrate"] as? NSNumber {
-                    var audioSettings = await instance?.audioSettings ?? .default
+            if let bitrate = settings["bitrate"] as? NSNumber {
+                Task {
+                    var audioSettings = await rtmpStream?.audioSettings ?? .default
                     audioSettings.bitRate = bitrate.intValue
-                    await instance?.setAudioSettings(audioSettings)
-                }
-                result(nil)
-            case "RtmpStream#setVideoSettings":
-                guard
-                    let settings = arguments["settings"] as? [String: Any?] else {
+                    await rtmpStream?.setAudioSettings(audioSettings)
                     result(nil)
-                    return
                 }
-                var videoSettings = await instance?.videoSettings ?? .default
+                return
+            }
+            result(nil)
+        case "RtmpStream#setVideoSettings":
+            guard
+                let settings = arguments["settings"] as? [String: Any?] else {
+                result(nil)
+                return
+            }
+            Task {
+                var videoSettings = await rtmpStream?.videoSettings ?? .default
                 if let bitrate = settings["bitrate"] as? NSNumber {
                     videoSettings.bitRate = bitrate.intValue
                 }
@@ -87,70 +91,81 @@ extension RTMPStreamHandler: MethodCallHandler {
                 if let profileLevel = settings["profileLevel"] as? String {
                     videoSettings.profileLevel = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel.kVTProfileLevel
                 }
-                await instance?.setVideoSettings(videoSettings)
+                await rtmpStream?.setVideoSettings(videoSettings)
                 result(nil)
-            case "RtmpStream#play":
-                _ = try? await instance?.play(arguments["name"] as? String)
-                result(nil)
-            case "RtmpStream#publish":
-                _ = try? await instance?.publish(arguments["name"] as? String)
-                result(nil)
-            case "RtmpStream#registerTexture":
-                guard
-                    let registry = plugin.registrar?.textures() else {
-                    result(nil)
-                    return
-                }
-                if let texture {
-                    result(texture.id)
-                } else {
-                    let texture = HKStreamFlutterTexture(registry: registry)
-                    self.texture = texture
-                    await instance?.addOutput(texture)
-                    result(texture.id)
-                }
-            case "RtmpStream#unregisterTexture":
-                guard
-                    let registry = plugin.registrar?.textures() else {
-                    result(nil)
-                    return
-                }
-                if let textureId = arguments["id"] as? Int64 {
-                    registry.unregisterTexture(textureId)
-                }
-                result(nil)
-            case "RtmpStream#updateTextureSize":
-                guard
-                    (plugin.registrar?.textures()) != nil else {
-                    result(nil)
-                    return
-                }
-                if let texture {
-                    if let width = arguments["width"] as? NSNumber,
-                       let height = arguments["height"] as? NSNumber {
-                        texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
-                    }
-                    result(texture.id)
-                } else {
-                    result(nil)
-                }
-            case "RtmpStream#close":
-                _ = try? await instance?.close()
-                result(nil)
-            case "RtmpStream#dispose":
-                if let instance {
-                    plugin.mixer?.removeOutput(instance)
-                    self.instance = nil
-                }
-                if let texture {
-                    plugin.registrar?.textures().unregisterTexture(texture.id)
-                    self.texture = nil
-                }
-                plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
-                result(nil)
-            default:
-                result(FlutterMethodNotImplemented)
             }
+        case "RtmpStream#play":
+            Task {
+                _ = try? await rtmpStream?.play(arguments["name"] as? String)
+                result(nil)
+            }
+        case "RtmpStream#publish":
+            Task {
+                _ = try? await rtmpStream?.publish(arguments["name"] as? String)
+                result(nil)
+            }
+        case "RtmpStream#registerTexture":
+            guard
+                let registry = plugin.registrar?.textures() else {
+                result(nil)
+                return
+            }
+            if let texture {
+                result(texture.id)
+            } else {
+                let texture = HKStreamFlutterTexture(registry: registry)
+                self.texture = texture
+                plugin.mixer?.texture = texture
+                Task {
+                    await rtmpStream?.addOutput(texture)
+                    result(texture.id)
+                }
+            }
+        case "RtmpStream#unregisterTexture":
+            guard
+                let registry = plugin.registrar?.textures() else {
+                result(nil)
+                return
+            }
+            if let textureId = arguments["id"] as? Int64 {
+                registry.unregisterTexture(textureId)
+            }
+            result(nil)
+        case "RtmpStream#updateTextureSize":
+            guard let _ = plugin.registrar?.textures() else {
+                result(nil)
+                return
+            }
+            if let texture {
+                if let width = arguments["width"] as? NSNumber,
+                   let height = arguments["height"] as? NSNumber {
+                    texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
+                }
+                result(texture.id)
+            } else {
+                result(nil)
+            }
+        case "RtmpStream#close":
+            Task {
+                _ = try? await rtmpStream?.close()
+                result(nil)
+            }
+        case "RtmpStream#dispose":            
+            if let rtmpStream = rtmpStream {
+                plugin.mixer?.removeOutput(rtmpStream)
+            }
+            if let texture {
+                plugin.registrar?.textures().unregisterTexture(texture.id)
+                self.texture = nil
+            }
+            plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
+            Task {
+                await plugin.mixer?.dispose()
+                _  = try? await rtmpStream?.close()
+                result(nil)
+            }
+        default:
+            result(FlutterMethodNotImplemented)
         }
     }
 }

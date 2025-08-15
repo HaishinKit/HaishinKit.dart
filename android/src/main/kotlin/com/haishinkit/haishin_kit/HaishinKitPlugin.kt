@@ -56,7 +56,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             "getPlatformVersion" -> {
-                result.success(com.haishinkit.BuildConfig.VERSION_NAME)
+                result.success(com.haishinkit.BuildConfig.LIBRARY_PACKAGE_NAME)
             }
 
             else -> {
