@@ -14,7 +14,7 @@ import UIKit
 
 final class MediaMixerHandler: NSObject {
     var texture: HKStreamFlutterTexture?
-    
+
     #if os(macOS)
     private lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
     #else
@@ -42,7 +42,7 @@ final class MediaMixerHandler: NSObject {
             await mixer.stopRunning()
         }
     }
-    
+
     func dispose() async {
         await stopRunning()
         _ = try? await mixer.attachVideo(nil, track: 0)
@@ -74,7 +74,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 let isMuted = await !mixer.audioMixerSettings.isMuted
                 result(isMuted)
             }
-            
+
         case "RtmpStream#setHasAudio":
             guard let hasAudio = arguments["value"] as? Bool else {
                 result(nil)
@@ -118,17 +118,17 @@ extension MediaMixerHandler: MethodCallHandler {
                 return
             }
             let preset: AVCaptureSession.Preset = switch sessionPreset {
-                case "high": .high
-                case "medium": .medium
-                case "low": .low
-                case "hd1280x720": .hd1280x720
-                case "hd1920x1080": .hd1920x1080
-                case "hd4K3840x2160": .hd4K3840x2160
-                case "vga640x480": .vga640x480
-                case "iFrame960x540": .iFrame960x540
-                case "iFrame1280x720": .iFrame1280x720
-                case "cif352x288": .cif352x288
-                default: .hd1280x720
+            case "high": .high
+            case "medium": .medium
+            case "low": .low
+            case "hd1280x720": .hd1280x720
+            case "hd1920x1080": .hd1920x1080
+            case "hd4K3840x2160": .hd4K3840x2160
+            case "vga640x480": .vga640x480
+            case "iFrame960x540": .iFrame960x540
+            case "iFrame1280x720": .iFrame1280x720
+            case "cif352x288": .cif352x288
+            default: .hd1280x720
             }
             Task {
                 await mixer.setSessionPreset(preset)
@@ -186,7 +186,7 @@ extension MediaMixerHandler: MethodCallHandler {
                     }
                     result(nil)
                 }
-            }        
+            }
         default:
             result(FlutterMethodNotImplemented)
         }
