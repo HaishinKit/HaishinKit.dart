@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "haishin-kit", targets: ["haishin_kit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/HaishinKit/HaishinKit.swift", exact: "2.0.9")
+        .package(url: "https://github.com/HaishinKit/HaishinKit.swift", exact: "2.1.1")
     ],
     targets: [
         .target(
