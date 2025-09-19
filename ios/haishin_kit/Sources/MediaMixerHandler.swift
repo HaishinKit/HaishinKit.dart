@@ -48,12 +48,6 @@ final class MediaMixerHandler: NSObject {
         _ = try? await mixer.attachAudio(nil, track: 0)
     }
 
-    func dispose() async {
-        await stopRunning()
-        _ = try? await mixer.attachVideo(nil, track: 0)
-        _ = try? await mixer.attachAudio(nil, track: 0)
-    }
-
     #if canImport(UIKit)
     @objc
     private func on(_ notification: Notification) {
