@@ -150,7 +150,7 @@ extension RTMPStreamHandler: MethodCallHandler {
                 _ = try? await rtmpStream?.close()
                 result(nil)
             }
-        case "RtmpStream#dispose":            
+        case "RtmpStream#dispose":
             if let rtmpStream = rtmpStream {
                 plugin.mixer?.removeOutput(rtmpStream)
             }
