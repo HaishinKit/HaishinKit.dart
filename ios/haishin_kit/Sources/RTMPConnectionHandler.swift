@@ -43,7 +43,9 @@ final class RTMPConnectionHandler: NSObject, MethodCallHandler {
                 if let instance {
                     subscription = Task {
                         for await status in await instance.status {
-                            eventSink?(status.makeEvent())
+                            DispatchQueue.main.async {
+                                self.eventSink?(status.makeEvent())
+                            }
                         }
                     }
                 }
