@@ -11,7 +11,6 @@ import android.util.Log
 import android.util.Size
 import android.view.WindowManager
 import com.haishinkit.codec.CodecOption
-import com.haishinkit.codec.VideoCodecProfileLevel
 import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.source.AudioRecordSource
@@ -179,9 +178,9 @@ class RtmpStreamHandler(
             "$TAG#attachAudio" -> {
                 val source = call.argument<Map<String, Any?>>("source")
                 CoroutineScope(Dispatchers.Main).launch {
-                    if (source == null) {
-                        mixer?.attachAudio(0, null)
-                    } else {
+                    // Cleanup current attached source
+                    mixer?.attachAudio(0, null)
+                    if (source != null) {
                         mixer?.attachAudio(0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
                     }
                     result.success(null)
@@ -272,21 +271,23 @@ class RtmpStreamHandler(
                 // Explicitly detach video before disposal
                 CoroutineScope(Dispatchers.Main).launch {
                     mixer?.attachVideo(0, null)
-                }
+                    mixer?.attachAudio(0, null)
 
-                eventSink = null
-                camera = null
-                texture?.dispose()
-                
-                // Properly disconnect mixer from RTMP stream before disposal
-                rtmpStream?.let { stream ->
-                    mixer?.unregisterOutput(stream)
+                    // Properly disconnect mixer from RTMP stream before disposal
+                    rtmpStream?.let { stream ->
+                        mixer?.unregisterOutput(stream)
+                    }
+                    texture?.dispose()
+                    mixer?.dispose()
+                    rtmpStream?.dispose()
+
+                    mixer = null
+                    eventSink = null
+                    camera = null
+                    rtmpStream = null
+                    plugin.onDispose(hashCode())
+                    result.success(null)
                 }
-                
-                mixer = null
-                rtmpStream = null
-                plugin.onDispose(hashCode())
-                result.success(null)
             }
         }
     }
