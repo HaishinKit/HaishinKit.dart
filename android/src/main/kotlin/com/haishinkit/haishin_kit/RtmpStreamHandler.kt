@@ -6,6 +6,7 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.MediaFormat.KEY_LEVEL
 import android.media.MediaFormat.KEY_PROFILE
+import android.nfc.Tag
 import android.os.Build
 import android.util.Log
 import android.util.Size
@@ -51,10 +52,7 @@ class RtmpStreamHandler(
             field = value
         }
     private var camera: Camera2Source? = null
-        set(value) {
-            CoroutineScope(Dispatchers.Main).launch { field?.close() }
-            field = value
-        }
+
     private var texture: StreamViewTexture? = null
 
     init {
@@ -203,12 +201,15 @@ class RtmpStreamHandler(
                         else -> CameraCharacteristics.LENS_FACING_BACK
                     }
                     val cameraId = getCameraId(plugin.flutterPluginBinding.applicationContext, facing)
+                    Log.d(TAG, "Found camera ID: $cameraId");
                     camera = if (cameraId != null) {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext, cameraId)
                     } else {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext)
                     }
                     CoroutineScope(Dispatchers.Main).launch {
+                        // Detach current video source
+                        mixer?.attachVideo(0, null)
                         camera?.let { cameraSource ->
                             mixer?.attachVideo(0, cameraSource)
                         }
@@ -320,6 +321,7 @@ class RtmpStreamHandler(
         for (cameraId in cameraManager.cameraIdList) {
             val characteristics = cameraManager.getCameraCharacteristics(cameraId)
             val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+            Log.d(TAG, "Camera ID: $cameraId; facing: $facing")
             if (facing != null && facing == desiredFacing) {
                 return cameraId
             }
