@@ -17,6 +17,7 @@ import com.haishinkit.codec.CodecOption
 import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.source.AudioRecordSource
+import com.haishinkit.media.source.AudioSource
 import com.haishinkit.media.source.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
 import com.haishinkit.rtmp.event.Event
@@ -55,6 +56,7 @@ class RtmpStreamHandler(
             field = value
         }
     private var camera: Camera2Source? = null
+    private var audio: AudioSource? = null
     private var shouldReattach = false
 
     private var texture: StreamViewTexture? = null
@@ -88,17 +90,9 @@ class RtmpStreamHandler(
             "$TAG#setHasAudio" -> {
                 val value = call.argument<Boolean?>("value")
                 value?.let { hasAudio ->
-                    CoroutineScope(Dispatchers.Main).launch {
-                        if (hasAudio) {
-                            if (!mixer!!.hasAudio) {
-                                mixer?.attachAudio(0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
-                            }
-                        } else {
-                            mixer?.attachAudio(0, null)
-                        }
-                        result.success(null)
-                    }
-                } ?: result.success(null)
+                    audio?.isMuted = !hasAudio
+                }
+                result.success(null)
             }
 
             "$TAG#getHasVideo" -> {
@@ -182,8 +176,12 @@ class RtmpStreamHandler(
                 CoroutineScope(Dispatchers.Main).launch {
                     // Cleanup current attached source
                     mixer?.attachAudio(0, null)
+                    audio?.close()
+                    audio = null
+
                     if (source != null) {
-                        mixer?.attachAudio(0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
+                        audio = AudioRecordSource(plugin.flutterPluginBinding.applicationContext)
+                        mixer?.attachAudio(0, audio)
                     }
                     result.success(null)
                 }
@@ -242,6 +240,7 @@ class RtmpStreamHandler(
                 } else {
                     val width = call.argument<Double>("width") ?: 0
                     val height = call.argument<Double>("height") ?: 0
+                    Log.d(TAG, "Update device orientation")
                     (plugin.flutterPluginBinding.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.orientation?.let {
                         camera?.video?.deviceOrientation = it
                     }
@@ -286,6 +285,7 @@ class RtmpStreamHandler(
                     mixer = null
                     eventSink = null
                     camera = null
+                    audio = null
                     rtmpStream = null
                     plugin.onDispose(hashCode())
                     result.success(null)
@@ -329,7 +329,6 @@ class RtmpStreamHandler(
         super.onResume(owner)
 
         if (!shouldReattach) return
-
         texture?.let { mixer?.registerOutput(it) }
         CoroutineScope(Dispatchers.Main).launch {
             camera?.let { mixer?.attachVideo(0, it) }
