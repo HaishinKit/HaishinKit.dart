@@ -6,11 +6,13 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.MediaFormat.KEY_LEVEL
 import android.media.MediaFormat.KEY_PROFILE
-import android.nfc.Tag
 import android.os.Build
 import android.util.Log
 import android.util.Size
 import android.view.WindowManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.haishinkit.codec.CodecOption
 import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.MediaMixer
@@ -30,7 +32,8 @@ import kotlinx.coroutines.launch
 
 class RtmpStreamHandler(
     private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
-) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler {
+) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler,
+    DefaultLifecycleObserver {
     private companion object {
         const val TAG = "RtmpStream"
     }
@@ -52,6 +55,7 @@ class RtmpStreamHandler(
             field = value
         }
     private var camera: Camera2Source? = null
+    private var shouldReattach = false
 
     private var texture: StreamViewTexture? = null
 
@@ -201,21 +205,18 @@ class RtmpStreamHandler(
                         else -> CameraCharacteristics.LENS_FACING_BACK
                     }
                     val cameraId = getCameraId(plugin.flutterPluginBinding.applicationContext, facing)
-                    Log.d(TAG, "Found camera ID: $cameraId");
-                    camera = if (cameraId != null) {
+                    val cameraSource = if (cameraId != null) {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext, cameraId)
                     } else {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext)
                     }
+                    this.camera = cameraSource
                     CoroutineScope(Dispatchers.Main).launch {
                         // Detach current video source
                         mixer?.attachVideo(0, null)
-                        camera?.let { cameraSource ->
-                            mixer?.attachVideo(0, cameraSource)
-                        }
+                        mixer?.attachVideo(0, cameraSource)
+                        result.success(null)
                     }
-
-                    result.success(null)
                 }
             }
 
@@ -304,9 +305,36 @@ class RtmpStreamHandler(
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         eventSink = events
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
     override fun onCancel(arguments: Any?) {
+        eventSink = null
+
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        shouldReattach = true
+
+        texture?.let { mixer?.unregisterOutput(it) }
+        CoroutineScope(Dispatchers.Main).launch {
+            mixer?.attachVideo(0, null)
+        }
+        super.onPause(owner)
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+
+        if (!shouldReattach) return
+
+        texture?.let { mixer?.registerOutput(it) }
+        CoroutineScope(Dispatchers.Main).launch {
+            camera?.let { mixer?.attachVideo(0, it) }
+            shouldReattach = false
+        }
     }
 
     /**
