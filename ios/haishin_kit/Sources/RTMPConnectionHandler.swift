@@ -41,11 +41,10 @@ final class RTMPConnectionHandler: NSObject, MethodCallHandler {
                 return
             }
             if let instance {
-                subscription = Task {
+                subscription = Task { [weak self] in
                     for await status in await instance.status {
-                        DispatchQueue.main.async {
-                            print("got event, \(status)")
-                            self.eventSink?(status.makeEvent())
+                        DispatchQueue.main.async { [eventSink = self?.eventSink] in
+                            eventSink?(status.makeEvent())
                         }
                     }
                 }
