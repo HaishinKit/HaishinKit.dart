@@ -124,20 +124,20 @@ class RtmpStream extends Stream {
   @override
   Future<void> attachVideo(VideoSource? video) async {
     assert(_memory != null);
-    RtmpStreamPlatform.instance
+    await RtmpStreamPlatform.instance
         .attachVideo({"memory": _memory, "source": video?.toMap()});
   }
 
   /// Sends streaming audio, video and data message from client.
   Future<void> publish(String name) async {
     assert(_memory != null);
-    RtmpStreamPlatform.instance.publish({"memory": _memory, "name": name});
+    await RtmpStreamPlatform.instance.publish({"memory": _memory, "name": name});
   }
 
   /// Plays a live stream from RTMPServer.
   Future<void> play(String name) async {
     assert(_memory != null);
-    RtmpStreamPlatform.instance.play({"memory": _memory, "name": name});
+    await RtmpStreamPlatform.instance.play({"memory": _memory, "name": name});
   }
 
   @override

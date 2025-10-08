@@ -1,5 +1,6 @@
 import Foundation
 import HaishinKit
+import RTMPHaishinKit
 
 extension RTMPStatus {
     func makeEvent() -> [String: Any?] {
