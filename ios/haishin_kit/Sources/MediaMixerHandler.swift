@@ -6,6 +6,7 @@ import Flutter
 import FlutterMacOS
 #endif
 import HaishinKit
+import RTMPHaishinKit
 import AVFoundation
 import VideoToolbox
 #if canImport(UIKit)
@@ -14,12 +15,7 @@ import UIKit
 
 final class MediaMixerHandler: NSObject {
     var texture: HKStreamFlutterTexture?
-
-    #if os(macOS)
     private lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
-    #else
-    private lazy var mixer = MediaMixer(multiCamSessionEnabled: false, multiTrackAudioMixingEnabled: false)
-    #endif
 
     override init() {
         super.init()
@@ -29,7 +25,10 @@ final class MediaMixerHandler: NSObject {
     }
 
     func addOutput(_ output: some MediaMixerOutput) {
-        Task { await mixer.addOutput(output) }
+        Task {
+            await mixer.addOutput(output)
+            await mixer.startRunning()
+        }
     }
 
     func removeOutput(_ output: some MediaMixerOutput) {
@@ -42,7 +41,7 @@ final class MediaMixerHandler: NSObject {
             await mixer.stopRunning()
         }
     }
-
+    
     func dispose() async {
         await stopRunning()
         _ = try? await mixer.attachVideo(nil, track: 0)
@@ -74,7 +73,6 @@ extension MediaMixerHandler: MethodCallHandler {
                 let isMuted = await !mixer.audioMixerSettings.isMuted
                 result(isMuted)
             }
-
         case "RtmpStream#setHasAudio":
             guard let hasAudio = arguments["value"] as? Bool else {
                 result(nil)
@@ -109,7 +107,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 return
             }
             Task {
-                await mixer.setFrameRate(frameRate.doubleValue)
+                _ = try? await mixer.setFrameRate(frameRate.doubleValue)
                 result(nil)
             }
         case "RtmpStream#setSessionPreset":

@@ -23,21 +23,21 @@ class RtmpConnection {
   EventChannel get eventChannel => _channel;
 
   /// Creates a two-way connection to an application on RTMP Server.
-  void connect(String command) async {
+  Future<void> connect(String command) async {
     assert(_memory != null);
-    RtmpConnectionPlatform.instance
+    await RtmpConnectionPlatform.instance
         .connect({"memory": _memory, "command": command});
   }
 
   /// Closes the connection from the server.
-  void close() async {
+  Future<void> close() async {
     assert(_memory != null);
-    RtmpConnectionPlatform.instance.close({"memory": _memory});
+    await RtmpConnectionPlatform.instance.close({"memory": _memory});
   }
 
   /// Disposes the connection platform instance.
-  void dispose() async {
+  Future<void> dispose() async {
     assert(_memory != null);
-    RtmpConnectionPlatform.instance.dispose({"memory": _memory});
+    await RtmpConnectionPlatform.instance.dispose({"memory": _memory});
   }
 }

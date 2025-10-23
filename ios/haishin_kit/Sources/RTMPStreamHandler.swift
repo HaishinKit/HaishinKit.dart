@@ -6,6 +6,7 @@ import Flutter
 import FlutterMacOS
 #endif
 import HaishinKit
+import RTMPHaishinKit
 import AVFoundation
 import VideoToolbox
 
@@ -65,7 +66,7 @@ extension RTMPStreamHandler: MethodCallHandler {
                 Task {
                     var audioSettings = await rtmpStream?.audioSettings ?? .default
                     audioSettings.bitRate = bitrate.intValue
-                    await rtmpStream?.setAudioSettings(audioSettings)
+                    _ = try? await rtmpStream?.setAudioSettings(audioSettings)
                     result(nil)
                 }
                 return
@@ -91,7 +92,7 @@ extension RTMPStreamHandler: MethodCallHandler {
                 if let profileLevel = settings["profileLevel"] as? String {
                     videoSettings.profileLevel = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel.kVTProfileLevel
                 }
-                await rtmpStream?.setVideoSettings(videoSettings)
+                _ = try? await rtmpStream?.setVideoSettings(videoSettings)
                 result(nil)
             }
         case "RtmpStream#play":

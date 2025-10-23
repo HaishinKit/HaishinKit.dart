@@ -79,12 +79,12 @@ final class HKStreamFlutterTexture: NSObject, FlutterTexture {
     }
 }
 
-extension HKStreamFlutterTexture: HKStreamOutput {
+extension HKStreamFlutterTexture: StreamOutput {
     // MARK: HKStreamOutput
-    func stream(_ stream: some HaishinKit.HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    func stream(_ stream: some StreamConvertible, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    func stream(_ stream: some HaishinKit.HKStream, didOutput video: CMSampleBuffer) {
+    func stream(_ stream: some StreamConvertible, didOutput video: CMSampleBuffer) {
         self.currentSampleBuffer = video
         registry.textureFrameAvailable(id)
     }

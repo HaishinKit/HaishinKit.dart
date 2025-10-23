@@ -98,6 +98,7 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
 
             // Release the old producer
             producer?.release()
+            producer = null
 
             // Create new producer with new size
             createSurfaceProducer()

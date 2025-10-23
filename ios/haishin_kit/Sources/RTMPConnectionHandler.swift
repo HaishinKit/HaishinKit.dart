@@ -6,6 +6,7 @@ import Flutter
 import FlutterMacOS
 #endif
 import HaishinKit
+import RTMPHaishinKit
 
 final class RTMPConnectionHandler: NSObject, MethodCallHandler {
     var instance: RTMPConnection?
@@ -32,34 +33,43 @@ final class RTMPConnectionHandler: NSObject, MethodCallHandler {
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        Task {
-            switch call.method {
-            case "RtmpConnection#connect":
-                guard
-                    let arguments = call.arguments as? [String: Any?],
-                    let command = arguments["command"] as? String else {
-                    return
-                }
-                if let instance {
-                    subscription = Task {
-                        for await status in await instance.status {
+        switch call.method {
+        case "RtmpConnection#connect":
+            guard
+                let arguments = call.arguments as? [String: Any?],
+                let command = arguments["command"] as? String else {
+                return
+            }
+            if let instance {
+                subscription = Task { [weak self] in
+                    for await status in await instance.status {
+                        DispatchQueue.main.async { [eventSink = self?.eventSink] in
                             eventSink?(status.makeEvent())
                         }
                     }
                 }
-                _ = try? await instance?.connect(command)
+            }
+            Task {
+                do {
+                    _ = try await instance?.connect(command)
+                } catch {
+                    result(FlutterError(code: "RTMP_CONNECT_FAILED", message: String(describing: error), details: nil))
+                    return
+                }
                 result(nil)
-            case "RtmpConnection#close":
-                subscription = nil
+            }
+        case "RtmpConnection#close":
+            subscription = nil
+            Task {
                 try? await instance?.close()
                 result(nil)
-            case "RtmpConnection#dispose":
-                instance = nil
-                plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
-                result(nil)
-            default:
-                result(FlutterMethodNotImplemented)
             }
+        case "RtmpConnection#dispose":
+            instance = nil
+            plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
+            result(nil)
+        default:
+            result(FlutterMethodNotImplemented)
         }
     }
 }

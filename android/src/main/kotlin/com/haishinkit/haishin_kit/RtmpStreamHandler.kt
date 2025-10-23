@@ -10,11 +10,14 @@ import android.os.Build
 import android.util.Log
 import android.util.Size
 import android.view.WindowManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.haishinkit.codec.CodecOption
-import com.haishinkit.codec.VideoCodecProfileLevel
 import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.source.AudioRecordSource
+import com.haishinkit.media.source.AudioSource
 import com.haishinkit.media.source.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
 import com.haishinkit.rtmp.event.Event
@@ -30,7 +33,8 @@ import kotlinx.coroutines.launch
 
 class RtmpStreamHandler(
     private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
-) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler {
+) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler,
+    DefaultLifecycleObserver {
     private companion object {
         const val TAG = "RtmpStream"
     }
@@ -52,10 +56,9 @@ class RtmpStreamHandler(
             field = value
         }
     private var camera: Camera2Source? = null
-        set(value) {
-            CoroutineScope(Dispatchers.Main).launch { field?.close() }
-            field = value
-        }
+    private var audio: AudioSource? = null
+    private var shouldReattach = false
+
     private var texture: StreamViewTexture? = null
 
     init {
@@ -87,17 +90,9 @@ class RtmpStreamHandler(
             "$TAG#setHasAudio" -> {
                 val value = call.argument<Boolean?>("value")
                 value?.let { hasAudio ->
-                    CoroutineScope(Dispatchers.Main).launch {
-                        if (hasAudio) {
-                            if (!mixer!!.hasAudio) {
-                                mixer?.attachAudio(0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
-                            }
-                        } else {
-                            mixer?.attachAudio(0, null)
-                        }
-                        result.success(null)
-                    }
-                } ?: result.success(null)
+                    audio?.isMuted = !hasAudio
+                }
+                result.success(null)
             }
 
             "$TAG#getHasVideo" -> {
@@ -179,10 +174,14 @@ class RtmpStreamHandler(
             "$TAG#attachAudio" -> {
                 val source = call.argument<Map<String, Any?>>("source")
                 CoroutineScope(Dispatchers.Main).launch {
-                    if (source == null) {
-                        mixer?.attachAudio(0, null)
-                    } else {
-                        mixer?.attachAudio(0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
+                    // Cleanup current attached source
+                    mixer?.attachAudio(0, null)
+                    audio?.close()
+                    audio = null
+
+                    if (source != null) {
+                        audio = AudioRecordSource(plugin.flutterPluginBinding.applicationContext)
+                        mixer?.attachAudio(0, audio)
                     }
                     result.success(null)
                 }
@@ -204,18 +203,18 @@ class RtmpStreamHandler(
                         else -> CameraCharacteristics.LENS_FACING_BACK
                     }
                     val cameraId = getCameraId(plugin.flutterPluginBinding.applicationContext, facing)
-                    camera = if (cameraId != null) {
+                    val cameraSource = if (cameraId != null) {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext, cameraId)
                     } else {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext)
                     }
+                    this.camera = cameraSource
                     CoroutineScope(Dispatchers.Main).launch {
-                        camera?.let { cameraSource ->
-                            mixer?.attachVideo(0, cameraSource)
-                        }
+                        // Detach current video source
+                        mixer?.attachVideo(0, null)
+                        mixer?.attachVideo(0, cameraSource)
+                        result.success(null)
                     }
-
-                    result.success(null)
                 }
             }
 
@@ -241,6 +240,7 @@ class RtmpStreamHandler(
                 } else {
                     val width = call.argument<Double>("width") ?: 0
                     val height = call.argument<Double>("height") ?: 0
+                    Log.d(TAG, "Update device orientation")
                     (plugin.flutterPluginBinding.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.orientation?.let {
                         camera?.video?.deviceOrientation = it
                     }
@@ -272,21 +272,24 @@ class RtmpStreamHandler(
                 // Explicitly detach video before disposal
                 CoroutineScope(Dispatchers.Main).launch {
                     mixer?.attachVideo(0, null)
-                }
+                    mixer?.attachAudio(0, null)
 
-                eventSink = null
-                camera = null
-                texture?.dispose()
-                
-                // Properly disconnect mixer from RTMP stream before disposal
-                rtmpStream?.let { stream ->
-                    mixer?.unregisterOutput(stream)
+                    // Properly disconnect mixer from RTMP stream before disposal
+                    rtmpStream?.let { stream ->
+                        mixer?.unregisterOutput(stream)
+                    }
+                    texture?.dispose()
+                    mixer?.dispose()
+                    rtmpStream?.dispose()
+
+                    mixer = null
+                    eventSink = null
+                    camera = null
+                    audio = null
+                    rtmpStream = null
+                    plugin.onDispose(hashCode())
+                    result.success(null)
                 }
-                
-                mixer = null
-                rtmpStream = null
-                plugin.onDispose(hashCode())
-                result.success(null)
             }
         }
     }
@@ -302,9 +305,35 @@ class RtmpStreamHandler(
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         eventSink = events
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
     override fun onCancel(arguments: Any?) {
+        eventSink = null
+
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        shouldReattach = true
+
+        texture?.let { mixer?.unregisterOutput(it) }
+        CoroutineScope(Dispatchers.Main).launch {
+            mixer?.attachVideo(0, null)
+        }
+        super.onPause(owner)
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+
+        if (!shouldReattach) return
+        texture?.let { mixer?.registerOutput(it) }
+        CoroutineScope(Dispatchers.Main).launch {
+            camera?.let { mixer?.attachVideo(0, it) }
+            shouldReattach = false
+        }
     }
 
     /**
@@ -319,6 +348,7 @@ class RtmpStreamHandler(
         for (cameraId in cameraManager.cameraIdList) {
             val characteristics = cameraManager.getCameraCharacteristics(cameraId)
             val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+            Log.d(TAG, "Camera ID: $cameraId; facing: $facing")
             if (facing != null && facing == desiredFacing) {
                 return cameraId
             }
