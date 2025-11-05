@@ -41,7 +41,7 @@ final class MediaMixerHandler: NSObject {
             await mixer.stopRunning()
         }
     }
-    
+
     func dispose() async {
         await stopRunning()
         _ = try? await mixer.attachVideo(nil, track: 0)
