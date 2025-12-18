@@ -157,7 +157,8 @@ extension MediaMixerHandler: MethodCallHandler {
         case "RtmpStream#attachVideo":
             let source = arguments["source"] as? [String: Any?]
             let id = source?["id"] as? String
-            guard let id = id else {
+            let track = arguments["track"] as? UInt8
+            guard let id = id, let track = track else {
                 Task {
                     try? await mixer.attachVideo(nil, track: 0)
                     result(nil)
@@ -167,7 +168,7 @@ extension MediaMixerHandler: MethodCallHandler {
             let device = AVCaptureDevice.init(uniqueID: id)
             Task {
                 if let device = device {
-                    try? await mixer.attachVideo(device, track: 0)
+                    try? await mixer.attachVideo(device, track: track)
                 }
                 result(nil)
             }
