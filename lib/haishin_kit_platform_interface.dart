@@ -1,4 +1,5 @@
 import 'package:haishin_kit/rtmp_connection.dart';
+import 'package:haishin_kit/video_source.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'haishin_kit_method_channel.dart';
@@ -33,5 +34,10 @@ abstract class HaishinKitPlatform extends PlatformInterface {
   /// Gets the HaishinKit library version.
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('getPlatformVersion() has not been implemented.');
+  }
+
+  /// Gets the available video sources.
+  Future<List<VideoSource>> get videoSources {
+    throw UnimplementedError('videoSources has not been implemented.');
   }
 }
