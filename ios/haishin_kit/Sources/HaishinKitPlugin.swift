@@ -71,7 +71,26 @@ extension HaishinKitPlugin: FlutterPlugin {
         case "getPlatformVersion":
             result(kHaishinKitIdentifier)
         case "getVideoSources":
-            let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .externalUnknown], mediaType: .video, position: .unspecified)
+            #if os(macOS)
+            let deviceTypes: [AVCaptureDevice.DeviceType] = [
+                    .builtInWideAngleCamera,
+                    .externalUnknown,
+                ]
+            #else
+            let deviceTypes: [AVCaptureDevice.DeviceType] = [
+                    .builtInWideAngleCamera,
+                    .externalUnknown,
+                    .builtInUltraWideCamera,
+                    .builtInTelephotoCamera,
+                    .builtInDualCamera,
+                    .builtInDualWideCamera,
+                    .builtInTripleCamera,
+                ]
+            #endif
+            let discoverySession = AVCaptureDevice.DiscoverySession(
+                deviceTypes: deviceTypes,
+                mediaType: .video,
+                position: .unspecified)
             let videoList = discoverySession.devices.map { device in
                 let position = switch device.position {
                 case .back: "back"
