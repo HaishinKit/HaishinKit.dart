@@ -1,5 +1,9 @@
 package com.haishinkit.haishin_kit
 
+import android.content.Context
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
+import android.hardware.camera2.CameraMetadata
 import android.os.Handler
 import android.os.Looper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -57,6 +61,22 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
             "getPlatformVersion" -> {
                 result.success(com.haishinkit.BuildConfig.LIBRARY_PACKAGE_NAME)
+            }
+
+            "getVideoSources" -> {
+                val context = flutterPluginBinding.applicationContext
+                val manager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+                val idList = manager.getCameraIdList()
+                result.success(idList.map {
+                    val characteristics = manager.getCameraCharacteristics(it)
+                    val position = when (characteristics.get(CameraCharacteristics.LENS_FACING)) {
+                        CameraMetadata.LENS_FACING_BACK -> "back"
+                        CameraMetadata.LENS_FACING_FRONT -> "front"
+                        CameraMetadata.LENS_FACING_EXTERNAL -> "unspecified"
+                        else -> "unspecified"
+                    }
+                    mapOf("id" to it, "position" to position)
+                })
             }
 
             else -> {
