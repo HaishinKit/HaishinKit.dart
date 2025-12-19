@@ -197,12 +197,7 @@ class RtmpStreamHandler(
                         result.success(null)
                     }
                 } else {
-                    val facing = when (source["position"]) {
-                        "front" -> CameraCharacteristics.LENS_FACING_FRONT
-                        "back" -> CameraCharacteristics.LENS_FACING_BACK
-                        else -> CameraCharacteristics.LENS_FACING_BACK
-                    }
-                    val cameraId = getCameraId(plugin.flutterPluginBinding.applicationContext, facing)
+                    val cameraId = source["id"] as String?
                     val cameraSource = if (cameraId != null) {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext, cameraId)
                     } else {
