@@ -156,34 +156,20 @@ extension MediaMixerHandler: MethodCallHandler {
             }
         case "RtmpStream#attachVideo":
             let source = arguments["source"] as? [String: Any?]
-            if source == nil {
+            let id = source?["id"] as? String
+            guard let id = id else {
                 Task {
                     try? await mixer.attachVideo(nil, track: 0)
                     result(nil)
                 }
-            } else {
-                var devicePosition = AVCaptureDevice.Position.back
-                if let position = source?["position"] as? String {
-                    switch position {
-                    case "front":
-                        devicePosition = .front
-                    case "back":
-                        devicePosition = .back
-                    default:
-                        break
-                    }
+                return
+            }
+            let device = AVCaptureDevice.init(uniqueID: id)
+            Task {
+                if let device = device {
+                    try? await mixer.attachVideo(device, track: 0)
                 }
-                #if os(iOS)
-                let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition)
-                #else
-                let device = AVCaptureDevice.devices(for: .video).first
-                #endif
-                Task {
-                    if let device = device {
-                        try? await mixer.attachVideo(device, track: 0)
-                    }
-                    result(nil)
-                }
+                result(nil)
             }
         default:
             result(FlutterMethodNotImplemented)

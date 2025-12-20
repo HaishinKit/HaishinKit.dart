@@ -5,6 +5,7 @@ import Flutter
 import FlutterMacOS
 #endif
 import HaishinKit
+import AVFoundation
 
 public final class HaishinKitPlugin: NSObject {
     private static let instance = HaishinKitPlugin()
@@ -69,6 +70,41 @@ extension HaishinKitPlugin: FlutterPlugin {
             result(NSNumber(value: memory))
         case "getPlatformVersion":
             result(kHaishinKitIdentifier)
+        case "getVideoSources":
+            #if os(macOS)
+            let deviceTypes: [AVCaptureDevice.DeviceType] = [
+                    .builtInWideAngleCamera,
+                    .externalUnknown,
+                ]
+            #else
+            let deviceTypes: [AVCaptureDevice.DeviceType] = [
+                    .builtInWideAngleCamera,
+                    .externalUnknown,
+                    .builtInUltraWideCamera,
+                    .builtInTelephotoCamera,
+                    .builtInDualCamera,
+                    .builtInDualWideCamera,
+                    .builtInTripleCamera,
+                ]
+            #endif
+            let discoverySession = AVCaptureDevice.DiscoverySession(
+                deviceTypes: deviceTypes,
+                mediaType: .video,
+                position: .unspecified)
+            let videoList = discoverySession.devices.map { device in
+                let position = switch device.position {
+                case .back: "back"
+                case .front: "front"
+                case .unspecified: "unspecified"
+                default: "unspecified"
+                }
+                return [
+                    "id": device.uniqueID,
+                    "name": device.localizedName,
+                    "position": position
+                ]
+            }
+            result(videoList)
         default:
             result(FlutterMethodNotImplemented)
         }

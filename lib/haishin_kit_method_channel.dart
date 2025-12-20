@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
+import 'package:haishin_kit/video_source.dart';
 
 import 'haishin_kit_platform_interface.dart';
 
@@ -21,5 +22,18 @@ class MethodChannelHaishinKit extends HaishinKitPlatform {
   @override
   Future<String?> getPlatformVersion() async {
     return await channel.invokeMethod<String>('getPlatformVersion');
+  }
+
+  @override
+  Future<List<VideoSource>> get videoSources async {
+    final List<dynamic>? result =
+        await channel.invokeMethod<List<dynamic>>('getVideoSources');
+    if (result == null) {
+      return [];
+    }
+    return result
+        .cast<Map<dynamic, dynamic>>()
+        .map((e) => VideoSource.fromMap(e.cast<String, dynamic>()))
+        .toList();
   }
 }
