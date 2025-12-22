@@ -14,14 +14,14 @@ import org.mockito.Mockito
  */
 
 internal class HaishinKitPluginTest {
-  @Test
-  fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
-    val plugin = HaishinKitPlugin()
+    @Test
+    fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
+        val plugin = HaishinKitPlugin()
 
-    val call = MethodCall("getPlatformVersion", null)
-    val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)
-    plugin.onMethodCall(call, mockResult)
+        val call = MethodCall("getPlatformVersion", null)
+        val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)
+        plugin.onMethodCall(call, mockResult)
 
-    Mockito.verify(mockResult).success("Android " + android.os.Build.VERSION.RELEASE)
-  }
+        Mockito.verify(mockResult).success("Android " + android.os.Build.VERSION.RELEASE)
+    }
 }

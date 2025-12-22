@@ -4,25 +4,26 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
-import 'package:haishin_kit/rtmp_connection.dart';
-import 'package:haishin_kit/rtmp_stream.dart';
+import 'package:haishin_kit/session.dart';
+import 'package:haishin_kit/session_mode.dart';
 import 'package:haishin_kit/stream_view_texture.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:haishin_kit/media_mixer.dart';
 
 /// This is a sample page for ingest RTMP streams.
-class IngestPage extends StatefulWidget {
-  const IngestPage({super.key});
+class PublishPage extends StatefulWidget {
+  const PublishPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _IngestState();
+  State<StatefulWidget> createState() => _PublishState();
 }
 
-class _IngestState extends State<IngestPage> {
-  RtmpConnection? _connection;
-  RtmpStream? _stream;
-  bool _ingesting = false;
+class _PublishState extends State<PublishPage> {
+  MediaMixer? _mixer;
+  Session? _session;
+  bool _publishing = false;
   CameraPosition currentPosition = CameraPosition.back;
   List<VideoSource> _videoSources = [];
   VideoSource? _mainVideoSource;
@@ -40,8 +41,8 @@ class _IngestState extends State<IngestPage> {
   @override
   void dispose() {
     super.dispose();
-    _connection?.dispose();
-    _stream?.dispose();
+    _mixer?.dispose();
+    _session?.dispose();
   }
 
   @override
@@ -52,7 +53,7 @@ class _IngestState extends State<IngestPage> {
           DropdownMenu<VideoSource>(
             initialSelection: _mainVideoSource,
             onSelected: (value) {
-              _stream?.attachVideo(value, 0);
+              _mixer?.attachVideo(0, value);
               setState(() {
                 _mainVideoSource = value;
               });
@@ -61,13 +62,13 @@ class _IngestState extends State<IngestPage> {
           ),
         ]),
         body: Center(
-          child: _stream == null
+          child: _session == null
               ? const Text("Initialization")
-              : StreamViewTexture(_stream),
+              : StreamViewTexture(_session),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _ingest,
-          child: _ingesting
+          onPressed: _publish,
+          child: _publishing
               ? const Icon(Icons.stop_circle)
               : const Icon(Icons.play_circle),
         ),
@@ -75,15 +76,15 @@ class _IngestState extends State<IngestPage> {
     );
   }
 
-  void _ingest() {
-    if (_ingesting) {
-      _connection?.close();
+  void _publish() {
+    if (_publishing) {
+      _session?.close();
     } else {
-      _connection?.connect(Preference.shared.url);
+      _session?.connect();
     }
     setState(() {
-      if (_ingesting) {
-        _ingesting = false;
+      if (_publishing) {
+        _publishing = false;
       }
     });
   }
@@ -98,31 +99,24 @@ class _IngestState extends State<IngestPage> {
     _mainVideoSource = _videoSources.firstOrNull;
 
     // Set up AVAudioSession for iOS.
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration(
+    final audioSession = await AudioSession.instance;
+    await audioSession.configure(const AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
       avAudioSessionCategoryOptions:
           AVAudioSessionCategoryOptions.allowBluetooth,
     ));
 
-    RtmpConnection connection = await RtmpConnection.create();
-    connection.eventChannel.receiveBroadcastStream().listen((event) {
-      switch (event["data"]["code"]) {
-        case 'NetConnection.Connect.Success':
-          _stream?.publish(Preference.shared.streamName);
-          setState(() {
-            _ingesting = true;
-          });
-          break;
-      }
-    });
-    RtmpStream stream = await RtmpStream.create(connection);
-    stream.attachAudio(AudioSource());
-    stream.attachVideo(_mainVideoSource!, 0);
+    MediaMixer mixer = await MediaMixer.create();
+    mixer.attachAudio(0, AudioSource());
+    mixer.attachVideo(0, _mainVideoSource!);
+    mixer.startRunning();
+
+    Session session =
+        await Session.create(Preference.shared.url, SessionMode.publish);
 
     setState(() {
-      _connection = connection;
-      _stream = stream;
+      _mixer = mixer;
+      _session = session;
     });
   }
 }

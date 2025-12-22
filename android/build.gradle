@@ -28,7 +28,7 @@ apply plugin: "kotlin-android"
 android {
     namespace = "com.haishinkit.haishin_kit"
 
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
