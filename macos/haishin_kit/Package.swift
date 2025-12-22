@@ -19,7 +19,9 @@ let package = Package(
             name: "haishin_kit",
             dependencies: [
                 .product(name: "HaishinKit", package: "HaishinKit.swift"),
-                .product(name: "RTMPHaishinKit", package: "HaishinKit.swift")
+                .product(name: "RTMPHaishinKit", package: "HaishinKit.swift"),
+                .product(name: "SRTHaishinKit", package: "HaishinKit.swift"),
+                .product(name: "RTCHaishinKit", package: "HaishinKit.swift")
             ],
             resources: [
             ]

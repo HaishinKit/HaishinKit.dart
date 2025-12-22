@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/rtmp_connection.dart';
-import 'package:haishin_kit/rtmp_stream.dart';
+import 'package:haishin_kit/session.dart';
+import 'package:haishin_kit/session_mode.dart';
 import 'package:haishin_kit/stream_view_texture.dart';
 import 'package:haishin_kit_example/preference.dart';
+import 'package:audio_session/audio_session.dart';
 
 /// This is a sample page for playing RTMP streams.
 class PlaybackPage extends StatefulWidget {
@@ -13,8 +14,7 @@ class PlaybackPage extends StatefulWidget {
 }
 
 class _PlaybackState extends State<PlaybackPage> {
-  RtmpConnection? _connection;
-  RtmpStream? _stream;
+  Session? _session;
   bool _isPlaying = false;
 
   @override
@@ -26,17 +26,16 @@ class _PlaybackState extends State<PlaybackPage> {
   @override
   void dispose() {
     super.dispose();
-    _connection?.dispose();
-    _stream?.dispose();
+    _session?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: _stream == null
+          child: _session == null
               ? const Text("Initialization")
-              : StreamViewTexture(_stream)),
+              : StreamViewTexture(_session)),
       floatingActionButton: FloatingActionButton(
         onPressed: _playback,
         child: _isPlaying
@@ -48,9 +47,9 @@ class _PlaybackState extends State<PlaybackPage> {
 
   void _playback() {
     if (_isPlaying) {
-      _connection?.close();
+      _session?.close();
     } else {
-      _connection?.connect(Preference.shared.url);
+      _session?.connect();
     }
     setState(() {
       if (_isPlaying) {
@@ -60,21 +59,19 @@ class _PlaybackState extends State<PlaybackPage> {
   }
 
   Future<void> _initPlatformState() async {
-    var connection = await RtmpConnection.create();
-    connection.eventChannel.receiveBroadcastStream().listen((event) {
-      switch (event["data"]["code"]) {
-        case 'NetConnection.Connect.Success':
-          _stream?.play(Preference.shared.streamName);
-          setState(() {
-            _isPlaying = true;
-          });
-          break;
-      }
-    });
-    var stream = await RtmpStream.create(connection);
+    // Set up AVAudioSession for iOS.
+    final audioSession = await AudioSession.instance;
+    await audioSession.configure(const AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+      avAudioSessionCategoryOptions:
+          AVAudioSessionCategoryOptions.allowBluetooth,
+    ));
+
+    Session session =
+        await Session.create(Preference.shared.url, SessionMode.playback);
+
     setState(() {
-      _connection = connection;
-      _stream = stream;
+      _session = session;
     });
   }
 }

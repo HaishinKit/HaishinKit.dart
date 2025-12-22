@@ -4,7 +4,10 @@ import Flutter
 #if canImport(FlutterMacOS)
 import FlutterMacOS
 #endif
+
 import HaishinKit
+import RTMPHaishinKit
+import SRTHaishinKit
 import AVFoundation
 
 public final class HaishinKitPlugin: NSObject {
@@ -16,24 +19,19 @@ public final class HaishinKitPlugin: NSObject {
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
-    private var handlers: [Int: MethodCallHandler] = [:]
-    private(set) var mixer: MediaMixerHandler? {
-        didSet {
-            oldValue?.stopRunning()
+    private(set) var handlers: [Int: MethodCallHandler] = [:]
+    private(set) var registrar: FlutterPluginRegistrar?
+
+    override init() {
+        super.init()
+        Task {
+            await SessionBuilderFactory.shared.register(RTMPSessionFactory())
+            await SessionBuilderFactory.shared.register(SRTSessionFactory())
         }
     }
-    private(set) var registrar: FlutterPluginRegistrar?
 
     func onDispose(id: Int) {
         handlers.removeValue(forKey: id)
-        var hasStreamHandler = false
-        for handler in handlers where handler.value is RTMPStreamHandler {
-            hasStreamHandler = true
-        }
-        if !hasStreamHandler {
-            mixer?.stopRunning()
-            mixer = nil
-        }
     }
 }
 
@@ -49,49 +47,65 @@ extension HaishinKitPlugin: FlutterPlugin {
             return
         }
         switch call.method {
-        case "newRtmpConnection":
-            let handler = RTMPConnectionHandler(plugin: self)
-            let memory = Int(bitPattern: ObjectIdentifier(handler))
-            handlers[memory] = handler
-            result(NSNumber(value: memory))
-        case "newRtmpStream":
-            guard
-                let connection = (call.arguments as? [String: Any?])?["connection"] as? NSNumber,
-                let handler = handlers[connection.intValue] as? RTMPConnectionHandler else {
+        case "newSession":
+            guard let arguments = call.arguments as? [String: Any?],
+                  let url = URL(string: arguments["url"] as? String ?? ""),
+                  let mode = arguments["mode"] as? String else {
                 result(nil)
                 return
             }
-            if mixer == nil {
-                mixer = MediaMixerHandler()
+            Task {
+                do {
+                    let session = try await SessionBuilderFactory.shared.make(url).setMode(mode == "playback" ? .playback: .publish).build()
+                    if let session, mode == "publish" {
+                        for handler in handlers {
+                            if let handler = handler.value as? MediaMixerHandler {
+                                Task {
+                                    handler.addOutput(await session.stream)
+                                }
+                            }
+                        }
+                        let handler = SessionHandler(plugin: self, session: session)
+                        let memory = Int(bitPattern: ObjectIdentifier(handler))
+                        handlers[memory] = handler
+                        result(NSNumber(value: memory))
+                    } else {
+                        result(nil)
+                    }
+                } catch {
+                    result(nil)
+                }
             }
-            let stream = RTMPStreamHandler(plugin: self, handler: handler)
-            let memory = Int(bitPattern: ObjectIdentifier(stream))
-            handlers[memory] = stream
+        case "newMediaMixer":
+            let handler = MediaMixerHandler()
+            let memory = Int(bitPattern: ObjectIdentifier(handler))
+            handlers[memory] = handler
             result(NSNumber(value: memory))
         case "getPlatformVersion":
             result(kHaishinKitIdentifier)
         case "getVideoSources":
             #if os(macOS)
             let deviceTypes: [AVCaptureDevice.DeviceType] = [
-                    .builtInWideAngleCamera,
-                    .externalUnknown,
-                ]
+                .builtInWideAngleCamera,
+                .externalUnknown
+            ]
             #else
             let deviceTypes: [AVCaptureDevice.DeviceType] = [
-                    .builtInWideAngleCamera,
-                    .externalUnknown,
-                    .builtInUltraWideCamera,
-                    .builtInTelephotoCamera,
-                    .builtInDualCamera,
-                    .builtInDualWideCamera,
-                    .builtInTripleCamera,
-                ]
+                .builtInWideAngleCamera,
+                .externalUnknown,
+                .builtInUltraWideCamera,
+                .builtInTelephotoCamera,
+                .builtInDualCamera,
+                .builtInDualWideCamera,
+                .builtInTripleCamera
+            ]
             #endif
             let discoverySession = AVCaptureDevice.DiscoverySession(
                 deviceTypes: deviceTypes,
                 mediaType: .video,
                 position: .unspecified)
-            let videoList = discoverySession.devices.map { device in
+            let videoList = discoverySession.devices.map {
+                device in
                 let position = switch device.position {
                 case .back: "back"
                 case .front: "front"

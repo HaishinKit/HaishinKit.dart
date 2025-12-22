@@ -59,13 +59,13 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
     private val pixelTransform: PixelTransform by lazy {
         PixelTransform.create(binding.applicationContext)
     }
-    
+
     private val flutterPluginBinding = binding
 
     override fun append(buffer: MediaBuffer) {}
 
     private var producer: TextureRegistry.SurfaceProducer? = null
-    private var size : Size? = null
+    private var size: Size? = null
     private val surfaceLock = Object()
 
     init {
@@ -74,7 +74,9 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
 
     private fun createSurfaceProducer() {
         // Skipping creating surface without a size
-        if (size == null) { return }
+        if (size == null) {
+            return
+        }
 
         synchronized(surfaceLock) {
             val producer = flutterPluginBinding.textureRegistry.createSurfaceProducer()
@@ -82,7 +84,7 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
             producer.setCallback(this)
 
             this.producer = producer
-            
+
             // Set surface only after producer is fully initialized and valid
             val surface = producer.surface
             if (surface.isValid) {

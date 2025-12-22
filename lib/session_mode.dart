@@ -1,0 +1,4 @@
+enum SessionMode {
+  publish,
+  playback
+}

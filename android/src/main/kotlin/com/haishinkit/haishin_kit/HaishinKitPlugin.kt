@@ -6,6 +6,11 @@ import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
 import android.os.Handler
 import android.os.Looper
+import androidx.core.net.toUri
+import com.haishinkit.media.MediaOutput
+import com.haishinkit.rtmp.RtmpStreamSessionFactory
+import com.haishinkit.stream.StreamSession
+import io.flutter.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -23,7 +28,16 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
 
+    init {
+        StreamSession.Builder.registerFactory(RtmpStreamSessionFactory)
+    }
+
     fun onDispose(id: Int) {
+        (handlers[id] as? SessionHandler)?.let { handler ->
+            handler.session?.stream?.let {
+                unregisterOutput(it)
+            }
+        }
         handlers.remove(id)
     }
 
@@ -45,18 +59,28 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
             return
         }
         when (call.method) {
-            "newRtmpConnection" -> {
-                val handler = RtmpConnectionHandler(this)
+            "newMediaMixer" -> {
+                val handler = MediaMixerHandler(this)
                 handlers[handler.hashCode()] = handler
                 result.success(handler.hashCode())
             }
 
-            "newRtmpStream" -> {
-                val connection = call.argument<Int>("connection")
-                val handler =
-                    RtmpStreamHandler(this, handlers[connection] as? RtmpConnectionHandler)
-                handlers[handler.hashCode()] = handler
-                result.success(handler.hashCode())
+            "newSession" -> {
+                val url = call.argument<String?>("url")
+                val mode = call.argument<String?>("mode")
+                if (url != null && mode != null) {
+                    val session =
+                        StreamSession.Builder(flutterPluginBinding.applicationContext, url.toUri())
+                            .build()
+                    if (mode == "publish") {
+                        registerOutput(session.stream)
+                    }
+                    val handler = SessionHandler(this, session, mode)
+                    handlers[handler.hashCode()] = handler
+                    result.success(handler.hashCode())
+                } else {
+                    result.notImplemented()
+                }
             }
 
             "getPlatformVersion" -> {
@@ -87,5 +111,21 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+    }
+
+    private fun registerOutput(output: MediaOutput) {
+        for (handler in handlers.values) {
+            (handler as? MediaMixerHandler)?.let {
+                handler.registerOutput(output)
+            }
+        }
+    }
+
+    private fun unregisterOutput(output: MediaOutput) {
+        for (handler in handlers.values) {
+            (handler as? MediaMixerHandler)?.let {
+                handler.unregisterOutput(output)
+            }
+        }
     }
 }
