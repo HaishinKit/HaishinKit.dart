@@ -5,6 +5,8 @@ import Flutter
 import FlutterMacOS
 #endif
 import HaishinKit
+import RTMPHaishinKit
+import SRTHaishinKit
 import AVFoundation
 
 public final class HaishinKitPlugin: NSObject {
@@ -17,23 +19,18 @@ public final class HaishinKitPlugin: NSObject {
     }
 
     private var handlers: [Int: MethodCallHandler] = [:]
-    private(set) var mixer: MediaMixerHandler? {
-        didSet {
-            oldValue?.stopRunning()
+    private(set) var registrar: FlutterPluginRegistrar?
+
+    override init() {
+        super.init()
+        Task {
+            await SessionBuilderFactory.shared.register(RTMPSessionFactory())
+            await SessionBuilderFactory.shared.register(SRTSessionFactory())
         }
     }
-    private(set) var registrar: FlutterPluginRegistrar?
 
     func onDispose(id: Int) {
         handlers.removeValue(forKey: id)
-        var hasStreamHandler = false
-        for handler in handlers where handler.value is RTMPStreamHandler {
-            hasStreamHandler = true
-        }
-        if !hasStreamHandler {
-            mixer?.stopRunning()
-            mixer = nil
-        }
     }
 }
 
@@ -49,43 +46,34 @@ extension HaishinKitPlugin: FlutterPlugin {
             return
         }
         switch call.method {
-        case "newRtmpConnection":
-            let handler = RTMPConnectionHandler(plugin: self)
+        case "newSession":
+            let handler = SessionHandler(plugin: self, arguments: call.arguments as? [String: Any?])
             let memory = Int(bitPattern: ObjectIdentifier(handler))
             handlers[memory] = handler
             result(NSNumber(value: memory))
-        case "newRtmpStream":
-            guard
-                let connection = (call.arguments as? [String: Any?])?["connection"] as? NSNumber,
-                let handler = handlers[connection.intValue] as? RTMPConnectionHandler else {
-                result(nil)
-                return
-            }
-            if mixer == nil {
-                mixer = MediaMixerHandler()
-            }
-            let stream = RTMPStreamHandler(plugin: self, handler: handler)
-            let memory = Int(bitPattern: ObjectIdentifier(stream))
-            handlers[memory] = stream
+        case "newMediaMixer":
+            let handler = MediaMixerHandler()
+            let memory = Int(bitPattern: ObjectIdentifier(handler))
+            handlers[memory] = handler
             result(NSNumber(value: memory))
         case "getPlatformVersion":
             result(kHaishinKitIdentifier)
         case "getVideoSources":
             #if os(macOS)
             let deviceTypes: [AVCaptureDevice.DeviceType] = [
-                    .builtInWideAngleCamera,
-                    .externalUnknown,
-                ]
+                .builtInWideAngleCamera,
+                .externalUnknown
+            ]
             #else
             let deviceTypes: [AVCaptureDevice.DeviceType] = [
-                    .builtInWideAngleCamera,
-                    .externalUnknown,
-                    .builtInUltraWideCamera,
-                    .builtInTelephotoCamera,
-                    .builtInDualCamera,
-                    .builtInDualWideCamera,
-                    .builtInTripleCamera,
-                ]
+                .builtInWideAngleCamera,
+                .externalUnknown,
+                .builtInUltraWideCamera,
+                .builtInTelephotoCamera,
+                .builtInDualCamera,
+                .builtInDualWideCamera,
+                .builtInTripleCamera
+            ]
             #endif
             let discoverySession = AVCaptureDevice.DiscoverySession(
                 deviceTypes: deviceTypes,

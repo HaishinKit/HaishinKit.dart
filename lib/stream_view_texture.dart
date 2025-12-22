@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/stream.dart';
+import 'package:haishin_kit/session.dart';
 
 class StreamViewTexture extends StatefulWidget {
-  const StreamViewTexture(this.netStream, {super.key});
+  const StreamViewTexture(this.session, {super.key});
 
-  final Stream? netStream;  
+  final Session? session;
 
   @override
   State<StatefulWidget> createState() => _StreamViewTextureState();
@@ -39,7 +39,7 @@ class _StreamViewTextureState extends State<StreamViewTexture> with WidgetsBindi
   }
 
   Future<void> initPlatformState() async {
-    int? textureId = await widget.netStream?.registerTexture({});
+    int? textureId = await widget.session?.registerTexture({});
     setState(() {
       _textureId = textureId;
     });
@@ -57,7 +57,7 @@ class _StreamViewTextureState extends State<StreamViewTexture> with WidgetsBindi
   }
 
   Future<void> _updatePlatformState(Size size) async {    
-    final textureId = await widget.netStream?.updateTextureSize({
+    final textureId = await widget.session?.updateTextureSize({
       "width": size.width,
       "height": size.height,
     });

@@ -1,4 +1,4 @@
-import 'package:haishin_kit/rtmp_connection.dart';
+import 'package:haishin_kit/session_mode.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -21,14 +21,14 @@ abstract class HaishinKitPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  /// Creates a new RtmpConnection platformt instance.
-  Future<int?> newRtmpConnection() {
-    throw UnimplementedError('newRtmpConnection() has not been implemented.');
+  /// Creates a new Session platform instance.
+  Future<int?> newSession(String url, SessionMode mode) {
+    throw UnimplementedError('newSession() has not been implemented.');
   }
 
-  /// Creates a new RtmpStream platform instance.
-  Future<int?> newRtmpStream(RtmpConnection connection) {
-    throw UnimplementedError('newRtmpStream() has not been implemented.');
+  /// Creates a new MediaMixer platform instance.
+  Future<int?> newMediaMixer() {
+    throw UnimplementedError('newMediaMixer() has not been implemented.');
   }
 
   /// Gets the HaishinKit library version.

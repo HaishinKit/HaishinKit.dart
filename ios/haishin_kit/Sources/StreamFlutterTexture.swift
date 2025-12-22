@@ -8,7 +8,7 @@ import Foundation
 import HaishinKit
 import AVFoundation
 
-final class HKStreamFlutterTexture: NSObject, FlutterTexture {
+final class StreamFlutterTexture: NSObject, FlutterTexture {
     private static let defaultOptions: [String: Any] = [
         kCVPixelBufferCGImageCompatibilityKey as String: true,
         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
@@ -23,7 +23,7 @@ final class HKStreamFlutterTexture: NSObject, FlutterTexture {
     private let context = CIContext()
     private let registry: FlutterTextureRegistry
     private var currentSampleBuffer: CMSampleBuffer?
-    private var queue = DispatchQueue(label: "com.haishinkit.HKStreamFlutterTexture")
+    private var queue = DispatchQueue(label: "com.haishinkit.StreamFlutterTexture")
 
     init(registry: FlutterTextureRegistry) {
         self.registry = registry
@@ -79,8 +79,8 @@ final class HKStreamFlutterTexture: NSObject, FlutterTexture {
     }
 }
 
-extension HKStreamFlutterTexture: StreamOutput {
-    // MARK: HKStreamOutput
+extension StreamFlutterTexture: StreamOutput {
+    // MARK: StreamOutput
     func stream(_ stream: some StreamConvertible, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 

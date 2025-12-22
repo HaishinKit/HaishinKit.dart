@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:haishin_kit/rtmp_connection.dart';
+import 'package:haishin_kit/session_mode.dart';
 import 'package:haishin_kit/video_source.dart';
 
 import 'haishin_kit_platform_interface.dart';
@@ -9,19 +9,14 @@ class MethodChannelHaishinKit extends HaishinKitPlatform {
   static const MethodChannel channel = MethodChannel('com.haishinkit');
 
   @override
-  Future<int?> newRtmpConnection() async {
-    return await channel.invokeMethod<int?>('newRtmpConnection');
+  Future<int?> newMediaMixer() async {
+    return await channel.invokeMethod<int?>('newMediaMixer');
   }
 
   @override
-  Future<int?> newRtmpStream(RtmpConnection connection) async {
+  Future<int?> newSession(String url, SessionMode mode) async {
     return await channel
-        .invokeMethod<int?>('newRtmpStream', {"connection": connection.memory});
-  }
-
-  @override
-  Future<String?> getPlatformVersion() async {
-    return await channel.invokeMethod<String>('getPlatformVersion');
+        .invokeMethod<int?>('newSession', {"url": url, "mode": mode.name});
   }
 
   @override

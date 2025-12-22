@@ -14,7 +14,6 @@ import UIKit
 #endif
 
 final class MediaMixerHandler: NSObject {
-    var texture: HKStreamFlutterTexture?
     private lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
 
     override init() {
@@ -27,7 +26,6 @@ final class MediaMixerHandler: NSObject {
     func addOutput(_ output: some MediaMixerOutput) {
         Task {
             await mixer.addOutput(output)
-            await mixer.startRunning()
         }
     }
 
@@ -36,10 +34,7 @@ final class MediaMixerHandler: NSObject {
     }
 
     func stopRunning() {
-        Task {
-            await mixer.stopCapturing()
-            await mixer.stopRunning()
-        }
+        Task { await mixer.stopRunning() }
     }
 
     func dispose() async {
@@ -68,12 +63,12 @@ extension MediaMixerHandler: MethodCallHandler {
             return
         }
         switch call.method {
-        case "RtmpStream#getHasAudio":
+        case "MediaMixer#getHasAudio":
             Task {
                 let isMuted = await !mixer.audioMixerSettings.isMuted
                 result(isMuted)
             }
-        case "RtmpStream#setHasAudio":
+        case "MediaMixer#setHasAudio":
             guard let hasAudio = arguments["value"] as? Bool else {
                 result(nil)
                 return
@@ -84,12 +79,12 @@ extension MediaMixerHandler: MethodCallHandler {
                 await mixer.setAudioMixerSettings(audioMixerSettings)
                 result(nil)
             }
-        case "RtmpStream#getHasVideo":
+        case "MediaMixer#getHasVideo":
             Task {
                 let hasVideo = await !mixer.videoMixerSettings.isMuted
                 result(hasVideo)
             }
-        case "RtmpStream#setHasVideo":
+        case "MediaMixer#setHasVideo":
             guard let hasVideo = arguments["value"] as? Bool else {
                 result(nil)
                 return
@@ -100,7 +95,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 await mixer.setVideoMixerSettings(videoMixerSettings)
                 result(nil)
             }
-        case "RtmpStream#setFrameRate":
+        case "MediaMixerm#setFrameRate":
             guard
                 let frameRate = arguments["value"] as? NSNumber else {
                 result(nil)
@@ -110,7 +105,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 _ = try? await mixer.setFrameRate(frameRate.doubleValue)
                 result(nil)
             }
-        case "RtmpStream#setSessionPreset":
+        case "MediaMixer#setSessionPreset":
             guard let sessionPreset = arguments["value"] as? String else {
                 result(nil)
                 return
@@ -132,7 +127,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 await mixer.setSessionPreset(preset)
                 result(nil)
             }
-        case "RtmpStream#attachAudio":
+        case "MediaMixer#attachAudio":
             let source = arguments["source"] as? [String: Any?]
             Task {
                 if source == nil {
@@ -142,7 +137,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 }
                 result(nil)
             }
-        case "RtmpStream#setScreenSettings":
+        case "MediaMixer#setScreenSettings":
             guard
                 let settings = arguments["settings"] as? [String: Any?],
                 let width = settings["width"] as? NSNumber,
@@ -152,9 +147,9 @@ extension MediaMixerHandler: MethodCallHandler {
             }
             Task { @ScreenActor in
                 mixer.screen.size = CGSize(width: CGFloat(width.floatValue), height: CGFloat(height.floatValue))
-                result(texture?.id)
+                result(nil)
             }
-        case "RtmpStream#attachVideo":
+        case "MediaMixer#attachVideo":
             let source = arguments["source"] as? [String: Any?]
             let id = source?["id"] as? String
             guard let id = id else {
@@ -169,6 +164,20 @@ extension MediaMixerHandler: MethodCallHandler {
                 if let device = device {
                     try? await mixer.attachVideo(device, track: 0)
                 }
+                result(nil)
+            }
+        case "MediaMixer#startRunning":
+            Task {
+                await mixer.startRunning()
+                result(nil)
+            }
+        case "MediaMixer#stopRunning":
+            Task {
+                await mixer.stopRunning()
+                result(nil)
+            }
+        case "MediaMixer#dispose":
+            Task {
                 result(nil)
             }
         default:

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:haishin_kit_example/playback_page.dart';
-import 'package:haishin_kit_example/preference_page.dart';
-
-import 'ingest_page.dart';
+import 'playback_page.dart';
+import 'preference_page.dart';
+import 'publish_page.dart';
 
 void main() {
   runApp(const HaishinKitExampleApp());
@@ -28,7 +27,7 @@ class HaishinKitExample extends StatefulWidget {
 class _HaishinKitExampleState extends State<HaishinKitExample> {
   int _selectedIndex = 0;
 
-  final _childPageList = [IngestPage(), PlaybackPage(), PreferencePage()];
+  final _childPageList = [PublishPage(), PlaybackPage(), PreferencePage()];
 
   @override
   void initState() {
@@ -42,7 +41,7 @@ class _HaishinKitExampleState extends State<HaishinKitExample> {
       body: _childPageList[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'GO LIVE'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Publish'),
           BottomNavigationBarItem(
               icon: Icon(Icons.business), label: 'Playback'),
           BottomNavigationBarItem(
