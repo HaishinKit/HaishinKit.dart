@@ -55,7 +55,7 @@ class RtmpStreamHandler(
             field?.endOfStream()
             field = value
         }
-    private var camera: Camera2Source? = null
+    private var trackCameraMap: MutableMap<Int, Camera2Source> = mutableMapOf()
     private var audio: AudioSource? = null
     private var shouldReattach = false
 
@@ -146,7 +146,7 @@ class RtmpStreamHandler(
                         val options = mutableListOf<CodecOption>()
                         options.add(CodecOption(KEY_PROFILE, profileLevel.profile))
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                          options.add(CodecOption(KEY_LEVEL, profileLevel.level))
+                            options.add(CodecOption(KEY_LEVEL, profileLevel.level))
                         }
                         rtmpStream?.videoSetting?.options = options
                     } catch (ignored: Exception) {
@@ -188,12 +188,17 @@ class RtmpStreamHandler(
             }
 
             "$TAG#attachVideo" -> {
+                val track = call.argument<Int?>("track")
+                if (track == null) {
+                    result.error("INVALID_ARGUMENT", "track is null", null)
+                    return
+                }
                 val source = call.argument<Map<String, Any?>>("source")
                 if (source == null) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        mixer?.attachVideo(0, null)
+                        mixer?.attachVideo(track, null)
+                        val camera = trackCameraMap.remove(track)
                         camera?.close()
-                        camera = null
                         result.success(null)
                     }
                 } else {
@@ -203,11 +208,14 @@ class RtmpStreamHandler(
                     } else {
                         Camera2Source(plugin.flutterPluginBinding.applicationContext)
                     }
-                    this.camera = cameraSource
                     CoroutineScope(Dispatchers.Main).launch {
                         // Detach current video source
-                        mixer?.attachVideo(0, null)
-                        mixer?.attachVideo(0, cameraSource)
+                        mixer?.attachVideo(track, null)
+                        val oldCamera = trackCameraMap.remove(track)
+                        oldCamera?.close()
+
+                        trackCameraMap[track] = cameraSource
+                        mixer?.attachVideo(track, cameraSource)
                         result.success(null)
                     }
                 }
@@ -225,7 +233,7 @@ class RtmpStreamHandler(
 
             "$TAG#unregisterTexture" -> {
                 texture?.let { mixer?.unregisterOutput(it) }
-                
+
                 result.success(null)
             }
 
@@ -237,7 +245,9 @@ class RtmpStreamHandler(
                     val height = call.argument<Double>("height") ?: 0
                     Log.d(TAG, "Update device orientation")
                     (plugin.flutterPluginBinding.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.orientation?.let {
-                        camera?.video?.deviceOrientation = it
+                        for (camera in trackCameraMap.values) {
+                            camera.video?.deviceOrientation = it
+                        }
                     }
                     texture?.imageExtent = Size(width.toInt(), height.toInt())
 
@@ -266,8 +276,11 @@ class RtmpStreamHandler(
             "$TAG#dispose" -> {
                 // Explicitly detach video before disposal
                 CoroutineScope(Dispatchers.Main).launch {
-                    mixer?.attachVideo(0, null)
                     mixer?.attachAudio(0, null)
+                    for ((track, camera) in trackCameraMap) {
+                        mixer?.attachVideo(track, null)
+                        camera.close()
+                    }
 
                     // Properly disconnect mixer from RTMP stream before disposal
                     rtmpStream?.let { stream ->
@@ -279,7 +292,7 @@ class RtmpStreamHandler(
 
                     mixer = null
                     eventSink = null
-                    camera = null
+                    trackCameraMap.clear()
                     audio = null
                     rtmpStream = null
                     plugin.onDispose(hashCode())
@@ -326,7 +339,9 @@ class RtmpStreamHandler(
         if (!shouldReattach) return
         texture?.let { mixer?.registerOutput(it) }
         CoroutineScope(Dispatchers.Main).launch {
-            camera?.let { mixer?.attachVideo(0, it) }
+            for ((track, camera) in trackCameraMap) {
+                camera.let { mixer?.attachVideo(track, it) }
+            }
             shouldReattach = false
         }
     }
