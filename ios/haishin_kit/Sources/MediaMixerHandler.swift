@@ -155,12 +155,16 @@ extension MediaMixerHandler: MethodCallHandler {
                 result(texture?.id)
             }
         case "RtmpStream#attachVideo":
+            let track = arguments["track"] as? UInt8
+            guard let track = track else {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: "track is nil", details: nil))
+                return
+            }
             let source = arguments["source"] as? [String: Any?]
             let id = source?["id"] as? String
-            let track = arguments["track"] as? UInt8
-            guard let id = id, let track = track else {
+            guard let id = id else {
                 Task {
-                    try? await mixer.attachVideo(nil, track: 0)
+                    try? await mixer.attachVideo(nil, track: track)
                     result(nil)
                 }
                 return
