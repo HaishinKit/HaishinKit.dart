@@ -52,7 +52,7 @@ class _IngestState extends State<IngestPage> {
           DropdownMenu<VideoSource>(
             initialSelection: _mainVideoSource,
             onSelected: (value) {
-              _stream?.attachVideo(value);
+              _stream?.attachVideo(value, 0);
               setState(() {
                 _mainVideoSource = value;
               });
@@ -118,7 +118,7 @@ class _IngestState extends State<IngestPage> {
     });
     RtmpStream stream = await RtmpStream.create(connection);
     stream.attachAudio(AudioSource());
-    stream.attachVideo(_mainVideoSource!);
+    stream.attachVideo(_mainVideoSource!, 0);
 
     setState(() {
       _connection = connection;

@@ -45,7 +45,7 @@ abstract class Stream {
   Future<void> attachAudio(AudioSource? audio);
 
   /// Attaches a VideoSource to this stream.
-  Future<void> attachVideo(VideoSource? video);
+  Future<void> attachVideo(VideoSource? video, int track);
 
   /// Register a texture to this stream.
   Future<int?> registerTexture(Map<String, dynamic> params);
