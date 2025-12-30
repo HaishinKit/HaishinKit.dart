@@ -22,10 +22,13 @@ class MediaMixer {
 
   MediaMixer._();
 
+  /// The platform memory address.
   int? get memory => _memory;
 
+  /// Gets the frameRate.
   int get frameRate => _frameRate;
 
+  /// Sets the frameRate.
   set frameRate(int frameRate) {
     assert(_memory != null);
     _frameRate = frameRate;
@@ -33,8 +36,10 @@ class MediaMixer {
         .setFrameRate({"memory": _memory, "value": frameRate});
   }
 
+  /// Gets the sessionPreset.
   AVCaptureSessionPreset get sessionPreset => _sessionPreset;
 
+  /// Sets the sessionPreset for iOS.
   set sessionPreset(AVCaptureSessionPreset sessionPreset) {
     assert(_memory != null);
     _sessionPreset = sessionPreset;
@@ -42,8 +47,10 @@ class MediaMixer {
         {"memory": _memory, "value": sessionPreset.presetName});
   }
 
+  /// Gets the screen properties.
   ScreenSettings get screenSettings => _screenSettings;
 
+  /// Sets the screen properties.
   set screenSettings(ScreenSettings screenSettings) {
     assert(_memory != null);
     _screenSettings = screenSettings;
@@ -73,12 +80,14 @@ class MediaMixer {
     return MediaMixerPlatform.instance.getHasVideo({"memory": _memory});
   }
 
+  /// Attaches an AudioSource to this mixer.
   Future<void> attachAudio(int track, AudioSource? audio) async {
     assert(_memory != null);
     return await MediaMixerPlatform.instance.attachAudio(
         {"memory": _memory, "source": audio?.toMap(), "track": track});
   }
 
+  /// Attaches a VideoSource to this mixer.
   Future<void> attachVideo(int track, VideoSource? video) async {
     assert(_memory != null);
     return await MediaMixerPlatform.instance.attachVideo(
@@ -95,6 +104,7 @@ class MediaMixer {
     return await MediaMixerPlatform.instance.stopRunning({"memory": _memory});
   }
 
+  /// Disposes this mixer platform instance.
   Future<void> dispose() async {
     assert(_memory != null);
     return await MediaMixerPlatform.instance.dispose({"memory": _memory});

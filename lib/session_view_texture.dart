@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/session.dart';
 
-class StreamViewTexture extends StatefulWidget {
-  const StreamViewTexture(this.session, {super.key});
+class SessionViewTexture extends StatefulWidget {
+  const SessionViewTexture(this.session, {super.key});
 
   final Session? session;
 
   @override
-  State<StatefulWidget> createState() => _StreamViewTextureState();
+  State<StatefulWidget> createState() => _SessionViewTextureState();
 }
 
-class _StreamViewTextureState extends State<StreamViewTexture> with WidgetsBindingObserver {
+class _SessionViewTextureState extends State<SessionViewTexture> with WidgetsBindingObserver {
   int? _textureId;
 
   @override

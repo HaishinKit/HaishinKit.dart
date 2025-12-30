@@ -2,18 +2,18 @@ import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/session.dart';
 import 'package:haishin_kit/session_mode.dart';
-import 'package:haishin_kit/stream_view_texture.dart';
+import 'package:haishin_kit/session_ready_state.dart';
+import 'package:haishin_kit/session_view_texture.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:haishin_kit/media_mixer.dart';
 
-/// This is a sample page for ingest RTMP streams.
+/// This is a sample page for publish RTMP streams.
 class PublishPage extends StatefulWidget {
   const PublishPage({super.key});
 
@@ -24,7 +24,6 @@ class PublishPage extends StatefulWidget {
 class _PublishState extends State<PublishPage> {
   MediaMixer? _mixer;
   Session? _session;
-  bool _publishing = false;
   CameraPosition currentPosition = CameraPosition.back;
   List<VideoSource> _videoSources = [];
   VideoSource? _mainVideoSource;
@@ -65,29 +64,37 @@ class _PublishState extends State<PublishPage> {
         body: Center(
           child: _session == null
               ? const Text("Initialization")
-              : StreamViewTexture(_session),
+              : SessionViewTexture(_session),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _publish,
-          child: _publishing
-              ? const Icon(Icons.stop_circle)
-              : const Icon(Icons.play_circle),
-        ),
+        floatingActionButton: StreamBuilder<SessionReadyState>(
+            stream: _session?.readyState,
+            initialData: SessionReadyState.closed,
+            builder: (context, shapshot) {
+              switch (shapshot.data) {
+                case SessionReadyState.open:
+                  return FloatingActionButton(
+                    onPressed: _stopPublishing,
+                    child: const Icon(Icons.stop_circle),
+                  );
+                case SessionReadyState.closed:
+                  return FloatingActionButton(
+                    onPressed: _startPublishing,
+                    child: const Icon(Icons.play_circle),
+                  );
+                default:
+                  return const SizedBox.shrink();
+              }
+            }),
       ),
     );
   }
 
-  void _publish() {
-    if (_publishing) {
-      _session?.close();
-    } else {
-      _session?.connect();
-    }
-    setState(() {
-      if (_publishing) {
-        _publishing = false;
-      }
-    });
+  void _startPublishing() async {
+    await _session?.connect();
+  }
+
+  void _stopPublishing() async {
+    await _session?.close();
   }
 
   Future<void> _initPlatformState() async {
@@ -113,7 +120,7 @@ class _PublishState extends State<PublishPage> {
     await mixer.startRunning();
 
     Session session =
-        await Session.create(Preference.shared.url, SessionMode.publish);
+        await Session.create(Preference.shared.makeUrl(), SessionMode.publish);
 
     setState(() {
       _mixer = mixer;

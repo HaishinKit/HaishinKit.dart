@@ -50,18 +50,21 @@ extension HaishinKitPlugin: FlutterPlugin {
         case "newSession":
             guard let arguments = call.arguments as? [String: Any?],
                   let url = URL(string: arguments["url"] as? String ?? ""),
-                  let mode = arguments["mode"] as? String else {
+                  let mode = arguments["mode"] as? String
+            else {
                 result(nil)
                 return
             }
             Task {
                 do {
-                    let session = try await SessionBuilderFactory.shared.make(url).setMode(mode == "playback" ? .playback: .publish).build()
-                    if let session, mode == "publish" {
-                        for handler in handlers {
-                            if let handler = handler.value as? MediaMixerHandler {
-                                Task {
-                                    handler.addOutput(await session.stream)
+                    let session = try await SessionBuilderFactory.shared.make(url).setMode(mode == "playback" ? .playback : .publish).build()
+                    if let session {
+                        if mode == "publish" {
+                            for handler in handlers {
+                                if let handler = handler.value as? MediaMixerHandler {
+                                    Task {
+                                        handler.addOutput(await session.stream)
+                                    }
                                 }
                             }
                         }

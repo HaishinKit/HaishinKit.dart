@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/session.dart';
 import 'package:haishin_kit/session_mode.dart';
-import 'package:haishin_kit/stream_view_texture.dart';
+import 'package:haishin_kit/session_ready_state.dart';
+import 'package:haishin_kit/session_view_texture.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:audio_session/audio_session.dart';
 
@@ -15,7 +16,6 @@ class PlaybackPage extends StatefulWidget {
 
 class _PlaybackState extends State<PlaybackPage> {
   Session? _session;
-  bool _isPlaying = false;
 
   @override
   void initState() {
@@ -35,27 +35,35 @@ class _PlaybackState extends State<PlaybackPage> {
       body: Center(
           child: _session == null
               ? const Text("Initialization")
-              : StreamViewTexture(_session)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _playback,
-        child: _isPlaying
-            ? const Icon(Icons.stop_circle)
-            : const Icon(Icons.play_circle),
-      ),
+              : SessionViewTexture(_session)),
+      floatingActionButton: StreamBuilder<SessionReadyState>(
+          stream: _session?.readyState,
+          initialData: SessionReadyState.closed,
+          builder: (context, shapshot) {
+            switch (shapshot.data) {
+              case SessionReadyState.open:
+                return FloatingActionButton(
+                  onPressed: _stopPlaying,
+                  child: const Icon(Icons.stop_circle),
+                );
+              case SessionReadyState.closed:
+                return FloatingActionButton(
+                  onPressed: _startPlaying,
+                  child: const Icon(Icons.play_circle),
+                );
+              default:
+                return const SizedBox.shrink();
+            }
+          }),
     );
   }
 
-  void _playback() {
-    if (_isPlaying) {
-      _session?.close();
-    } else {
-      _session?.connect();
-    }
-    setState(() {
-      if (_isPlaying) {
-        _isPlaying = false;
-      }
-    });
+  void _startPlaying() async {
+    await _session?.connect();
+  }
+
+  void _stopPlaying() async {
+    await _session?.close();
   }
 
   Future<void> _initPlatformState() async {
@@ -68,7 +76,7 @@ class _PlaybackState extends State<PlaybackPage> {
     ));
 
     Session session =
-        await Session.create(Preference.shared.url, SessionMode.playback);
+        await Session.create(Preference.shared.makeUrl(), SessionMode.playback);
 
     setState(() {
       _session = session;

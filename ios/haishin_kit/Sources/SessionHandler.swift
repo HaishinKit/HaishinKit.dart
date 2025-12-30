@@ -14,11 +14,25 @@ final class SessionHandler: NSObject {
     private let plugin: HaishinKitPlugin
     private var session: Session?
     private var texture: StreamFlutterTexture?
+    private var channel: FlutterEventChannel?
+    private var eventSink: FlutterEventSink?
+    private var subscription: Task<(), Error>? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
 
     init(plugin: HaishinKitPlugin, session: Session) {
         self.plugin = plugin
         self.session = session
         super.init()
+        let id = Int(bitPattern: ObjectIdentifier(self))
+        if let messanger = plugin.registrar?.messenger() {
+            self.channel = FlutterEventChannel(name: "com.haishinkit.eventchannel/\(id)", binaryMessenger: messanger)
+        } else {
+            self.channel = nil
+        }
+        channel?.setStreamHandler(self)
     }
 }
 
@@ -111,22 +125,50 @@ extension SessionHandler: MethodCallHandler {
                 result(nil)
             }
         case "Session#connect":
-            Task {
-                try? await session?.connect {
+            if let session {
+                subscription = Task { [weak self] in
+                    for await status in await session.readyState {
+                        DispatchQueue.main.async { [eventSink = self?.eventSink] in
+                            eventSink?("\(status)")
+                        }
+                    }
                 }
-                result(true)
+            }
+            Task {
+                do {
+                    try await session?.connect {
+                    }
+                    result(nil)
+                } catch {
+                    print(error)
+                    result(FlutterError(error))
+                }
             }
         case "Session#close":
             Task {
                 _ = try? await session?.close()
+                subscription = nil
                 result(nil)
             }
         case "Session#dispose":
+            subscription = nil
             texture = nil
             session = nil
             result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+}
+
+extension SessionHandler: FlutterStreamHandler {
+    // MARK: FlutterStreamHandler
+    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.eventSink = events
+        return nil
+    }
+
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        return nil
     }
 }
