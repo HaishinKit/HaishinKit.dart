@@ -89,7 +89,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 await mixer.setVideoMixerSettings(videoMixerSettings)
                 result(nil)
             }
-        case "MediaMixerm#setFrameRate":
+        case "MediaMixer#setFrameRate":
             guard
                 let frameRate = arguments["value"] as? NSNumber else {
                 result(nil)
@@ -159,9 +159,15 @@ extension MediaMixerHandler: MethodCallHandler {
             }
             Task {
                 if let device = AVCaptureDevice(uniqueID: id) {
-                    try? await mixer.attachVideo(device, track: track)
+                    do {
+                        try await mixer.attachVideo(device, track: track)
+                        result(nil)
+                    } catch {
+                        result(FlutterError(error))
+                    }
+                } else {
+                    result(FlutterError(MediaMixer.Error.deviceNotFound))
                 }
-                result(nil)
             }
         case "MediaMixer#startRunning":
             Task {

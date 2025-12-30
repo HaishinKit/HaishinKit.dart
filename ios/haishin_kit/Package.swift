@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "haishin_kit",
     platforms: [
-        .iOS("13.0")
+        .iOS("15.0")
     ],
     products: [
         .library(name: "haishin-kit", targets: ["haishin_kit"])
@@ -19,6 +19,7 @@ let package = Package(
             name: "haishin_kit",
             dependencies: [
                 .product(name: "HaishinKit", package: "HaishinKit.swift"),
+                .product(name: "SRTHaishinKit", package: "HaishinKit.swift"),
                 .product(name: "RTMPHaishinKit", package: "HaishinKit.swift"),
                 .product(name: "RTCHaishinKit", package: "HaishinKit.swift")
             ],

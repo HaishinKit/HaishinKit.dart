@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/media_mixer_platform_interface.dart';
 import 'package:haishin_kit/screen_settings.dart';
@@ -73,28 +75,28 @@ class MediaMixer {
 
   Future<void> attachAudio(int track, AudioSource? audio) async {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.attachAudio(
+    return await MediaMixerPlatform.instance.attachAudio(
         {"memory": _memory, "source": audio?.toMap(), "track": track});
   }
 
   Future<void> attachVideo(int track, VideoSource? video) async {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.attachVideo(
+    return await MediaMixerPlatform.instance.attachVideo(
         {"memory": _memory, "source": video?.toMap(), "track": track});
   }
 
   Future<void> startRunning() async {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.startRunning({"memory": _memory});
+    return await MediaMixerPlatform.instance.startRunning({"memory": _memory});
   }
 
   Future<void> stopRunning() async {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.stopRunning({"memory": _memory});
+    return await MediaMixerPlatform.instance.stopRunning({"memory": _memory});
   }
 
   Future<void> dispose() async {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.dispose({"memory": _memory});
+    return await MediaMixerPlatform.instance.dispose({"memory": _memory});
   }
 }

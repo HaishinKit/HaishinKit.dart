@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/session.dart';
@@ -107,9 +108,9 @@ class _PublishState extends State<PublishPage> {
     ));
 
     MediaMixer mixer = await MediaMixer.create();
-    mixer.attachAudio(0, AudioSource());
-    mixer.attachVideo(0, _mainVideoSource!);
-    mixer.startRunning();
+    await mixer.attachAudio(0, AudioSource());
+    await mixer.attachVideo(0, _mainVideoSource!);
+    await mixer.startRunning();
 
     Session session =
         await Session.create(Preference.shared.url, SessionMode.publish);

@@ -92,7 +92,6 @@ extension HaishinKitPlugin: FlutterPlugin {
             #else
             let deviceTypes: [AVCaptureDevice.DeviceType] = [
                 .builtInWideAngleCamera,
-                .externalUnknown,
                 .builtInUltraWideCamera,
                 .builtInTelephotoCamera,
                 .builtInDualCamera,
