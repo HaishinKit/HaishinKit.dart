@@ -4,6 +4,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
+import 'package:haishin_kit/screen_settings.dart';
 import 'package:haishin_kit/session.dart';
 import 'package:haishin_kit/session_mode.dart';
 import 'package:haishin_kit/session_ready_state.dart';
@@ -47,6 +48,18 @@ class _PublishState extends State<PublishPage> {
 
   @override
   Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
+    if (orientation == Orientation.portrait) {
+      _mixer?.screenSettings = ScreenSettings(
+        width: 720,
+        height: 1280,
+      );
+    } else {
+      _mixer?.screenSettings = ScreenSettings(
+        width: 1280,
+        height: 720,
+      );
+    }
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: null, actions: [
