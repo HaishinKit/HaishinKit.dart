@@ -8,6 +8,7 @@ import android.util.Size
 import com.haishinkit.codec.CodecOption
 import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.stream.StreamSession
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -18,11 +19,20 @@ class SessionHandler(
     private val plugin: HaishinKitPlugin,
     var session: StreamSession?,
     var mode: String
-) : MethodChannel.MethodCallHandler {
+) : MethodChannel.MethodCallHandler,
+    EventChannel.StreamHandler {
     companion object {
         private const val TAG = "Session"
     }
 
+    private var channel = EventChannel(
+        plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
+    )
+    private var eventSink: EventChannel.EventSink? = null
+        set(value) {
+            field?.endOfStream()
+            field = value
+        }
     private var texture: StreamViewTexture? = null
         set(value) {
             field?.let {
@@ -31,6 +41,10 @@ class SessionHandler(
             field?.dispose()
             field = value
         }
+
+    init {
+        channel.setStreamHandler(this)
+    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d(TAG, "onMethodCall: " + call.method)
@@ -134,5 +148,16 @@ class SessionHandler(
                 }
             }
         }
+    }
+
+    override fun onListen(
+        arguments: Any?,
+        events: EventChannel.EventSink?
+    ) {
+        eventSink = events
+    }
+
+    override fun onCancel(arguments: Any?) {
+        eventSink = null
     }
 }

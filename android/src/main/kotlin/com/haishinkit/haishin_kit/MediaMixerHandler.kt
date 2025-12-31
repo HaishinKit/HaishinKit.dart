@@ -2,11 +2,14 @@ package com.haishinkit.haishin_kit
 
 import android.graphics.Rect
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.media.source.AudioRecordSource
 import com.haishinkit.media.source.AudioSource
 import com.haishinkit.media.source.Camera2Source
+import com.haishinkit.screen.ScreenObject.Companion.HORIZONTAL_ALIGNMENT_CENTER
+import com.haishinkit.screen.ScreenObject.Companion.VERTICAL_ALIGNMENT_MIDDLE
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +33,10 @@ class MediaMixerHandler(
 
     init {
         mixer = MediaMixer(plugin.flutterPluginBinding.applicationContext)
+        mixer?.screen?.let { screen ->
+            screen.horizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER
+            screen.verticalAlignment = VERTICAL_ALIGNMENT_MIDDLE
+        }
     }
 
     fun registerOutput(output: MediaOutput) {
@@ -133,6 +140,16 @@ class MediaMixerHandler(
                         result.success(null)
                     }
                 }
+            }
+
+            "$TAG#startRunning" -> {
+                // for iOS, macOS
+                result.success(null)
+            }
+
+            "$TAG#stopRunning" -> {
+                // for iOS, macOS
+                result.success(null)
             }
 
             "$TAG#dispose" -> {

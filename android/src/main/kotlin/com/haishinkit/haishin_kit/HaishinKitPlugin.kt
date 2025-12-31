@@ -24,9 +24,8 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
-    val uiThreadHandler = Handler(Looper.getMainLooper())
-    private lateinit var channel: MethodChannel
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
+    private lateinit var channel: MethodChannel
 
     init {
         StreamSession.Builder.registerFactory(RtmpStreamSessionFactory)
