@@ -16,13 +16,21 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CopyableThrowable
 import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+
 
 class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     companion object {
         private const val CHANNEL_NAME = "com.haishinkit"
     }
 
+    lateinit var pluginScope: CoroutineScope
+        private set
     lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
     private lateinit var channel: MethodChannel
@@ -42,6 +50,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.flutterPluginBinding = flutterPluginBinding
+        pluginScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
         channel.setMethodCallHandler(this)
     }
@@ -70,11 +79,18 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
                 if (url != null && mode != null) {
                     val session =
                         StreamSession.Builder(flutterPluginBinding.applicationContext, url.toUri())
+                            .setMode(
+                                if (mode == "plugin") {
+                                    StreamSession.Mode.PUBLISH
+                                } else {
+                                    StreamSession.Mode.PLAYBACK
+                                }
+                            )
                             .build()
                     if (mode == "publish") {
                         registerOutput(session.stream)
                     }
-                    val handler = SessionHandler(this, session, mode)
+                    val handler = SessionHandler(this, session)
                     handlers[handler.hashCode()] = handler
                     result.success(handler.hashCode())
                 } else {
@@ -110,6 +126,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        pluginScope.cancel()
     }
 
     private fun registerOutput(output: MediaOutput) {

@@ -13,14 +13,14 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class SessionHandler(
     private val plugin: HaishinKitPlugin,
     var session: StreamSession?,
-    var mode: String
-) : MethodChannel.MethodCallHandler,
-    EventChannel.StreamHandler {
+) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
     companion object {
         private const val TAG = "Session"
     }
@@ -44,6 +44,9 @@ class SessionHandler(
 
     init {
         channel.setStreamHandler(this)
+        session?.readyState?.onEach { state ->
+            eventSink?.success(state.toString().lowercase())
+        }?.launchIn(plugin.pluginScope)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -122,11 +125,7 @@ class SessionHandler(
 
             "$TAG#connect" -> {
                 CoroutineScope(Dispatchers.Main).launch {
-                    if (mode == "publish") {
-                        session?.connect(StreamSession.Method.INGEST)
-                    } else {
-                        session?.connect(StreamSession.Method.PLAYBACK)
-                    }
+                    session?.connect()
                     result.success(null)
                 }
             }
@@ -151,8 +150,7 @@ class SessionHandler(
     }
 
     override fun onListen(
-        arguments: Any?,
-        events: EventChannel.EventSink?
+        arguments: Any?, events: EventChannel.EventSink?
     ) {
         eventSink = events
     }
