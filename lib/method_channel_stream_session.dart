@@ -1,9 +1,9 @@
-import 'package:haishin_kit/session_platform_interface.dart';
+import 'package:haishin_kit/stream_session_platform_interface.dart';
 
 import 'haishin_kit_method_channel.dart';
 
-/// The method channel implementation of [SessionPlatform]
-class MethodChannelSession extends SessionPlatform {
+/// The method channel implementation of [StreamSessionPlatformInterface]
+class MethodChannelStreamSession extends StreamSessionPlatformInterface {
   @override
   Future<void> setAudioSettings(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel

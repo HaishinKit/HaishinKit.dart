@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/screen_settings.dart';
-import 'package:haishin_kit/session.dart';
-import 'package:haishin_kit/session_mode.dart';
-import 'package:haishin_kit/session_ready_state.dart';
-import 'package:haishin_kit/session_view_texture.dart';
+import 'package:haishin_kit/stream_session.dart';
+import 'package:haishin_kit/stream_session_exception.dart';
+import 'package:haishin_kit/stream_session_mode.dart';
+import 'package:haishin_kit/stream_session_ready_state.dart';
+import 'package:haishin_kit/stream_session_view_texture.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,7 +25,7 @@ class PublishPage extends StatefulWidget {
 
 class _PublishState extends State<PublishPage> {
   MediaMixer? _mixer;
-  Session? _session;
+  StreamSession? _session;
   CameraPosition currentPosition = CameraPosition.back;
   List<VideoSource> _videoSources = [];
   VideoSource? _mainVideoSource;
@@ -77,19 +78,19 @@ class _PublishState extends State<PublishPage> {
         body: Center(
           child: _session == null
               ? const Text("Initialization")
-              : SessionViewTexture(_session),
+              : StreamSessionViewTexture(_session),
         ),
-        floatingActionButton: StreamBuilder<SessionReadyState>(
+        floatingActionButton: StreamBuilder<StreamSessionReadyState>(
             stream: _session?.readyState,
-            initialData: SessionReadyState.closed,
+            initialData: StreamSessionReadyState.closed,
             builder: (context, shapshot) {
               switch (shapshot.data) {
-                case SessionReadyState.open:
+                case StreamSessionReadyState.open:
                   return FloatingActionButton(
                     onPressed: _stopPublishing,
                     child: const Icon(Icons.stop_circle),
                   );
-                case SessionReadyState.closed:
+                case StreamSessionReadyState.closed:
                   return FloatingActionButton(
                     onPressed: _startPublishing,
                     child: const Icon(Icons.play_circle),
@@ -103,7 +104,25 @@ class _PublishState extends State<PublishPage> {
   }
 
   void _startPublishing() async {
-    await _session?.connect();
+    try {
+      await _session?.connect();
+    } on StreamSessionException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Session Error"),
+            content: Text(e.message),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void _stopPublishing() async {
@@ -132,8 +151,8 @@ class _PublishState extends State<PublishPage> {
     await mixer.attachVideo(0, _mainVideoSource!);
     await mixer.startRunning();
 
-    Session session =
-        await Session.create(Preference.shared.makeUrl(), SessionMode.publish);
+    StreamSession session = await StreamSession.create(
+        Preference.shared.makeUrl(), SessionMode.publish);
 
     setState(() {
       _mixer = mixer;

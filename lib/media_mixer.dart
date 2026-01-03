@@ -32,7 +32,7 @@ class MediaMixer {
   set frameRate(int frameRate) {
     assert(_memory != null);
     _frameRate = frameRate;
-    MediaMixerPlatform.instance
+    MediaMixerPlatformInterface.instance
         .setFrameRate({"memory": _memory, "value": frameRate});
   }
 
@@ -43,7 +43,7 @@ class MediaMixer {
   set sessionPreset(AVCaptureSessionPreset sessionPreset) {
     assert(_memory != null);
     _sessionPreset = sessionPreset;
-    MediaMixerPlatform.instance.setSessionPreset(
+    MediaMixerPlatformInterface.instance.setSessionPreset(
         {"memory": _memory, "value": sessionPreset.presetName});
   }
 
@@ -54,59 +54,59 @@ class MediaMixer {
   set screenSettings(ScreenSettings screenSettings) {
     assert(_memory != null);
     _screenSettings = screenSettings;
-    MediaMixerPlatform.instance.setScreenSettings(
+    MediaMixerPlatformInterface.instance.setScreenSettings(
         {"memory": _memory, "settings": screenSettings.toMap()});
   }
 
   Future<void> setHasAudio(bool value) async {
     assert(_memory != null);
-    MediaMixerPlatform.instance
+    MediaMixerPlatformInterface.instance
         .setHasAudio({"memory": _memory, "value": value});
   }
 
   Future<bool?> getHasAudio() {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.getHasAudio({"memory": _memory});
+    return MediaMixerPlatformInterface.instance.getHasAudio({"memory": _memory});
   }
 
   Future<void> setHasVideo(bool value) async {
     assert(_memory != null);
-    return MediaMixerPlatform.instance
+    return MediaMixerPlatformInterface.instance
         .setHasVideo({"memory": _memory, "value": value});
   }
 
   Future<bool?> getHasVideo() {
     assert(_memory != null);
-    return MediaMixerPlatform.instance.getHasVideo({"memory": _memory});
+    return MediaMixerPlatformInterface.instance.getHasVideo({"memory": _memory});
   }
 
   /// Attaches an AudioSource to this mixer.
   Future<void> attachAudio(int track, AudioSource? audio) async {
     assert(_memory != null);
-    return await MediaMixerPlatform.instance.attachAudio(
+    return await MediaMixerPlatformInterface.instance.attachAudio(
         {"memory": _memory, "source": audio?.toMap(), "track": track});
   }
 
   /// Attaches a VideoSource to this mixer.
   Future<void> attachVideo(int track, VideoSource? video) async {
     assert(_memory != null);
-    return await MediaMixerPlatform.instance.attachVideo(
+    return await MediaMixerPlatformInterface.instance.attachVideo(
         {"memory": _memory, "source": video?.toMap(), "track": track});
   }
 
   Future<void> startRunning() async {
     assert(_memory != null);
-    return await MediaMixerPlatform.instance.startRunning({"memory": _memory});
+    return await MediaMixerPlatformInterface.instance.startRunning({"memory": _memory});
   }
 
   Future<void> stopRunning() async {
     assert(_memory != null);
-    return await MediaMixerPlatform.instance.stopRunning({"memory": _memory});
+    return await MediaMixerPlatformInterface.instance.stopRunning({"memory": _memory});
   }
 
   /// Disposes this mixer platform instance.
   Future<void> dispose() async {
     assert(_memory != null);
-    return await MediaMixerPlatform.instance.dispose({"memory": _memory});
+    return await MediaMixerPlatformInterface.instance.dispose({"memory": _memory});
   }
 }

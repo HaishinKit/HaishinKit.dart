@@ -1,18 +1,19 @@
-import 'package:haishin_kit/session_method_channel.dart';
+import 'package:haishin_kit/method_channel_stream_session.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// The HaishinKit Session platform interface
-abstract class SessionPlatform extends PlatformInterface {
-  SessionPlatform() : super(token: _token);
+abstract class StreamSessionPlatformInterface extends PlatformInterface {
+  StreamSessionPlatformInterface() : super(token: _token);
 
   static final Object _token = Object();
 
-  static SessionPlatform _instance = MethodChannelSession();
+  static StreamSessionPlatformInterface _instance =
+      MethodChannelStreamSession();
 
-  static SessionPlatform get instance => _instance;
+  static StreamSessionPlatformInterface get instance => _instance;
 
-  /// Sets the [SessionPlatform.instance]
-  static set instance(SessionPlatform instance) {
+  /// Sets the [StreamSessionPlatformInterface.instance]
+  static set instance(StreamSessionPlatformInterface instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }

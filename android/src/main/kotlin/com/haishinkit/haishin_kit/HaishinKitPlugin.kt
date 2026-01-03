@@ -4,33 +4,26 @@ import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
-import android.os.Handler
-import android.os.Looper
 import androidx.core.net.toUri
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.rtmp.RtmpStreamSessionFactory
 import com.haishinkit.stream.StreamSession
-import io.flutter.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlinx.coroutines.CopyableThrowable
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 
 
 class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     companion object {
         private const val CHANNEL_NAME = "com.haishinkit"
+
+        const val ILLEGAL_STATE = "ILLEGAL_STATE"
+        const val INVALID_ARGUMENTS = "INVALID_ARGUMENTS"
     }
 
-    lateinit var pluginScope: CoroutineScope
-        private set
     lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
     private lateinit var channel: MethodChannel
@@ -50,7 +43,6 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.flutterPluginBinding = flutterPluginBinding
-        pluginScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
         channel.setMethodCallHandler(this)
     }
@@ -126,7 +118,6 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-        pluginScope.cancel()
     }
 
     private fun registerOutput(output: MediaOutput) {

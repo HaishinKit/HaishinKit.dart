@@ -1,4 +1,4 @@
-import 'package:haishin_kit/session_mode.dart';
+import 'package:haishin_kit/stream_session_mode.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 

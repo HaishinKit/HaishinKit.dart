@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.haishinkit.haishin_kit"></manifest>
+<manifest package="com.haishinkit.haishin_kit"></manifest>

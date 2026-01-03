@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/session.dart';
-import 'package:haishin_kit/session_mode.dart';
-import 'package:haishin_kit/session_ready_state.dart';
-import 'package:haishin_kit/session_view_texture.dart';
+import 'package:haishin_kit/stream_session.dart';
+import 'package:haishin_kit/stream_session_mode.dart';
+import 'package:haishin_kit/stream_session_ready_state.dart';
+import 'package:haishin_kit/stream_session_view_texture.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:audio_session/audio_session.dart';
 
@@ -15,7 +15,7 @@ class PlaybackPage extends StatefulWidget {
 }
 
 class _PlaybackState extends State<PlaybackPage> {
-  Session? _session;
+  StreamSession? _session;
 
   @override
   void initState() {
@@ -35,18 +35,18 @@ class _PlaybackState extends State<PlaybackPage> {
       body: Center(
           child: _session == null
               ? const Text("Initialization")
-              : SessionViewTexture(_session)),
-      floatingActionButton: StreamBuilder<SessionReadyState>(
+              : StreamSessionViewTexture(_session)),
+      floatingActionButton: StreamBuilder<StreamSessionReadyState>(
           stream: _session?.readyState,
-          initialData: SessionReadyState.closed,
+          initialData: StreamSessionReadyState.closed,
           builder: (context, shapshot) {
             switch (shapshot.data) {
-              case SessionReadyState.open:
+              case StreamSessionReadyState.open:
                 return FloatingActionButton(
                   onPressed: _stopPlaying,
                   child: const Icon(Icons.stop_circle),
                 );
-              case SessionReadyState.closed:
+              case StreamSessionReadyState.closed:
                 return FloatingActionButton(
                   onPressed: _startPlaying,
                   child: const Icon(Icons.play_circle),
@@ -75,8 +75,8 @@ class _PlaybackState extends State<PlaybackPage> {
           AVAudioSessionCategoryOptions.allowBluetooth,
     ));
 
-    Session session =
-        await Session.create(Preference.shared.makeUrl(), SessionMode.playback);
+    StreamSession session =
+        await StreamSession.create(Preference.shared.makeUrl(), SessionMode.playback);
 
     setState(() {
       _session = session;

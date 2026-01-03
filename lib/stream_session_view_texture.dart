@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/session.dart';
+import 'package:haishin_kit/stream_session.dart';
 
-class SessionViewTexture extends StatefulWidget {
-  const SessionViewTexture(this.session, {super.key});
+class StreamSessionViewTexture extends StatefulWidget {
+  const StreamSessionViewTexture(this.session, {super.key});
 
-  final Session? session;
+  final StreamSession? session;
 
   @override
-  State<StatefulWidget> createState() => _SessionViewTextureState();
+  State<StatefulWidget> createState() => _StreamSessionViewTextureState();
 }
 
-class _SessionViewTextureState extends State<SessionViewTexture> with WidgetsBindingObserver {
+class _StreamSessionViewTextureState extends State<StreamSessionViewTexture>
+    with WidgetsBindingObserver {
   int? _textureId;
 
   @override
@@ -52,11 +53,11 @@ class _SessionViewTextureState extends State<SessionViewTexture> with WidgetsBin
         color: Colors.black,
       );
     }
-            
+
     return Texture(textureId: _textureId!);
   }
 
-  Future<void> _updatePlatformState(Size size) async {    
+  Future<void> _updatePlatformState(Size size) async {
     final textureId = await widget.session?.updateTextureSize({
       "width": size.width,
       "height": size.height,

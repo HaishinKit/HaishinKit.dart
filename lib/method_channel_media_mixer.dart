@@ -2,8 +2,8 @@ import 'package:haishin_kit/media_mixer_platform_interface.dart';
 
 import 'haishin_kit_method_channel.dart';
 
-/// The method channel implementation of [MediaMixerPlatform]
-class MethodChannelMediaMixer extends MediaMixerPlatform {
+/// The method channel implementation of [MediaMixerPlatformInterface]
+class MethodChannelMediaMixer extends MediaMixerPlatformInterface {
   @override
   Future<bool?> getHasAudio(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel

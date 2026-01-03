@@ -1,5 +1,5 @@
 /// Represents the current connection state of a session.
-enum SessionReadyState {
+enum StreamSessionReadyState {
   /// The session is currently attempting to establish a connection.
   connecting,
 

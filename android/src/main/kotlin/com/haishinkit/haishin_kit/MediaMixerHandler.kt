@@ -2,7 +2,6 @@ package com.haishinkit.haishin_kit
 
 import android.graphics.Rect
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.media.source.AudioRecordSource
@@ -21,6 +20,9 @@ class MediaMixerHandler(
 ) : MethodChannel.MethodCallHandler {
     companion object {
         private const val TAG = "MediaMixer"
+
+        const val ILLEGAL_STATE = "ILLEGAL_STATE"
+        const val INVALID_ARGUMENTS = "INVALID_ARGUMENTS"
     }
 
     private var mixer: MediaMixer? = null

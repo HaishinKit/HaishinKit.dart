@@ -1,18 +1,18 @@
-import 'package:haishin_kit/media_mixer_method_channel.dart';
+import 'package:haishin_kit/method_channel_media_mixer.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// The HaishinKit MediaMixer platform interface
-abstract class MediaMixerPlatform extends PlatformInterface {
-  MediaMixerPlatform() : super(token: _token);
+abstract class MediaMixerPlatformInterface extends PlatformInterface {
+  MediaMixerPlatformInterface() : super(token: _token);
 
   static final Object _token = Object();
 
-  static MediaMixerPlatform _instance = MethodChannelMediaMixer();
+  static MediaMixerPlatformInterface _instance = MethodChannelMediaMixer();
 
-  static MediaMixerPlatform get instance => _instance;
+  static MediaMixerPlatformInterface get instance => _instance;
 
-  /// Sets the [MediaMixerPlatform.instance]
-  static set instance(MediaMixerPlatform instance) {
+  /// Sets the [MediaMixerPlatformInterface.instance]
+  static set instance(MediaMixerPlatformInterface instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }

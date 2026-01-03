@@ -13,6 +13,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ class SessionHandler(
 ) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
     companion object {
         private const val TAG = "Session"
+        const val CONNECT_FAILED = "CONNECT_FAILED"
     }
 
     private var channel = EventChannel(
@@ -41,33 +44,42 @@ class SessionHandler(
             field?.dispose()
             field = value
         }
+    private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
         channel.setStreamHandler(this)
         session?.readyState?.onEach { state ->
             eventSink?.success(state.toString().lowercase())
-        }?.launchIn(plugin.pluginScope)
+        }?.launchIn(scope)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d(TAG, "onMethodCall: " + call.method)
+        if (session == null) {
+            result.error(HaishinKitPlugin.ILLEGAL_STATE, "session is disposed.", null)
+            return
+        }
         when (call.method) {
             "$TAG#setFrameRate" -> {
                 val value = call.argument<Int?>("value")
-                CoroutineScope(Dispatchers.Main).launch {
-                    value?.let {
-                        session?.stream?.videoSetting?.frameRate = it
-                    }
+                if (value == null) {
+                    result.error(HaishinKitPlugin.INVALID_ARGUMENTS, null, null)
+                } else {
+                    session?.stream?.videoSetting?.frameRate = value
+                    result.success(null)
                 }
-                result.success(null)
             }
 
             "$TAG#setAudioSettings" -> {
-                val source = call.argument<Map<String, Any?>>("settings") ?: return
-                (source["bitrate"] as? Int)?.let {
-                    session?.stream?.audioSetting?.bitRate = it
+                val source = call.argument<Map<String, Any?>>("settings")
+                if (source == null) {
+                    result.error(HaishinKitPlugin.INVALID_ARGUMENTS, null, null)
+                } else {
+                    (source["bitrate"] as? Int)?.let {
+                        session?.stream?.audioSetting?.bitRate = it
+                    }
+                    result.success(null)
                 }
-                result.success(null)
             }
 
             "$TAG#setVideoSettings" -> {
@@ -113,38 +125,35 @@ class SessionHandler(
             }
 
             "$TAG#updateTextureSize" -> {
-                if (session == null) {
-                    result.success(null)
-                } else {
-                    val width = call.argument<Double>("width") ?: 0
-                    val height = call.argument<Double>("height") ?: 0
-                    texture?.imageExtent = Size(width.toInt(), height.toInt())
-                    result.success(texture?.id)
-                }
+                val width = call.argument<Double>("width") ?: 0
+                val height = call.argument<Double>("height") ?: 0
+                texture?.imageExtent = Size(width.toInt(), height.toInt())
+                result.success(texture?.id)
             }
 
             "$TAG#connect" -> {
-                CoroutineScope(Dispatchers.Main).launch {
-                    session?.connect()
-                    result.success(null)
+                scope.launch {
+                    session?.connect()?.onSuccess {
+                        result.success(null)
+                    }?.onFailure {
+                        result.error(CONNECT_FAILED, null, null)
+                    }
                 }
             }
 
             "$TAG#close" -> {
-                CoroutineScope(Dispatchers.Main).launch {
+                scope.launch {
                     session?.close()
                     result.success(null)
                 }
             }
 
             "$TAG#dispose" -> {
-                // Explicitly detach video before disposal
-                CoroutineScope(Dispatchers.Main).launch {
-                    plugin.onDispose(hashCode())
-                    texture = null
-                    session = null
-                    result.success(null)
-                }
+                plugin.onDispose(hashCode())
+                texture = null
+                session = null
+                scope.cancel()
+                result.success(null)
             }
         }
     }

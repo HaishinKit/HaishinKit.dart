@@ -68,6 +68,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:957d7dbea8'
-    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:957d7dbea8'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:027a75fb55'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:027a75fb55'
 }

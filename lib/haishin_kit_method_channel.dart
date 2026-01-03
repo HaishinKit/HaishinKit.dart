@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:haishin_kit/session_mode.dart';
+import 'package:haishin_kit/stream_session_mode.dart';
 import 'package:haishin_kit/video_source.dart';
 
 import 'haishin_kit_platform_interface.dart';
