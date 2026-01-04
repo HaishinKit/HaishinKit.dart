@@ -11,7 +11,7 @@ import 'audio_settings.dart';
 final class StreamSession {
   static Future<StreamSession> create(String url, SessionMode mode) async {
     var object = StreamSession._();
-    object._memory = await HaishinKitPlatform.instance.newSession(url, mode);
+    object._memory = await HaishinKitPlatformInterface.instance.newSession(url, mode);
     object._channel =
         EventChannel("com.haishinkit.eventchannel/${object._memory}");
     return object;

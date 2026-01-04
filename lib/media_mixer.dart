@@ -11,7 +11,7 @@ import 'av_capture_session_preset.dart';
 class MediaMixer {
   static Future<MediaMixer> create() async {
     var object = MediaMixer._();
-    object._memory = await HaishinKitPlatform.instance.newMediaMixer();
+    object._memory = await HaishinKitPlatformInterface.instance.newMediaMixer();
     return object;
   }
 

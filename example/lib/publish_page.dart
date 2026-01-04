@@ -135,7 +135,7 @@ class _PublishState extends State<PublishPage> {
       await Permission.microphone.request();
     }
 
-    _videoSources = await HaishinKitPlatform.instance.videoSources;
+    _videoSources = await HaishinKitPlatformInterface.instance.videoSources;
     _mainVideoSource = _videoSources.firstOrNull;
 
     // Set up AVAudioSession for iOS.

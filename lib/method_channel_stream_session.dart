@@ -1,6 +1,6 @@
 import 'package:haishin_kit/stream_session_platform_interface.dart';
 
-import 'haishin_kit_method_channel.dart';
+import 'method_channel_haishin_kit.dart';
 
 /// The method channel implementation of [StreamSessionPlatformInterface]
 class MethodChannelStreamSession extends StreamSessionPlatformInterface {

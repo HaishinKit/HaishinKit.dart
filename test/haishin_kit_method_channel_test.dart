@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:haishin_kit/haishin_kit_method_channel.dart';
+import 'package:haishin_kit/method_channel_haishin_kit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

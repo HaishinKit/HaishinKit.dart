@@ -4,8 +4,8 @@ import 'package:haishin_kit/video_source.dart';
 
 import 'haishin_kit_platform_interface.dart';
 
-/// The method channel implementation of [HaishinKitPlatform]
-class MethodChannelHaishinKit extends HaishinKitPlatform {
+/// The method channel implementation of [HaishinKitPlatformInterface]
+class MethodChannelHaishinKit extends HaishinKitPlatformInterface {
   static const MethodChannel channel = MethodChannel('com.haishinkit');
 
   @override
