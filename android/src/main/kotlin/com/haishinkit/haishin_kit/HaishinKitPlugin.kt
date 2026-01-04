@@ -72,7 +72,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
                     val session =
                         StreamSession.Builder(flutterPluginBinding.applicationContext, url.toUri())
                             .setMode(
-                                if (mode == "plugin") {
+                                if (mode == "publish") {
                                     StreamSession.Mode.PUBLISH
                                 } else {
                                     StreamSession.Mode.PLAYBACK
