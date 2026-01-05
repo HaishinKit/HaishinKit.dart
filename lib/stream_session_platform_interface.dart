@@ -1,4 +1,4 @@
-import 'package:haishin_kit/method_channel_stream_session.dart';
+import 'method_channel_stream_session.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// The HaishinKit Session platform interface

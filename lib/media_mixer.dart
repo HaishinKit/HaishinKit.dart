@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:haishin_kit/haishin_kit_platform_interface.dart';
-import 'package:haishin_kit/media_mixer_platform_interface.dart';
-import 'package:haishin_kit/screen_settings.dart';
-import 'package:haishin_kit/video_source.dart';
-
+import 'haishin_kit_platform_interface.dart';
+import 'media_mixer_platform_interface.dart';
+import 'screen_settings.dart';
+import 'video_source.dart';
 import 'audio_source.dart';
 import 'av_capture_session_preset.dart';
 
@@ -66,7 +63,8 @@ class MediaMixer {
 
   Future<bool?> getHasAudio() {
     assert(_memory != null);
-    return MediaMixerPlatformInterface.instance.getHasAudio({"memory": _memory});
+    return MediaMixerPlatformInterface.instance
+        .getHasAudio({"memory": _memory});
   }
 
   Future<void> setHasVideo(bool value) async {
@@ -77,7 +75,8 @@ class MediaMixer {
 
   Future<bool?> getHasVideo() {
     assert(_memory != null);
-    return MediaMixerPlatformInterface.instance.getHasVideo({"memory": _memory});
+    return MediaMixerPlatformInterface.instance
+        .getHasVideo({"memory": _memory});
   }
 
   /// Attaches an AudioSource to this mixer.
@@ -96,17 +95,20 @@ class MediaMixer {
 
   Future<void> startRunning() async {
     assert(_memory != null);
-    return await MediaMixerPlatformInterface.instance.startRunning({"memory": _memory});
+    return await MediaMixerPlatformInterface.instance
+        .startRunning({"memory": _memory});
   }
 
   Future<void> stopRunning() async {
     assert(_memory != null);
-    return await MediaMixerPlatformInterface.instance.stopRunning({"memory": _memory});
+    return await MediaMixerPlatformInterface.instance
+        .stopRunning({"memory": _memory});
   }
 
   /// Disposes this mixer platform instance.
   Future<void> dispose() async {
     assert(_memory != null);
-    return await MediaMixerPlatformInterface.instance.dispose({"memory": _memory});
+    return await MediaMixerPlatformInterface.instance
+        .dispose({"memory": _memory});
   }
 }

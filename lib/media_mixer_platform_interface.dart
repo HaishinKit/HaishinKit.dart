@@ -1,4 +1,4 @@
-import 'package:haishin_kit/method_channel_media_mixer.dart';
+import 'method_channel_media_mixer.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// The HaishinKit MediaMixer platform interface

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/stream_session.dart';
+import 'stream_session.dart';
 
 class StreamSessionViewTexture extends StatefulWidget {
   const StreamSessionViewTexture(this.session, {super.key});

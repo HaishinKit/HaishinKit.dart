@@ -1,5 +1,3 @@
-import 'package:flutter/services.dart';
-
 /// Base exception type for all session-related errors.
 ///
 /// This exception represents errors that occur while managing
@@ -29,4 +27,3 @@ class StreamSessionConnectFailedException extends StreamSessionException {
 class StreamSessionUnknownException extends StreamSessionException {
   const StreamSessionUnknownException(super.message);
 }
-

@@ -1,17 +1,19 @@
-import 'package:haishin_kit/haishin_kit_platform_interface.dart';
-import 'package:haishin_kit/stream_session_exception.dart';
-import 'package:haishin_kit/stream_session_mode.dart';
-import 'package:haishin_kit/stream_session_platform_interface.dart';
-import 'package:haishin_kit/stream_session_ready_state.dart';
-import 'package:haishin_kit/video_settings.dart';
+import 'haishin_kit_platform_interface.dart';
+import 'stream_session_exception.dart';
+import 'stream_session_mode.dart';
+import 'stream_session_platform_interface.dart';
+import 'stream_session_ready_state.dart';
+import 'video_settings.dart';
 import 'package:flutter/services.dart';
 
 import 'audio_settings.dart';
 
 final class StreamSession {
-  static Future<StreamSession> create(String url, StreamSessionMode mode) async {
+  static Future<StreamSession> create(
+      String url, StreamSessionMode mode) async {
     var object = StreamSession._();
-    object._memory = await HaishinKitPlatformInterface.instance.newSession(url, mode);
+    object._memory =
+        await HaishinKitPlatformInterface.instance.newSession(url, mode);
     object._channel =
         EventChannel("com.haishinkit.eventchannel/${object._memory}");
     return object;
