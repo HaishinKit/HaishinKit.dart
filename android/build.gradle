@@ -12,6 +12,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:8.13.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
     }
 }
 
@@ -24,6 +25,7 @@ rootProject.allprojects {
 
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 
 android {
     namespace = "com.haishinkit.haishin_kit"
@@ -70,4 +72,5 @@ android {
 dependencies {
     implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:027a75fb55'
     implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:027a75fb55'
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 }

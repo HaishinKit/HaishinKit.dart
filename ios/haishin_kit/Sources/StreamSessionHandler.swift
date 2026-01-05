@@ -12,7 +12,7 @@ import VideoToolbox
 
 final class StreamSessionHandler: NSObject {
     enum ErrorCode: String {
-        case connectFailed  = "CONNECT_FAILED"
+        case connectFailed = "CONNECT_FAILED"
     }
 
     private let plugin: HaishinKitPlugin
@@ -37,7 +37,9 @@ final class StreamSessionHandler: NSObject {
             self.channel = nil
         }
         DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
+            guard let self else {
+                return
+            }
             self.channel?.setStreamHandler(self)
         }
         subscription = Task { [weak self] in

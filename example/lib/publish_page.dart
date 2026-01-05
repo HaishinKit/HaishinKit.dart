@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
+import 'package:haishin_kit/audio_mixer_settings.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/screen_settings.dart';
@@ -10,6 +11,7 @@ import 'package:haishin_kit/stream_session_exception.dart';
 import 'package:haishin_kit/stream_session_mode.dart';
 import 'package:haishin_kit/stream_session_ready_state.dart';
 import 'package:haishin_kit/stream_session_view_texture.dart';
+import 'package:haishin_kit/video_mixer_settings.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -147,6 +149,9 @@ class _PublishState extends State<PublishPage> {
     ));
 
     MediaMixer mixer = await MediaMixer.create();
+
+    mixer.audioMixerSettings = AudioMixerSettings();
+
     await mixer.attachAudio(0, AudioSource());
     await mixer.attachVideo(0, _mainVideoSource!);
     await mixer.startRunning();

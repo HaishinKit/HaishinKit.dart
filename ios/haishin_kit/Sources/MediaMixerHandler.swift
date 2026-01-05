@@ -14,7 +14,12 @@ import UIKit
 #endif
 
 final class MediaMixerHandler: NSObject {
+    enum ErrorCode: String {
+        case invalidArgument = "INVALID_ARGUMENT"
+    }
+
     private lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
+    private lazy var decoder = JSONDecoder()
 
     override init() {
         super.init()
@@ -53,46 +58,38 @@ extension MediaMixerHandler: MethodCallHandler {
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard
             let arguments = call.arguments as? [String: Any?] else {
-            result(nil)
+            result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
             return
         }
         switch call.method {
-        case "MediaMixer#getHasAudio":
-            Task {
-                let isMuted = await !mixer.audioMixerSettings.isMuted
-                result(isMuted)
-            }
-        case "MediaMixer#setHasAudio":
-            guard let hasAudio = arguments["value"] as? Bool else {
-                result(nil)
+        case "MediaMixer#setAudioMixerSettings":
+            guard
+                let value = ((arguments["value"] as? String) ?? "").data(using: .utf8),
+                let audioMixerSettings = try? decoder.decode(AudioMixerSettings.self, from: value)
+            else {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
                 return
             }
             Task {
-                var audioMixerSettings = await mixer.audioMixerSettings
-                audioMixerSettings.isMuted = !hasAudio
                 await mixer.setAudioMixerSettings(audioMixerSettings)
                 result(nil)
             }
-        case "MediaMixer#getHasVideo":
-            Task {
-                let hasVideo = await !mixer.videoMixerSettings.isMuted
-                result(hasVideo)
-            }
-        case "MediaMixer#setHasVideo":
-            guard let hasVideo = arguments["value"] as? Bool else {
-                result(nil)
+        case "MediaMixer#setVideoMixerSettings":
+            guard
+                let value = ((arguments["value"] as? String) ?? "").data(using: .utf8),
+                let videoMixerSettings = try? decoder.decode(VideoMixerSettings.self, from: value)
+            else {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
                 return
             }
             Task {
-                var videoMixerSettings = await mixer.videoMixerSettings
-                videoMixerSettings.isMuted = !hasVideo
                 await mixer.setVideoMixerSettings(videoMixerSettings)
                 result(nil)
             }
         case "MediaMixer#setFrameRate":
             guard
                 let frameRate = arguments["value"] as? NSNumber else {
-                result(nil)
+                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
                 return
             }
             Task {
@@ -101,7 +98,7 @@ extension MediaMixerHandler: MethodCallHandler {
             }
         case "MediaMixer#setSessionPreset":
             guard let sessionPreset = arguments["value"] as? String else {
-                result(nil)
+                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
                 return
             }
             let preset: AVCaptureSession.Preset = switch sessionPreset {

@@ -17,34 +17,26 @@ abstract class MediaMixerPlatformInterface extends PlatformInterface {
     _instance = instance;
   }
 
-  /// Gets the hasAudio property.
-  Future<bool?> getHasAudio(Map<String, dynamic> params) {
-    throw UnimplementedError('getHasAudio() has not been implemented.');
-  }
-
-  /// Sets the hasAudio property.
-  Future<void> setHasAudio(Map<String, dynamic> params) {
-    throw UnimplementedError('setHasAudio() has not been implemented.');
-  }
-
-  /// Gets the hasVideo property.
-  Future<bool?> getHasVideo(Map<String, dynamic> params) {
-    throw UnimplementedError('getHasVideo() has not been implemented.');
-  }
-
-  /// Sets the hasVideo property.
-  Future<void> setHasVideo(Map<String, dynamic> params) {
-    throw UnimplementedError('setHasVideo() has not been implemented.');
-  }
-
   /// Sets the frameRate property.
   Future<void> setFrameRate(Map<String, dynamic> params) {
     throw UnimplementedError('setFrameRate() has not been implemented.');
   }
 
+  /// Sets the audio mixer settings property.
+  Future<void> setAudioMixerSettings(Map<String, dynamic> params) {
+    throw UnimplementedError(
+        'setVideoMixerSettings() has not been implemented.');
+  }
+
+  /// Sets the video mixer settings property.
+  Future<void> setVideoMixerSettings(Map<String, dynamic> params) {
+    throw UnimplementedError(
+        'setVideoMixerSettings() has not been implemented.');
+  }
+
   /// Sets the sessionPreset property.
   Future<void> setSessionPreset(Map<String, dynamic> params) {
-    throw UnimplementedError('setSessionPreset has not been implemented.');
+    throw UnimplementedError('setSessionPreset() has not been implemented.');
   }
 
   /// Sets the screen properties.

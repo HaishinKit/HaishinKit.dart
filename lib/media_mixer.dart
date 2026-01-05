@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-
 import 'haishin_kit_platform_interface.dart';
 import 'media_mixer_platform_interface.dart';
 import 'media_mixer_exception.dart';
@@ -7,6 +6,9 @@ import 'screen_settings.dart';
 import 'video_source.dart';
 import 'audio_source.dart';
 import 'av_capture_session_preset.dart';
+import 'video_mixer_settings.dart';
+import 'audio_mixer_settings.dart';
+import 'dart:convert' as convert;
 
 class MediaMixer {
   static Future<MediaMixer> create() async {
@@ -16,14 +18,11 @@ class MediaMixer {
   }
 
   int? _memory;
-  int _frameRate = 30;
-  AVCaptureSessionPreset _sessionPreset = AVCaptureSessionPreset.hd1280x720;
-  ScreenSettings _screenSettings = ScreenSettings();
-
-  MediaMixer._();
 
   /// The platform memory address.
   int? get memory => _memory;
+
+  int _frameRate = 30;
 
   /// Gets the frameRate.
   int get frameRate => _frameRate;
@@ -36,6 +35,8 @@ class MediaMixer {
         .setFrameRate({"memory": _memory, "value": frameRate});
   }
 
+  AVCaptureSessionPreset _sessionPreset = AVCaptureSessionPreset.hd1280x720;
+
   /// Gets the sessionPreset.
   AVCaptureSessionPreset get sessionPreset => _sessionPreset;
 
@@ -46,6 +47,8 @@ class MediaMixer {
     MediaMixerPlatformInterface.instance.setSessionPreset(
         {"memory": _memory, "value": sessionPreset.presetName});
   }
+
+  ScreenSettings _screenSettings = ScreenSettings();
 
   /// Gets the screen properties.
   ScreenSettings get screenSettings => _screenSettings;
@@ -58,29 +61,37 @@ class MediaMixer {
         {"memory": _memory, "settings": screenSettings.toMap()});
   }
 
-  Future<void> setHasAudio(bool value) async {
+  VideoMixerSettings _videoMixerSettings = VideoMixerSettings();
+
+  /// Gets the video mixer settings.
+  VideoMixerSettings get videoMixerSettings => _videoMixerSettings;
+
+  /// Sets the video mixer settings.
+  set videoMixerSettings(VideoMixerSettings videoMixerSettings) {
     assert(_memory != null);
-    MediaMixerPlatformInterface.instance
-        .setHasAudio({"memory": _memory, "value": value});
+    _videoMixerSettings = videoMixerSettings;
+    MediaMixerPlatformInterface.instance.setVideoMixerSettings({
+      "memory": _memory,
+      "value": convert.json.encode(videoMixerSettings.toJson())
+    });
   }
 
-  Future<bool?> getHasAudio() {
+  AudioMixerSettings _audioMixerSettings = AudioMixerSettings();
+
+  /// Gets the audio mixer settings.
+  AudioMixerSettings get audioMixerSettings => _audioMixerSettings;
+
+  /// Sets the audio mixer settings.
+  set audioMixerSettings(AudioMixerSettings audioMixerSettings) {
     assert(_memory != null);
-    return MediaMixerPlatformInterface.instance
-        .getHasAudio({"memory": _memory});
+    _audioMixerSettings = audioMixerSettings;
+    MediaMixerPlatformInterface.instance.setAudioMixerSettings({
+      "memory": _memory,
+      "value": convert.json.encode(audioMixerSettings.toJson())
+    });
   }
 
-  Future<void> setHasVideo(bool value) async {
-    assert(_memory != null);
-    return MediaMixerPlatformInterface.instance
-        .setHasVideo({"memory": _memory, "value": value});
-  }
-
-  Future<bool?> getHasVideo() {
-    assert(_memory != null);
-    return MediaMixerPlatformInterface.instance
-        .getHasVideo({"memory": _memory});
-  }
+  MediaMixer._();
 
   /// Attaches an AudioSource to this mixer.
   Future<void> attachAudio(int track, AudioSource? audio) async {

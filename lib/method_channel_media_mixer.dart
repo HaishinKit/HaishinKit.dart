@@ -4,27 +4,15 @@ import 'method_channel_haishin_kit.dart';
 /// The method channel implementation of [MediaMixerPlatformInterface]
 class MethodChannelMediaMixer extends MediaMixerPlatformInterface {
   @override
-  Future<bool?> getHasAudio(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<bool?>("MediaMixer#getHasAudio", params);
+  Future<void> setAudioMixerSettings(Map<String, dynamic> params) async {
+    await MethodChannelHaishinKit.channel
+        .invokeMethod<void>("MediaMixer#setAudioMixerSettings", params);
   }
 
   @override
-  Future<void> setHasAudio(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("MediaMixer#setHasAudio", params);
-  }
-
-  @override
-  Future<bool?> getHasVideo(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<bool?>("MediaMixer#getHasVideo", params);
-  }
-
-  @override
-  Future<void> setHasVideo(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("MediaMixer#setHasVideo", params);
+  Future<void> setVideoMixerSettings(Map<String, dynamic> params) async {
+    await MethodChannelHaishinKit.channel
+        .invokeMethod<void>("MediaMixer#setVideoMixerSettings", params);
   }
 
   @override

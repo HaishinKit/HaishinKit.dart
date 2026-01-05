@@ -14,6 +14,7 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 @Suppress("UNUSED")
 class MediaMixerHandler(
@@ -33,6 +34,9 @@ class MediaMixerHandler(
         }
     private var trackCameraMap: MutableMap<Int, Camera2Source> = mutableMapOf()
     private var audio: AudioSource? = null
+    private var json = Json {
+        ignoreUnknownKeys = true
+    }
 
     init {
         mixer = MediaMixer(plugin.flutterPluginBinding.applicationContext)
@@ -53,28 +57,25 @@ class MediaMixerHandler(
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d(TAG, "onMethodCall: " + call.method)
         when (call.method) {
-            "$TAG#getHasAudio" -> {
-                val value = call.argument<Boolean?>("value")
-                value?.let { hasAudio ->
-                    audio?.isMuted = !hasAudio
+            "$TAG#setAudioMixerSettings" -> {
+                val value = call.argument<String>("value")
+                if (value == null) {
+                    result.error("INVALID_ARGUMENT", "value is null", null)
+                } else {
+                    val audioMixerSettings = json.decodeFromString<AudioMixerSettings>(value)
+                    audio?.isMuted = audioMixerSettings.isMuted
+                    result.success(null)
                 }
-                result.success(null)
             }
 
-            "$TAG#setHasAudio" -> {
-                val value = call.argument<Boolean?>("value")
-                value?.let { hasAudio ->
-                    audio?.isMuted = !hasAudio
+            "$TAG#setVideoMixerSettings" -> {
+                val value = call.argument<String>("value")
+                if (value == null) {
+                    result.error("INVALID_ARGUMENT", "value is null", null)
+                } else {
+                    // not support yet.
+                    result.success(null)
                 }
-                result.success(null)
-            }
-
-            "$TAG#getHasVideo" -> {
-                result.success(null)
-            }
-
-            "$TAG#setHasVideo" -> {
-                result.success(null)
             }
 
             "$TAG#setSessionPreset" -> {
