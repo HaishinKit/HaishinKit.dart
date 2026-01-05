@@ -1,4 +1,4 @@
-package com.haishinkit.haishinkit
+package com.haishinkit.haishin_kit
 
 import android.media.MediaCodecInfo
 

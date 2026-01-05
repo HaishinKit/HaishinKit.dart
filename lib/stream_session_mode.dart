@@ -1,4 +1,4 @@
-enum SessionMode {
+enum StreamSessionMode {
   publish,
   playback
 }

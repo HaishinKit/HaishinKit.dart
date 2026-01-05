@@ -14,7 +14,7 @@ class MethodChannelHaishinKit extends HaishinKitPlatformInterface {
   }
 
   @override
-  Future<int?> newSession(String url, SessionMode mode) async {
+  Future<int?> newSession(String url, StreamSessionMode mode) async {
     return await channel
         .invokeMethod<int?>('newSession', {"url": url, "mode": mode.name});
   }

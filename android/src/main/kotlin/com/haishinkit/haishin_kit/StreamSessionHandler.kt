@@ -6,7 +6,6 @@ import android.os.Build
 import android.util.Log
 import android.util.Size
 import com.haishinkit.codec.CodecOption
-import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.stream.StreamSession
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -19,12 +18,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class SessionHandler(
+class StreamSessionHandler(
     private val plugin: HaishinKitPlugin,
     var session: StreamSession?,
 ) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
-    companion object {
-        private const val TAG = "Session"
+    companion object Companion {
+        private const val TAG = "StreamSession"
         const val CONNECT_FAILED = "CONNECT_FAILED"
     }
 

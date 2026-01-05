@@ -22,7 +22,7 @@ abstract class HaishinKitPlatformInterface extends PlatformInterface {
   }
 
   /// Creates a new Session platform instance.
-  Future<int?> newSession(String url, SessionMode mode) {
+  Future<int?> newSession(String url, StreamSessionMode mode) {
     throw UnimplementedError('newSession() has not been implemented.');
   }
 

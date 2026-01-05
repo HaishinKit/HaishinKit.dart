@@ -152,7 +152,7 @@ class _PublishState extends State<PublishPage> {
     await mixer.startRunning();
 
     StreamSession session = await StreamSession.create(
-        Preference.shared.makeUrl(), SessionMode.publish);
+        Preference.shared.makeUrl(), StreamSessionMode.publish);
 
     setState(() {
       _mixer = mixer;

@@ -8,6 +8,7 @@ import FlutterMacOS
 import HaishinKit
 import RTMPHaishinKit
 import SRTHaishinKit
+import RTCHaishinKit
 import AVFoundation
 
 public final class HaishinKitPlugin: NSObject {
@@ -27,6 +28,7 @@ public final class HaishinKitPlugin: NSObject {
         Task {
             await SessionBuilderFactory.shared.register(RTMPSessionFactory())
             await SessionBuilderFactory.shared.register(SRTSessionFactory())
+            await SessionBuilderFactory.shared.register(HTTPSessionFactory())
         }
     }
 
@@ -49,17 +51,17 @@ extension HaishinKitPlugin: FlutterPlugin {
         switch call.method {
         case "newSession":
             guard let arguments = call.arguments as? [String: Any?],
-                  let url = URL(string: arguments["url"] as? String ?? ""),
-                  let mode = arguments["mode"] as? String
+                  let url = URL(string: arguments["url"] as? String ?? "")
             else {
                 result(nil)
                 return
             }
             Task {
+                let mode: SessionMode = arguments["mode"] as? String == "publish" ? .publish : .playback
                 do {
-                    let session = try await SessionBuilderFactory.shared.make(url).setMode(mode == "playback" ? .playback : .publish).build()
+                    let session = try await SessionBuilderFactory.shared.make(url).setMode(mode).build()
                     if let session {
-                        if mode == "publish" {
+                        if mode == .publish {
                             for handler in handlers {
                                 if let handler = handler.value as? MediaMixerHandler {
                                     Task {
@@ -68,7 +70,7 @@ extension HaishinKitPlugin: FlutterPlugin {
                                 }
                             }
                         }
-                        let handler = SessionHandler(plugin: self, session: session)
+                        let handler = StreamSessionHandler(plugin: self, session: session)
                         let memory = Int(bitPattern: ObjectIdentifier(handler))
                         handlers[memory] = handler
                         result(NSNumber(value: memory))

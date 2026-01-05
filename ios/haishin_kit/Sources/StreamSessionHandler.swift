@@ -10,7 +10,11 @@ import RTMPHaishinKit
 import AVFoundation
 import VideoToolbox
 
-final class SessionHandler: NSObject {
+final class StreamSessionHandler: NSObject {
+    enum ErrorCode: String {
+        case connectFailed  = "CONNECT_FAILED"
+    }
+
     private let plugin: HaishinKitPlugin
     private var session: Session?
     private var texture: StreamFlutterTexture?
@@ -32,11 +36,21 @@ final class SessionHandler: NSObject {
         } else {
             self.channel = nil
         }
-        channel?.setStreamHandler(self)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.channel?.setStreamHandler(self)
+        }
+        subscription = Task { [weak self] in
+            for await status in await session.readyState {
+                DispatchQueue.main.async { [eventSink = self?.eventSink] in
+                    eventSink?("\(status)")
+                }
+            }
+        }
     }
 }
 
-extension SessionHandler: MethodCallHandler {
+extension StreamSessionHandler: MethodCallHandler {
     // MARK: MethodCallHandler
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard
@@ -45,7 +59,7 @@ extension SessionHandler: MethodCallHandler {
             return
         }
         switch call.method {
-        case "Session#setAudioSettings":
+        case "StreamSession#setAudioSettings":
             guard
                 let settings = arguments["settings"] as? [String: Any?] else {
                 result(nil)
@@ -61,7 +75,7 @@ extension SessionHandler: MethodCallHandler {
                 return
             }
             result(nil)
-        case "Session#setVideoSettings":
+        case "StreamSession#setVideoSettings":
             guard
                 let settings = arguments["settings"] as? [String: Any?] else {
                 result(nil)
@@ -84,7 +98,7 @@ extension SessionHandler: MethodCallHandler {
                 _ = try? await session?.stream.setVideoSettings(videoSettings)
                 result(nil)
             }
-        case "Session#registerTexture":
+        case "StreamSession#registerTexture":
             guard
                 let registry = plugin.registrar?.textures() else {
                 result(nil)
@@ -100,7 +114,7 @@ extension SessionHandler: MethodCallHandler {
                     result(texture.id)
                 }
             }
-        case "Session#unregisterTexture":
+        case "StreamSession#unregisterTexture":
             guard
                 let registry = plugin.registrar?.textures() else {
                 result(nil)
@@ -110,7 +124,7 @@ extension SessionHandler: MethodCallHandler {
                 registry.unregisterTexture(textureId)
             }
             result(nil)
-        case "Session#updateTextureSize":
+        case "StreamSession#updateTextureSize":
             guard let _ = plugin.registrar?.textures() else {
                 result(nil)
                 return
@@ -124,33 +138,22 @@ extension SessionHandler: MethodCallHandler {
             } else {
                 result(nil)
             }
-        case "Session#connect":
-            if let session {
-                subscription = Task { [weak self] in
-                    for await status in await session.readyState {
-                        DispatchQueue.main.async { [eventSink = self?.eventSink] in
-                            eventSink?("\(status)")
-                        }
-                    }
-                }
-            }
+        case "StreamSession#connect":
             Task {
                 do {
                     try await session?.connect {
                     }
                     result(nil)
                 } catch {
-                    print(error)
-                    result(FlutterError(error))
+                    result(FlutterError(code: ErrorCode.connectFailed.rawValue, message: nil, details: nil))
                 }
             }
-        case "Session#close":
+        case "StreamSession#close":
             Task {
                 _ = try? await session?.close()
-                subscription = nil
                 result(nil)
             }
-        case "Session#dispose":
+        case "StreamSession#dispose":
             subscription = nil
             texture = nil
             session = nil
@@ -161,7 +164,7 @@ extension SessionHandler: MethodCallHandler {
     }
 }
 
-extension SessionHandler: FlutterStreamHandler {
+extension StreamSessionHandler: FlutterStreamHandler {
     // MARK: FlutterStreamHandler
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events

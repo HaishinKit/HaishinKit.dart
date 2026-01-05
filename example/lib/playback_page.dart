@@ -76,7 +76,7 @@ class _PlaybackState extends State<PlaybackPage> {
     ));
 
     StreamSession session =
-        await StreamSession.create(Preference.shared.makeUrl(), SessionMode.playback);
+        await StreamSession.create(Preference.shared.makeUrl(), StreamSessionMode.playback);
 
     setState(() {
       _session = session;

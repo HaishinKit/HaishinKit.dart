@@ -7,48 +7,48 @@ class MethodChannelStreamSession extends StreamSessionPlatformInterface {
   @override
   Future<void> setAudioSettings(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Session#setAudioSettings", params);
+        .invokeMethod<void>("StreamSession#setAudioSettings", params);
   }
 
   @override
   Future<void> setVideoSettings(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Session#setVideoSettings", params);
+        .invokeMethod<void>("StreamSession#setVideoSettings", params);
   }
 
   @override
   Future<int?> registerTexture(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<int>("Session#registerTexture", params);
+        .invokeMethod<int>("StreamSession#registerTexture", params);
   }
 
   @override
   Future<void> unregisterTexture(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Session#unregisterTexture", params);
+        .invokeMethod<void>("StreamSession#unregisterTexture", params);
   }
 
   @override
   Future<int?> updateTextureSize(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<int>("Session#updateTextureSize", params);
+        .invokeMethod<int>("StreamSession#updateTextureSize", params);
   }
 
   @override
   Future<void> connect(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Session#connect", params);
+        .invokeMethod<void>("StreamSession#connect", params);
   }
 
   @override
   Future<void> close(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Session#close", params);
+        .invokeMethod<void>("StreamSession#close", params);
   }
 
   @override
   Future<void> dispose(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Session#dispose", params);
+        .invokeMethod<void>("StreamSession#dispose", params);
   }
 }

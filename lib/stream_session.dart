@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'audio_settings.dart';
 
 final class StreamSession {
-  static Future<StreamSession> create(String url, SessionMode mode) async {
+  static Future<StreamSession> create(String url, StreamSessionMode mode) async {
     var object = StreamSession._();
     object._memory = await HaishinKitPlatformInterface.instance.newSession(url, mode);
     object._channel =

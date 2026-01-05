@@ -21,7 +21,7 @@ class MockHaishinKitPlatform
   }
 
   @override
-  Future<int?> newSession(String url, SessionMode mode) {
+  Future<int?> newSession(String url, StreamSessionMode mode) {
     throw UnimplementedError();
   }
 }

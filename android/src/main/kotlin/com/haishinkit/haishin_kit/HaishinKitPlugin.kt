@@ -33,7 +33,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     fun onDispose(id: Int) {
-        (handlers[id] as? SessionHandler)?.let { handler ->
+        (handlers[id] as? StreamSessionHandler)?.let { handler ->
             handler.session?.stream?.let {
                 unregisterOutput(it)
             }
@@ -82,7 +82,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
                     if (mode == "publish") {
                         registerOutput(session.stream)
                     }
-                    val handler = SessionHandler(this, session)
+                    val handler = StreamSessionHandler(this, session)
                     handlers[handler.hashCode()] = handler
                     result.success(handler.hashCode())
                 } else {

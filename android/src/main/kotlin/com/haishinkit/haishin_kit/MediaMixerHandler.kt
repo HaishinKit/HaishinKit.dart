@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@Suppress("UNUSED")
 class MediaMixerHandler(
     private val plugin: HaishinKitPlugin
 ) : MethodChannel.MethodCallHandler {
