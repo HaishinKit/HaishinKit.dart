@@ -16,6 +16,11 @@ import UIKit
 final class MediaMixerHandler: NSObject {
     enum ErrorCode: String {
         case invalidArgument = "INVALID_ARGUMENT"
+        case deviceNotFound = "DEVICE_NOT_FOUND"
+
+        func makeFlutterError(_ message: String? = nil, details: Any? = nil) -> FlutterError {
+            return FlutterError(code: self.rawValue, message: message, details: details)
+        }
     }
 
     private lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
@@ -58,19 +63,23 @@ extension MediaMixerHandler: MethodCallHandler {
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard
             let arguments = call.arguments as? [String: Any?] else {
-            result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+            result(ErrorCode.invalidArgument.makeFlutterError())
             return
         }
         switch call.method {
         case "MediaMixer#setAudioMixerSettings":
             guard
                 let value = ((arguments["value"] as? String) ?? "").data(using: .utf8),
-                let audioMixerSettings = try? decoder.decode(AudioMixerSettings.self, from: value)
+                let pluginAudioMixerSettings = try? decoder.decode(PluginAudioMixerSettings.self, from: value)
             else {
-                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task {
+                var audioMixerSettings = await mixer.audioMixerSettings
+                // audioMixerSettings.channels = pluginAudioMixerSettings.channels
+                audioMixerSettings.mainTrack = pluginAudioMixerSettings.mainTrack
+                audioMixerSettings.isMuted = pluginAudioMixerSettings.isMuted
                 await mixer.setAudioMixerSettings(audioMixerSettings)
                 result(nil)
             }
@@ -79,7 +88,7 @@ extension MediaMixerHandler: MethodCallHandler {
                 let value = ((arguments["value"] as? String) ?? "").data(using: .utf8),
                 let videoMixerSettings = try? decoder.decode(VideoMixerSettings.self, from: value)
             else {
-                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task {
@@ -89,7 +98,7 @@ extension MediaMixerHandler: MethodCallHandler {
         case "MediaMixer#setFrameRate":
             guard
                 let frameRate = arguments["value"] as? NSNumber else {
-                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task {
@@ -98,7 +107,7 @@ extension MediaMixerHandler: MethodCallHandler {
             }
         case "MediaMixer#setSessionPreset":
             guard let sessionPreset = arguments["value"] as? String else {
-                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             let preset: AVCaptureSession.Preset = switch sessionPreset {
@@ -143,7 +152,7 @@ extension MediaMixerHandler: MethodCallHandler {
             }
         case "MediaMixer#attachVideo":
             guard let track = arguments["track"] as? UInt8 else {
-                result(FlutterError(code: "INVALID_ARGUMENT", message: "track is nil", details: nil))
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             guard let value = arguments["value"] as? String else {
@@ -155,8 +164,9 @@ extension MediaMixerHandler: MethodCallHandler {
             }
             guard
                 let data = value.data(using: .utf8),
-                let videoSource = try? JSONDecoder().decode(VideoSource.self, from: data) else {
-                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+                let videoSource = try? JSONDecoder().decode(VideoSource.self, from: data)
+            else {
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task {
@@ -165,10 +175,10 @@ extension MediaMixerHandler: MethodCallHandler {
                         try await mixer.attachVideo(device, track: track)
                         result(nil)
                     } catch {
-                        result(FlutterError(error))
+                        result(nil)
                     }
                 } else {
-                    result(FlutterError(MediaMixer.Error.deviceNotFound))
+                    result(ErrorCode.deviceNotFound.makeFlutterError())
                 }
             }
         case "MediaMixer#startRunning":
