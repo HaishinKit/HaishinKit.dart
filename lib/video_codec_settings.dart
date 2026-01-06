@@ -45,7 +45,7 @@ enum ProfileLevel {
   final String profileLevelName;
 }
 
-class VideoSettings {
+class VideoCodecSettings {
   final int width;
   final int height;
   final int bitrate;
@@ -54,7 +54,7 @@ class VideoSettings {
 
 //<editor-fold desc="Data Methods">
 
-  const VideoSettings({
+  const VideoCodecSettings({
     this.width = 480,
     this.height = 272,
     this.bitrate = 160 * 1000,
@@ -62,14 +62,14 @@ class VideoSettings {
     this.profileLevel = ProfileLevel.h264Baseline31,
   });
 
-  VideoSettings inverted() {
+  VideoCodecSettings inverted() {
     return copyWith(width: height, height: width);
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is VideoSettings &&
+      (other is VideoCodecSettings &&
           runtimeType == other.runtimeType &&
           width == other.width &&
           height == other.height &&
@@ -90,14 +90,14 @@ class VideoSettings {
     return 'VideoSettings{width: $width, height: $height, bitrate: $bitrate, frameInterval: $frameInterval, profileLevel: ${profileLevel.profileLevelName}}';
   }
 
-  VideoSettings copyWith({
+  VideoCodecSettings copyWith({
     int? width,
     int? height,
     int? bitrate,
     int? frameInterval,
     ProfileLevel? profileLevel,
   }) {
-    return VideoSettings(
+    return VideoCodecSettings(
       width: width ?? this.width,
       height: height ?? this.height,
       bitrate: bitrate ?? this.bitrate,
@@ -116,8 +116,8 @@ class VideoSettings {
     };
   }
 
-  factory VideoSettings.fromMap(Map<String, dynamic> map) {
-    return VideoSettings(
+  factory VideoCodecSettings.fromMap(Map<String, dynamic> map) {
+    return VideoCodecSettings(
       width: map['width'] as int,
       height: map['height'] as int,
       bitrate: map['bitrate'] as int,

@@ -3,10 +3,10 @@ import 'stream_session_exception.dart';
 import 'stream_session_mode.dart';
 import 'stream_session_platform_interface.dart';
 import 'stream_session_ready_state.dart';
-import 'video_settings.dart';
+import 'video_codec_settings.dart';
 import 'package:flutter/services.dart';
 
-import 'audio_settings.dart';
+import 'audio_codec_settings.dart';
 
 final class StreamSession {
   static Future<StreamSession> create(
@@ -21,8 +21,8 @@ final class StreamSession {
 
   int? _memory;
   late EventChannel _channel;
-  VideoSettings _videoSettings = VideoSettings();
-  AudioSettings _audioSettings = AudioSettings();
+  VideoCodecSettings _videoSettings = VideoCodecSettings();
+  AudioCodecSettings _audioSettings = AudioCodecSettings();
 
   StreamSession._();
 
@@ -33,20 +33,20 @@ final class StreamSession {
       .receiveBroadcastStream()
       .map((value) => StreamSessionReadyState.values.byName(value));
 
-  VideoSettings get videoSettings => _videoSettings;
+  VideoCodecSettings get videoSettings => _videoSettings;
 
   /// Specifies the video codec properties.
-  set videoSettings(VideoSettings videoSettings) {
+  set videoSettings(VideoCodecSettings videoSettings) {
     assert(_memory != null);
     _videoSettings = videoSettings;
     StreamSessionPlatformInterface.instance.setVideoSettings(
         {"memory": _memory, "settings": videoSettings.toMap()});
   }
 
-  AudioSettings get audioSettings => _audioSettings;
+  AudioCodecSettings get audioSettings => _audioSettings;
 
   /// Specifies the audio codec properties.
-  set audioSettings(AudioSettings audioSettings) {
+  set audioSettings(AudioCodecSettings audioSettings) {
     assert(_memory != null);
     _audioSettings = audioSettings;
     StreamSessionPlatformInterface.instance.setAudioSettings(

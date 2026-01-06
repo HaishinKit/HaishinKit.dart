@@ -1,16 +1,16 @@
-class AudioSettings {
+class AudioCodecSettings {
   int bitrate;
 
 //<editor-fold desc="Data Methods">
 
-  AudioSettings({
+  AudioCodecSettings({
     this.bitrate = 80 * 1000,
   });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AudioSettings &&
+      (other is AudioCodecSettings &&
           runtimeType == other.runtimeType &&
           bitrate == other.bitrate);
 
@@ -22,11 +22,11 @@ class AudioSettings {
     return 'AudioSettings{ bitrate: $bitrate,}';
   }
 
-  AudioSettings copyWith({
+  AudioCodecSettings copyWith({
     bool? muted,
     int? bitrate,
   }) {
-    return AudioSettings(
+    return AudioCodecSettings(
       bitrate: bitrate ?? this.bitrate,
     );
   }
@@ -37,8 +37,8 @@ class AudioSettings {
     };
   }
 
-  factory AudioSettings.fromMap(Map<String, dynamic> map) {
-    return AudioSettings(
+  factory AudioCodecSettings.fromMap(Map<String, dynamic> map) {
+    return AudioCodecSettings(
       bitrate: map['bitrate'] as int,
     );
   }
