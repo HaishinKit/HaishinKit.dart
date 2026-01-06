@@ -19,7 +19,7 @@ This plugin provides easy-to-use API for RTMP streaming functionality in Flutter
   s.dependency 'Flutter'
   s.dependency 'HaishinKit', '2.0.9'
   
-  s.platform = :ios, '13.0'
+  s.platform = :ios, '15.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

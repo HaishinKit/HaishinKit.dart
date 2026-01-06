@@ -19,6 +19,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ">=5.0.0 <7.0.0"
   freezed: ^2.5.2
+  dartdoc: ^8.0.0
   build_runner: ^2.4.11
   json_serializable: ^6.8.0
 
