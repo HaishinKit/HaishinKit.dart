@@ -111,18 +111,18 @@ extension HaishinKitPlugin: FlutterPlugin {
             let videoList = discoverySession.devices.map {
                 device in
                 let position = switch device.position {
-                case .back: "back"
-                case .front: "front"
-                case .unspecified: "unspecified"
-                default: "unspecified"
+                case .back: VideoSource.CameraPosition.back
+                case .front: VideoSource.CameraPosition.front
+                case .unspecified: VideoSource.CameraPosition.unspecified
+                default: VideoSource.CameraPosition.unspecified
                 }
-                return [
-                    "id": device.uniqueID,
-                    "name": device.localizedName,
-                    "position": position
-                ]
+                return VideoSource(id: device.uniqueID, name: device.localizedName, position: position)
             }
-            result(videoList)
+            do {
+                result(String(data: try JSONEncoder().encode(videoList), encoding: .utf8))
+            } catch {
+                result(FlutterMethodNotImplemented)
+            }
         default:
             result(FlutterMethodNotImplemented)
         }

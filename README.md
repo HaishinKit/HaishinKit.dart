@@ -48,18 +48,19 @@ Issues/Discussions with priority response.
 Please contains `macos/Runner/Info.plist` and `ios/Runner/Info.plist` files.
 
 ```xml
-
-<key>NSCameraUsageDescription</key><string>your usage description here</string><key>
-NSMicrophoneUsageDescription
-</key><string>your usage description here</string>
+<key>NSCameraUsageDescription</key>
+<string>your usage description here</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>your usage description here</string>
 ```
 
 Please contains `macos/Runner/Debug.Entitlements` and `macos/Runner/Release.Entitlements` files.
 
 ```xml
-
-<key>com.apple.security.device.audio-input</key><true /><key>com.apple.security.device.camera
-</key><true />
+<key>com.apple.security.device.audio-input</key>
+<true />
+<key>com.apple.security.device.camera</key>
+<true />
 ```
 
 ## 🎨 Features
@@ -84,7 +85,7 @@ Use [freezed](https://pub.dev/packages/freezed) for development. When creating d
 try running the following command.
 
 ```sh
-dart run build_runner build --delete-conflicting-outputs
+flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 # 🐾 Example

@@ -1,9 +1,5 @@
 package com.haishinkit.haishin_kit
 
-import android.content.Context
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import android.hardware.camera2.CameraMetadata
 import androidx.core.net.toUri
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.rtmp.RtmpStreamSessionFactory
@@ -13,6 +9,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -95,19 +92,9 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             "getVideoSources" -> {
-                val context = flutterPluginBinding.applicationContext
-                val manager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-                val idList = manager.getCameraIdList()
-                result.success(idList.map {
-                    val characteristics = manager.getCameraCharacteristics(it)
-                    val position = when (characteristics.get(CameraCharacteristics.LENS_FACING)) {
-                        CameraMetadata.LENS_FACING_BACK -> "back"
-                        CameraMetadata.LENS_FACING_FRONT -> "front"
-                        CameraMetadata.LENS_FACING_EXTERNAL -> "unspecified"
-                        else -> "unspecified"
-                    }
-                    mapOf("id" to it, "position" to position)
-                })
+                val sources =
+                    MediaSourceUtil.getVideoSources(flutterPluginBinding.applicationContext)
+                result.success(Json.encodeToString(sources))
             }
 
             else -> {

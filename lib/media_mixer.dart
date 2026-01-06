@@ -108,8 +108,11 @@ class MediaMixer {
   Future<void> attachVideo(int track, VideoSource? video) async {
     assert(_memory != null);
     try {
-      await MediaMixerPlatformInterface.instance.attachVideo(
-          {"memory": _memory, "source": video?.toMap(), "track": track});
+      await MediaMixerPlatformInterface.instance.attachVideo({
+        "memory": _memory,
+        "track": track,
+        "value": video != null ? convert.json.encode(video.toJson()) : null
+      });
     } on PlatformException catch (e) {
       throw _mapPlatformException(e);
     }

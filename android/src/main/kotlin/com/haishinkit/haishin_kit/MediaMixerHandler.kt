@@ -119,8 +119,8 @@ class MediaMixerHandler(
                     result.error("INVALID_ARGUMENT", "track is null", null)
                     return
                 }
-                val source = call.argument<Map<String, Any?>>("source")
-                if (source == null) {
+                val value = call.argument<String>("value")
+                if (value == null) {
                     CoroutineScope(Dispatchers.Main).launch {
                         mixer?.attachVideo(track, null)
                         val camera = trackCameraMap.remove(track)
@@ -128,12 +128,11 @@ class MediaMixerHandler(
                         result.success(null)
                     }
                 } else {
-                    val cameraId = source["id"] as String?
-                    val cameraSource = if (cameraId != null) {
-                        Camera2Source(plugin.flutterPluginBinding.applicationContext, cameraId)
-                    } else {
-                        Camera2Source(plugin.flutterPluginBinding.applicationContext)
-                    }
+                    val videoSource = json.decodeFromString<VideoSource>(value)
+                    val cameraSource = Camera2Source(
+                        plugin.flutterPluginBinding.applicationContext,
+                        videoSource.id
+                    )
                     CoroutineScope(Dispatchers.Main).launch {
                         // Detach current video source
                         mixer?.attachVideo(track, null)

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'stream_session_mode.dart';
 import 'video_source.dart';
@@ -20,14 +22,15 @@ class MethodChannelHaishinKit extends HaishinKitPlatformInterface {
 
   @override
   Future<List<VideoSource>> get videoSources async {
-    final List<dynamic>? result =
-        await channel.invokeMethod<List<dynamic>>('getVideoSources');
+    final String? result =
+        await channel.invokeMethod<String>('getVideoSources');
+    print(result);
     if (result == null) {
       return [];
     }
-    return result
-        .cast<Map<dynamic, dynamic>>()
-        .map((e) => VideoSource.fromMap(e.cast<String, dynamic>()))
+    final list = jsonDecode(result) as List? ?? [];
+    return list
+        .map((e) => VideoSource.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 }

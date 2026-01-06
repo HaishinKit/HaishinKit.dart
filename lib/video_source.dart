@@ -1,64 +1,39 @@
-enum CameraPosition { front, back, unspecified }
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
-class VideoSource {
-  final String id;
-  final String? name;
-  final CameraPosition position;
+part 'video_source.freezed.dart';
 
-//<editor-fold desc="Data Methods">
+part 'video_source.g.dart';
 
-  VideoSource({
-    required this.id,
-    this.name,
-    this.position = CameraPosition.unspecified,
-  });
+/// Represents the position of the camera.
+enum CameraPosition {
+  /// Front-facing camera.
+  front,
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is VideoSource &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          name == other.name &&
-          position == other.position);
+  /// Rear-facing (back) camera.
+  back,
 
-  @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ position.hashCode;
+  /// Camera position is not specified.
+  unspecified,
+}
 
-  @override
-  String toString() {
-    return 'VideoSource{id: $id, name: $name, position: $position}';
-  }
+/// Represents a video input source.
+@freezed
+class VideoSource with _$VideoSource {
+  const factory VideoSource({
+    /// Unique identifier of the video source.
+    required String id,
 
-  VideoSource copyWith({
-    String? id,
+    /// Optional display name of the video source.
     String? name,
-    CameraPosition? position,
-  }) {
-    return VideoSource(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      position: position ?? this.position,
-    );
-  }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'position': position.name,
-    };
-  }
+    /// Camera position used by this video source.
+    ///
+    /// Defaults to [CameraPosition.unspecified] when not explicitly set.
+    @Default(CameraPosition.unspecified) CameraPosition position,
+  }) = _VideoSource;
 
-  factory VideoSource.fromMap(Map<String, dynamic> map) {
-    return VideoSource(
-      id: map['id'] as String,
-      name: map['name'] as String?,
-      position: map['position'] == null
-          ? CameraPosition.unspecified
-          : CameraPosition.values.byName(map['position'] as String),
-    );
-  }
-
-//</editor-fold>
+  /// Creates a [VideoSource] instance from JSON.
+  factory VideoSource.fromJson(Map<String, dynamic> json) =>
+      _$VideoSourceFromJson(json);
 }

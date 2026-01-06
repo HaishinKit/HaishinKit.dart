@@ -146,16 +146,21 @@ extension MediaMixerHandler: MethodCallHandler {
                 result(FlutterError(code: "INVALID_ARGUMENT", message: "track is nil", details: nil))
                 return
             }
-            let source = arguments["source"] as? [String: Any?]
-            guard let id = source?["id"] as? String else {
+            guard let value = arguments["value"] as? String else {
                 Task {
                     try? await mixer.attachVideo(nil, track: track)
                     result(nil)
                 }
                 return
             }
+            guard
+                let data = value.data(using: .utf8),
+                let videoSource = try? JSONDecoder().decode(VideoSource.self, from: data) else {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: nil, details: nil))
+                return
+            }
             Task {
-                if let device = AVCaptureDevice(uniqueID: id) {
+                if let device = AVCaptureDevice(uniqueID: videoSource.id) {
                     do {
                         try await mixer.attachVideo(device, track: track)
                         result(nil)
