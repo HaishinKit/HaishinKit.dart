@@ -2,10 +2,10 @@ package com.haishinkit.haishin_kit
 
 import android.graphics.Rect
 import android.util.Log
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.media.source.AudioRecordSource
-import com.haishinkit.media.source.AudioSource
 import com.haishinkit.media.source.Camera2Source
 import com.haishinkit.screen.ScreenObject.Companion.HORIZONTAL_ALIGNMENT_CENTER
 import com.haishinkit.screen.ScreenObject.Companion.VERTICAL_ALIGNMENT_MIDDLE
@@ -13,6 +13,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -32,17 +34,20 @@ class MediaMixerHandler(
             field?.dispose()
             field = value
         }
-    private var trackCameraMap: MutableMap<Int, Camera2Source> = mutableMapOf()
-    private var audio: AudioSource? = null
     private var json = Json {
         ignoreUnknownKeys = true
     }
+
+    private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
         mixer = MediaMixer(plugin.flutterPluginBinding.applicationContext)
         mixer?.screen?.let { screen ->
             screen.horizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER
             screen.verticalAlignment = VERTICAL_ALIGNMENT_MIDDLE
+        }
+        mixer?.let {
+            ProcessLifecycleOwner.get().lifecycle.addObserver(it)
         }
     }
 
@@ -63,7 +68,6 @@ class MediaMixerHandler(
                     result.error("INVALID_ARGUMENT", "value is null", null)
                 } else {
                     val audioMixerSettings = json.decodeFromString<AudioMixerSettings>(value)
-                    audio?.isMuted = audioMixerSettings.isMuted
                     result.success(null)
                 }
             }
@@ -99,19 +103,22 @@ class MediaMixerHandler(
 
             "$TAG#attachAudio" -> {
                 val source = call.argument<Map<String, Any?>>("source")
-                CoroutineScope(Dispatchers.Main).launch {
-                    // Cleanup current attached source
-                    mixer?.attachAudio(0, null)
-                    audio?.close()
-                    audio = null
 
-                    if (source != null) {
-                        audio = AudioRecordSource(plugin.flutterPluginBinding.applicationContext)
-                        mixer?.attachAudio(0, audio)
+                if (source == null) {
+                    scope.launch {
+                        mixer?.attachAudio(0, null)
+                        result.success(null)
                     }
-                    result.success(null)
+                } else {
+                    scope.launch {
+                        mixer?.attachAudio(
+                            0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext)
+                        )
+                        result.success(null)
+                    }
                 }
             }
+
 
             "$TAG#attachVideo" -> {
                 val track = call.argument<Int?>("track")
@@ -121,24 +128,16 @@ class MediaMixerHandler(
                 }
                 val value = call.argument<String>("value")
                 if (value == null) {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    scope.launch {
                         mixer?.attachVideo(track, null)
-                        val camera = trackCameraMap.remove(track)
-                        camera?.close()
                         result.success(null)
                     }
                 } else {
-                    val videoSource = json.decodeFromString<VideoSource>(value)
-                    val cameraSource = Camera2Source(
-                        plugin.flutterPluginBinding.applicationContext,
-                        videoSource.id
-                    )
-                    CoroutineScope(Dispatchers.Main).launch {
-                        // Detach current video source
-                        mixer?.attachVideo(track, null)
-                        val oldCamera = trackCameraMap.remove(track)
-                        oldCamera?.close()
-                        trackCameraMap[track] = cameraSource
+                    scope.launch {
+                        val videoSource = json.decodeFromString<VideoSource>(value)
+                        val cameraSource = Camera2Source(
+                            plugin.flutterPluginBinding.applicationContext, videoSource.id
+                        )
                         mixer?.attachVideo(track, cameraSource)
                         result.success(null)
                     }
@@ -156,19 +155,13 @@ class MediaMixerHandler(
             }
 
             "$TAG#dispose" -> {
-                // Explicitly detach video before disposal
-                CoroutineScope(Dispatchers.Main).launch {
-                    mixer?.attachAudio(0, null)
-                    for ((track, camera) in trackCameraMap) {
-                        mixer?.attachVideo(track, null)
-                        camera.close()
-                    }
-                    mixer?.dispose()
-                    mixer = null
-                    trackCameraMap.clear()
-                    plugin.onDispose(hashCode())
-                    result.success(null)
+                plugin.onDispose(hashCode())
+                scope.cancel()
+                mixer?.let {
+                    ProcessLifecycleOwner.get().lifecycle.removeObserver(it)
                 }
+                mixer = null
+                result.success(null)
             }
         }
     }

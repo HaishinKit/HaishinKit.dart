@@ -12,7 +12,6 @@ import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
-
 class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     companion object {
         private const val CHANNEL_NAME = "com.haishinkit"
