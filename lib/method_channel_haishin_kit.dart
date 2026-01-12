@@ -24,7 +24,6 @@ class MethodChannelHaishinKit extends HaishinKitPlatformInterface {
   Future<List<VideoSource>> get videoSources async {
     final String? result =
         await channel.invokeMethod<String>('getVideoSources');
-    print(result);
     if (result == null) {
       return [];
     }
