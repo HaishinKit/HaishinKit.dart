@@ -1,6 +1,7 @@
 package com.haishinkit.haishin_kit
 
 import androidx.core.net.toUri
+import com.haishinkit.device.DeviceManager
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.rtmp.RtmpStreamSessionFactory
 import com.haishinkit.stream.StreamSession
@@ -9,6 +10,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
@@ -23,6 +25,13 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
     private lateinit var channel: MethodChannel
+
+    private lateinit var deviceManager: DeviceManager
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private var json = Json {
+        decodeEnumsCaseInsensitive = true
+    }
 
     init {
         StreamSession.Builder.registerFactory(RtmpStreamSessionFactory)
@@ -41,6 +50,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
         this.flutterPluginBinding = flutterPluginBinding
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
         channel.setMethodCallHandler(this)
+        deviceManager = DeviceManager(flutterPluginBinding.applicationContext)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -91,9 +101,8 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             "getVideoSources" -> {
-                val sources =
-                    MediaSourceUtil.getVideoSources(flutterPluginBinding.applicationContext)
-                result.success(Json.encodeToString(sources))
+                val sources = deviceManager.getCameraList()
+                result.success(json.encodeToString(sources))
             }
 
             else -> {

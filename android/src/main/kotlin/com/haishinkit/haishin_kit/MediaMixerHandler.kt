@@ -3,9 +3,11 @@ package com.haishinkit.haishin_kit
 import android.graphics.Rect
 import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.haishinkit.device.CameraDevice
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.media.source.AudioRecordSource
+import com.haishinkit.media.AudioMixerSettings
 import com.haishinkit.media.source.Camera2Source
 import com.haishinkit.screen.ScreenObject.Companion.HORIZONTAL_ALIGNMENT_CENTER
 import com.haishinkit.screen.ScreenObject.Companion.VERTICAL_ALIGNMENT_MIDDLE
@@ -68,6 +70,7 @@ class MediaMixerHandler(
                     result.error("INVALID_ARGUMENT", "value is null", null)
                 } else {
                     val audioMixerSettings = json.decodeFromString<AudioMixerSettings>(value)
+                    mixer?.audioMixerSettings = audioMixerSettings
                     result.success(null)
                 }
             }
@@ -134,7 +137,7 @@ class MediaMixerHandler(
                     }
                 } else {
                     scope.launch {
-                        val videoSource = json.decodeFromString<VideoSource>(value)
+                        val videoSource = json.decodeFromString<CameraDevice>(value)
                         val cameraSource = Camera2Source(
                             plugin.flutterPluginBinding.applicationContext, videoSource.id
                         )
@@ -145,13 +148,17 @@ class MediaMixerHandler(
             }
 
             "$TAG#startRunning" -> {
-                // for iOS, macOS
-                result.success(null)
+                scope.launch {
+                    mixer?.startRunning()
+                    result.success(null)
+                }
             }
 
             "$TAG#stopRunning" -> {
-                // for iOS, macOS
-                result.success(null)
+                scope.launch {
+                    mixer?.stopRunning()
+                    result.success(null)
+                }
             }
 
             "$TAG#dispose" -> {
