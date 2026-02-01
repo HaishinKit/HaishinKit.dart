@@ -1,7 +1,7 @@
 package com.haishinkit.haishin_kit
 
 import androidx.core.net.toUri
-import com.haishinkit.device.DeviceManager
+import com.haishinkit.device.CameraDeviceManager
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.rtmp.RtmpStreamSessionFactory
 import com.haishinkit.stream.StreamSession
@@ -26,7 +26,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
     private lateinit var channel: MethodChannel
 
-    private lateinit var deviceManager: DeviceManager
+    private lateinit var deviceManager: CameraDeviceManager
 
     @OptIn(ExperimentalSerializationApi::class)
     private var json = Json {
@@ -50,7 +50,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
         this.flutterPluginBinding = flutterPluginBinding
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
         channel.setMethodCallHandler(this)
-        deviceManager = DeviceManager(flutterPluginBinding.applicationContext)
+        deviceManager = CameraDeviceManager(flutterPluginBinding.applicationContext)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -101,7 +101,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             "getVideoSources" -> {
-                val sources = deviceManager.getCameraList()
+                val sources = deviceManager.getDeviceList()
                 result.success(json.encodeToString(sources))
             }
 

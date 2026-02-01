@@ -53,7 +53,7 @@ class StreamSessionHandler(
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        Log.d(TAG, "onMethodCall: " + call.method)
+        Log.d(TAG, "onMethodCall: " + call.method + "()")
         if (session == null) {
             result.error(HaishinKitPlugin.ILLEGAL_STATE, "session is disposed.", null)
             return
