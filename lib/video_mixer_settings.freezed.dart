@@ -55,6 +55,7 @@ abstract class $VideoMixerSettingsCopyWith<$Res> {
   factory $VideoMixerSettingsCopyWith(
           VideoMixerSettings value, $Res Function(VideoMixerSettings) then) =
       _$VideoMixerSettingsCopyWithImpl<$Res, VideoMixerSettings>;
+
   @useResult
   $Res call(
       {@JsonKey(
@@ -72,6 +73,7 @@ class _$VideoMixerSettingsCopyWithImpl<$Res, $Val extends VideoMixerSettings>
 
   // ignore: unused_field
   final $Val _value;
+
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -107,6 +109,7 @@ abstract class _$$VideoMixerSettingsImplCopyWith<$Res>
   factory _$$VideoMixerSettingsImplCopyWith(_$VideoMixerSettingsImpl value,
           $Res Function(_$VideoMixerSettingsImpl) then) =
       __$$VideoMixerSettingsImplCopyWithImpl<$Res>;
+
   @override
   @useResult
   $Res call(
