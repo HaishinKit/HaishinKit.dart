@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
+import '../haishin_kit/platform_interface_haishin_kit.dart';
 import 'audio_codec_settings.dart';
-import 'platform_interface_haishin_kit.dart';
 import 'platform_interface_stream_session.dart';
 import 'stream_session_exception.dart';
 import 'stream_session_mode.dart';
