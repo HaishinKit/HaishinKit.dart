@@ -1,8 +1,8 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import '../media_mixer/video_source.dart';
+import '../stream_session/stream_session_mode.dart';
 import 'method_channel_haishin_kit.dart';
-import 'stream_session_mode.dart';
-import 'video_source.dart';
 
 /// The HaishinKit platform interface.
 abstract class HaishinKitPlatformInterface extends PlatformInterface {

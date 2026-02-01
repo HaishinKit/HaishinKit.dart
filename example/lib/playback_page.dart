@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/stream_session.dart';
-import 'package:haishin_kit/stream_session_mode.dart';
-import 'package:haishin_kit/stream_session_ready_state.dart';
-import 'package:haishin_kit/stream_session_view_texture.dart';
+import 'package:haishin_kit/haishin_kit.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:audio_session/audio_session.dart';
 
@@ -75,8 +72,8 @@ class _PlaybackState extends State<PlaybackPage> {
           AVAudioSessionCategoryOptions.allowBluetooth,
     ));
 
-    StreamSession session =
-        await StreamSession.create(Preference.shared.makeUrl(), StreamSessionMode.playback);
+    StreamSession session = await StreamSession.create(
+        Preference.shared.makeUrl(), StreamSessionMode.playback);
 
     setState(() {
       _session = session;

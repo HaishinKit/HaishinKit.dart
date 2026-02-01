@@ -2,18 +2,9 @@ import 'dart:io';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/audio_source.dart';
-import 'package:haishin_kit/platform_interface_haishin_kit.dart';
-import 'package:haishin_kit/screen_settings.dart';
-import 'package:haishin_kit/stream_session.dart';
-import 'package:haishin_kit/stream_session_exception.dart';
-import 'package:haishin_kit/stream_session_mode.dart';
-import 'package:haishin_kit/stream_session_ready_state.dart';
-import 'package:haishin_kit/stream_session_view_texture.dart';
-import 'package:haishin_kit/video_source.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:haishin_kit/media_mixer.dart';
+import 'package:haishin_kit/haishin_kit.dart';
 
 /// This is a sample page for publish RTMP streams.
 class PublishPage extends StatefulWidget {
