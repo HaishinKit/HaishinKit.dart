@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+
+import 'platform_interface_haishin_kit.dart';
 import 'stream_session_mode.dart';
 import 'video_source.dart';
-import 'haishin_kit_platform_interface.dart';
 
 /// The method channel implementation of [HaishinKitPlatformInterface]
 class MethodChannelHaishinKit extends HaishinKitPlatformInterface {

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
-import 'package:haishin_kit/haishin_kit_platform_interface.dart';
+import 'package:haishin_kit/platform_interface_haishin_kit.dart';
 import 'package:haishin_kit/screen_settings.dart';
 import 'package:haishin_kit/stream_session.dart';
 import 'package:haishin_kit/stream_session_exception.dart';

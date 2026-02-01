@@ -1,4 +1,4 @@
-import 'haishin_kit_platform_interface.dart';
+import 'platform_interface_haishin_kit.dart';
 
 class HaishinKit {
   Future<String?> getPlatformVersion() {

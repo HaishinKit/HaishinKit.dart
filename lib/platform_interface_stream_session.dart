@@ -1,5 +1,6 @@
-import 'method_channel_stream_session.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+
+import 'method_channel_stream_session.dart';
 
 /// The HaishinKit Session platform interface
 abstract class StreamSessionPlatformInterface extends PlatformInterface {

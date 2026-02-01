@@ -1,14 +1,16 @@
+import 'dart:convert' as convert;
+
 import 'package:flutter/services.dart';
-import 'haishin_kit_platform_interface.dart';
-import 'media_mixer_platform_interface.dart';
-import 'media_mixer_exception.dart';
-import 'screen_settings.dart';
-import 'video_source.dart';
+
+import 'audio_mixer_settings.dart';
 import 'audio_source.dart';
 import 'av_capture_session_preset.dart';
+import 'media_mixer_exception.dart';
+import 'platform_interface_haishin_kit.dart';
+import 'platform_interface_media_mixer.dart';
+import 'screen_settings.dart';
 import 'video_mixer_settings.dart';
-import 'audio_mixer_settings.dart';
-import 'dart:convert' as convert;
+import 'video_source.dart';
 
 class MediaMixer {
   static Future<MediaMixer> create() async {

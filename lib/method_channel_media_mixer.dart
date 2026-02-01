@@ -1,5 +1,5 @@
-import 'media_mixer_platform_interface.dart';
 import 'method_channel_haishin_kit.dart';
+import 'platform_interface_media_mixer.dart';
 
 /// The method channel implementation of [MediaMixerPlatformInterface]
 class MethodChannelMediaMixer extends MediaMixerPlatformInterface {

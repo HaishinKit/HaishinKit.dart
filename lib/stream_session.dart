@@ -1,12 +1,12 @@
-import 'haishin_kit_platform_interface.dart';
-import 'stream_session_exception.dart';
-import 'stream_session_mode.dart';
-import 'stream_session_platform_interface.dart';
-import 'stream_session_ready_state.dart';
-import 'video_codec_settings.dart';
 import 'package:flutter/services.dart';
 
 import 'audio_codec_settings.dart';
+import 'platform_interface_haishin_kit.dart';
+import 'platform_interface_stream_session.dart';
+import 'stream_session_exception.dart';
+import 'stream_session_mode.dart';
+import 'stream_session_ready_state.dart';
+import 'video_codec_settings.dart';
 
 final class StreamSession {
   static Future<StreamSession> create(
