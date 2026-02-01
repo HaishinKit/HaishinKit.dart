@@ -46,7 +46,6 @@ abstract class $VideoSourceCopyWith<$Res> {
   factory $VideoSourceCopyWith(
           VideoSource value, $Res Function(VideoSource) then) =
       _$VideoSourceCopyWithImpl<$Res, VideoSource>;
-
   @useResult
   $Res call({String id, String? name, CameraPosition position});
 }
@@ -58,7 +57,6 @@ class _$VideoSourceCopyWithImpl<$Res, $Val extends VideoSource>
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -94,7 +92,6 @@ abstract class _$$VideoSourceImplCopyWith<$Res>
   factory _$$VideoSourceImplCopyWith(
           _$VideoSourceImpl value, $Res Function(_$VideoSourceImpl) then) =
       __$$VideoSourceImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({String id, String? name, CameraPosition position});

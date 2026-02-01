@@ -1,21 +1,16 @@
 import 'dart:convert' as convert;
 
 import 'package:flutter/services.dart';
+import 'package:haishin_kit/haishin_kit.dart';
 
-import '../haishin_kit/platform_interface_haishin_kit.dart';
 import '../stream_session/av_capture_session_preset.dart';
-import 'audio_mixer_settings.dart';
-import 'audio_source.dart';
-import 'media_mixer_exception.dart';
 import 'platform_interface_media_mixer.dart';
-import 'screen_settings.dart';
-import 'video_mixer_settings.dart';
-import 'video_source.dart';
 
 class MediaMixer {
   static Future<MediaMixer> create() async {
     var object = MediaMixer._();
     object._memory = await HaishinKitPlatformInterface.instance.newMediaMixer();
+    object._screen = await Screen.create(object);
     return object;
   }
 
@@ -92,6 +87,10 @@ class MediaMixer {
       "value": convert.json.encode(audioMixerSettings.toJson())
     });
   }
+
+  Screen? _screen;
+
+  Screen? get screen => _screen;
 
   MediaMixer._();
 

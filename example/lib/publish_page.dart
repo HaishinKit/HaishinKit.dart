@@ -6,7 +6,7 @@ import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:haishin_kit/haishin_kit.dart';
 
-/// This is a sample page for publish RTMP streams.
+/// This is a sample page for publish sessions.
 class PublishPage extends StatefulWidget {
   const PublishPage({super.key});
 

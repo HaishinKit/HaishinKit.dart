@@ -61,6 +61,10 @@ class MediaMixerHandler(
         mixer?.unregisterOutput(output)
     }
 
+    fun createScreenHandler(): ScreenHandler {
+        return ScreenHandler(mixer?.screen)
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d(TAG, "onMethodCall: " + call.method)
         when (call.method) {

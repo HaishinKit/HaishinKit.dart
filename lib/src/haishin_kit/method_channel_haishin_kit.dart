@@ -22,6 +22,11 @@ class MethodChannelHaishinKit extends HaishinKitPlatformInterface {
   }
 
   @override
+  Future<int?> newScreen(int? mixer) async {
+    return await channel.invokeMethod("newScreen", {"mixer": mixer});
+  }
+
+  @override
   Future<List<VideoSource>> get videoSources async {
     final String? result =
         await channel.invokeMethod<String>('getVideoSources');

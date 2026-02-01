@@ -1,5 +1,6 @@
 package com.haishinkit.haishin_kit
 
+import android.util.Log
 import androidx.core.net.toUri
 import com.haishinkit.device.CameraDeviceManager
 import com.haishinkit.media.MediaOutput
@@ -13,6 +14,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.apply
 
 class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     companion object {
@@ -93,6 +95,16 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
                     result.success(handler.hashCode())
                 } else {
                     result.notImplemented()
+                }
+            }
+            "newScreen" -> {
+                val mixer = call.argument<Int>("mixer")
+                val handler = (handlers[mixer] as? MediaMixerHandler)?.createScreenHandler()
+                if (handler == null) {
+                    result.notImplemented()
+                } else {
+                    handlers[handler.hashCode()] = handler
+                    result.success(handler.hashCode())
                 }
             }
 

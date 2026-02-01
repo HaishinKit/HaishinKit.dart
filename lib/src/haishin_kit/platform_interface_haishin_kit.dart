@@ -31,6 +31,10 @@ abstract class HaishinKitPlatformInterface extends PlatformInterface {
     throw UnimplementedError('newMediaMixer() has not been implemented.');
   }
 
+  Future<int?> newScreen(int? mixer) {
+    throw UnimplementedError("newScreen() has not been implemented.");
+  }
+
   /// Gets the HaishinKit library version.
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('getPlatformVersion() has not been implemented.');
