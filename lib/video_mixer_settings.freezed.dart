@@ -20,11 +20,24 @@ VideoMixerSettings _$VideoMixerSettingsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$VideoMixerSettings {
+  /// Specifies how video frames are rendered.
+  ///
+  /// If the value is missing or an unknown enum value is received from JSON,
+  /// [VideoRenderingMode.offscreen] will be used as the default.
   @JsonKey(
       defaultValue: VideoRenderingMode.offscreen,
       unknownEnumValue: VideoRenderingMode.offscreen)
   VideoRenderingMode get mode => throw _privateConstructorUsedError;
+
+  /// Whether the video output is muted.
+  ///
+  /// When set to `true`, video frames are not rendered or mixed.
   bool get isMuted => throw _privateConstructorUsedError;
+
+  /// Index of the main video track.
+  ///
+  /// This value is typically used when multiple video tracks are available
+  /// and one of them should be treated as the primary source.
   int get mainTrack => throw _privateConstructorUsedError;
 
   /// Serializes this VideoMixerSettings to a JSON map.
@@ -155,14 +168,27 @@ class _$VideoMixerSettingsImpl
   factory _$VideoMixerSettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$VideoMixerSettingsImplFromJson(json);
 
+  /// Specifies how video frames are rendered.
+  ///
+  /// If the value is missing or an unknown enum value is received from JSON,
+  /// [VideoRenderingMode.offscreen] will be used as the default.
   @override
   @JsonKey(
       defaultValue: VideoRenderingMode.offscreen,
       unknownEnumValue: VideoRenderingMode.offscreen)
   final VideoRenderingMode mode;
+
+  /// Whether the video output is muted.
+  ///
+  /// When set to `true`, video frames are not rendered or mixed.
   @override
   @JsonKey()
   final bool isMuted;
+
+  /// Index of the main video track.
+  ///
+  /// This value is typically used when multiple video tracks are available
+  /// and one of them should be treated as the primary source.
   @override
   @JsonKey()
   final int mainTrack;
@@ -226,13 +252,26 @@ abstract class _VideoMixerSettings implements VideoMixerSettings {
   factory _VideoMixerSettings.fromJson(Map<String, dynamic> json) =
       _$VideoMixerSettingsImpl.fromJson;
 
+  /// Specifies how video frames are rendered.
+  ///
+  /// If the value is missing or an unknown enum value is received from JSON,
+  /// [VideoRenderingMode.offscreen] will be used as the default.
   @override
   @JsonKey(
       defaultValue: VideoRenderingMode.offscreen,
       unknownEnumValue: VideoRenderingMode.offscreen)
   VideoRenderingMode get mode;
+
+  /// Whether the video output is muted.
+  ///
+  /// When set to `true`, video frames are not rendered or mixed.
   @override
   bool get isMuted;
+
+  /// Index of the main video track.
+  ///
+  /// This value is typically used when multiple video tracks are available
+  /// and one of them should be treated as the primary source.
   @override
   int get mainTrack;
 
