@@ -21,12 +21,16 @@ ScreenObjectEdgeInsets _$ScreenObjectEdgeInsetsFromJson(
 
 /// @nodoc
 mixin _$ScreenObjectEdgeInsets {
+  /// The inset on the top side.
   int get top => throw _privateConstructorUsedError;
 
+  /// The inset on the left side.
   int get left => throw _privateConstructorUsedError;
 
+  /// The inset on the bottom side.
   int get bottom => throw _privateConstructorUsedError;
 
+  /// The inset on the right side.
   int get right => throw _privateConstructorUsedError;
 
   /// Serializes this ScreenObjectEdgeInsets to a JSON map.
@@ -44,7 +48,6 @@ abstract class $ScreenObjectEdgeInsetsCopyWith<$Res> {
   factory $ScreenObjectEdgeInsetsCopyWith(ScreenObjectEdgeInsets value,
           $Res Function(ScreenObjectEdgeInsets) then) =
       _$ScreenObjectEdgeInsetsCopyWithImpl<$Res, ScreenObjectEdgeInsets>;
-
   @useResult
   $Res call({int top, int left, int bottom, int right});
 }
@@ -57,7 +60,6 @@ class _$ScreenObjectEdgeInsetsCopyWithImpl<$Res,
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -99,7 +101,6 @@ abstract class _$$ScreenObjectEdgeInsetsImplCopyWith<$Res>
           _$ScreenObjectEdgeInsetsImpl value,
           $Res Function(_$ScreenObjectEdgeInsetsImpl) then) =
       __$$ScreenObjectEdgeInsetsImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({int top, int left, int bottom, int right});
@@ -158,12 +159,19 @@ class _$ScreenObjectEdgeInsetsImpl implements _ScreenObjectEdgeInsets {
   factory _$ScreenObjectEdgeInsetsImpl.fromJson(Map<String, dynamic> json) =>
       _$$ScreenObjectEdgeInsetsImplFromJson(json);
 
+  /// The inset on the top side.
   @override
   final int top;
+
+  /// The inset on the left side.
   @override
   final int left;
+
+  /// The inset on the bottom side.
   @override
   final int bottom;
+
+  /// The inset on the right side.
   @override
   final int right;
 
@@ -214,15 +222,19 @@ abstract class _ScreenObjectEdgeInsets implements ScreenObjectEdgeInsets {
   factory _ScreenObjectEdgeInsets.fromJson(Map<String, dynamic> json) =
       _$ScreenObjectEdgeInsetsImpl.fromJson;
 
+  /// The inset on the top side.
   @override
   int get top;
 
+  /// The inset on the left side.
   @override
   int get left;
 
+  /// The inset on the bottom side.
   @override
   int get bottom;
 
+  /// The inset on the right side.
   @override
   int get right;
 

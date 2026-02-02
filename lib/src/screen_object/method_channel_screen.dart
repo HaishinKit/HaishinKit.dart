@@ -15,8 +15,8 @@ class MethodChannelScreen extends ScreenPlatformInterface {
   }
 
   @override
-  Future<void> update(Map<String, dynamic> params) async {
+  Future<void> layout(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Screen#update", params);
+        .invokeMethod<void>("Screen#layout", params);
   }
 }

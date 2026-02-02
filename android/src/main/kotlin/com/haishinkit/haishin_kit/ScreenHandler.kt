@@ -33,7 +33,7 @@ class ScreenHandler(
                     result.success(null)
                 }
             }
-            "$TAG#update" -> {
+            "$TAG#layout" -> {
                 val value = call.argument<String>("value")
                 if (value == null) {
                     result.error(INVALID_ARGUMENTS, null, null)

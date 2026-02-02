@@ -16,10 +16,13 @@ class ScreenObjectRect with _$ScreenObjectRect {
   const factory ScreenObjectRect({
     /// The horizontal position of the rectangle's top-left corner.
     required int x,
+
     ///  The vertical position of the rectangle's top-left corner.
     required int y,
+
     /// The width of the rectangle.
     required int width,
+
     /// The height of the rectangle.
     required int height,
   }) = _ScreenObjectRect;

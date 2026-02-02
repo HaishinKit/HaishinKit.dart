@@ -1,8 +1,11 @@
 import 'dart:convert' as convert;
 
-import 'package:haishin_kit/haishin_kit.dart';
-
+import '../haishin_kit/platform_interface_haishin_kit.dart';
+import '../media_mixer/media_mixer.dart';
 import 'platform_interface_screen.dart';
+import 'screen_object.dart';
+import 'screen_object_container.dart';
+import 'screen_renderer.dart';
 
 class Screen extends ScreenObjectContainer {
   static Future<Screen> create(MediaMixer mixer) async {
@@ -13,13 +16,13 @@ class Screen extends ScreenObjectContainer {
   }
 
   int? _memory;
+  late final ScreenRenderer _renderer = _createRenderer();
 
   Screen._();
 
   @override
-  Future<void> addChild(ScreenObject child) async {
+  void addChild(ScreenObject child) {
     assert(_memory != null);
-
     ScreenPlatformInterface.instance.addChild({
       "memory": _memory,
       "value": convert.json.encode(child.snapshot().toJson())
@@ -28,7 +31,7 @@ class Screen extends ScreenObjectContainer {
   }
 
   @override
-  Future<void> removeChild(ScreenObject child) async {
+  void removeChild(ScreenObject child) {
     assert(_memory != null);
     ScreenPlatformInterface.instance.removeChild({
       "memory": _memory,
@@ -37,11 +40,13 @@ class Screen extends ScreenObjectContainer {
     return super.addChild(child);
   }
 
-  Future<void> update(ScreenObject object) async {
-    assert(_memory != null);
-    return ScreenPlatformInterface.instance.update({
-      "memory": _memory,
-      "value": convert.json.encode(object.snapshot().toJson())
-    });
+  @override
+  void invalidateLayout() {
+    layout(_renderer);
+    super.invalidateLayout();
+  }
+
+  ScreenRenderer _createRenderer() {
+    return PlatformScreenRenderer(_memory!);
   }
 }

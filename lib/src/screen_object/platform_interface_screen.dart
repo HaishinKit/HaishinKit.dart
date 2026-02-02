@@ -24,7 +24,7 @@ abstract class ScreenPlatformInterface extends PlatformInterface {
     throw UnimplementedError('removeChild() has not been implemented.');
   }
 
-  Future<void> update(Map<String, dynamic> params) {
-    throw UnimplementedError('update() has not been implemented.');
+  Future<void> layout(Map<String, dynamic> params) {
+    throw UnimplementedError('layout() has not been implemented.');
   }
 }
