@@ -21,19 +21,12 @@ ScreenObjectSnapshot _$ScreenObjectSnapshotFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ScreenObjectSnapshot {
   String get type => throw _privateConstructorUsedError;
-
   String get id => throw _privateConstructorUsedError;
-
   ScreenObjectRect get frame => throw _privateConstructorUsedError;
-
   ScreenObjectEdgeInsets get layoutMargin => throw _privateConstructorUsedError;
-
   int get horizontalAlignment => throw _privateConstructorUsedError;
-
   int get verticalAlignment => throw _privateConstructorUsedError;
-
   Map<String, String> get elements => throw _privateConstructorUsedError;
-
   List<ScreenObjectSnapshot> get children => throw _privateConstructorUsedError;
 
   /// Serializes this ScreenObjectSnapshot to a JSON map.
@@ -51,7 +44,6 @@ abstract class $ScreenObjectSnapshotCopyWith<$Res> {
   factory $ScreenObjectSnapshotCopyWith(ScreenObjectSnapshot value,
           $Res Function(ScreenObjectSnapshot) then) =
       _$ScreenObjectSnapshotCopyWithImpl<$Res, ScreenObjectSnapshot>;
-
   @useResult
   $Res call(
       {String type,
@@ -64,7 +56,6 @@ abstract class $ScreenObjectSnapshotCopyWith<$Res> {
       List<ScreenObjectSnapshot> children});
 
   $ScreenObjectRectCopyWith<$Res> get frame;
-
   $ScreenObjectEdgeInsetsCopyWith<$Res> get layoutMargin;
 }
 
@@ -76,7 +67,6 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -157,7 +147,6 @@ abstract class _$$ScreenObjectSnapshotImplCopyWith<$Res>
   factory _$$ScreenObjectSnapshotImplCopyWith(_$ScreenObjectSnapshotImpl value,
           $Res Function(_$ScreenObjectSnapshotImpl) then) =
       __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call(
@@ -172,7 +161,6 @@ abstract class _$$ScreenObjectSnapshotImplCopyWith<$Res>
 
   @override
   $ScreenObjectRectCopyWith<$Res> get frame;
-
   @override
   $ScreenObjectEdgeInsetsCopyWith<$Res> get layoutMargin;
 }
@@ -267,7 +255,6 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
   @override
   final int verticalAlignment;
   final Map<String, String> _elements;
-
   @override
   Map<String, String> get elements {
     if (_elements is EqualUnmodifiableMapView) return _elements;
@@ -276,7 +263,6 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
   }
 
   final List<ScreenObjectSnapshot> _children;
-
   @override
   List<ScreenObjectSnapshot> get children {
     if (_children is EqualUnmodifiableListView) return _children;
@@ -355,25 +341,18 @@ abstract class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
 
   @override
   String get type;
-
   @override
   String get id;
-
   @override
   ScreenObjectRect get frame;
-
   @override
   ScreenObjectEdgeInsets get layoutMargin;
-
   @override
   int get horizontalAlignment;
-
   @override
   int get verticalAlignment;
-
   @override
   Map<String, String> get elements;
-
   @override
   List<ScreenObjectSnapshot> get children;
 

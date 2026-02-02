@@ -20,12 +20,16 @@ ScreenObjectRect _$ScreenObjectRectFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ScreenObjectRect {
+  /// The horizontal position of the rectangle's top-left corner.
   int get x => throw _privateConstructorUsedError;
 
+  ///  The vertical position of the rectangle's top-left corner.
   int get y => throw _privateConstructorUsedError;
 
+  /// The width of the rectangle.
   int get width => throw _privateConstructorUsedError;
 
+  /// The height of the rectangle.
   int get height => throw _privateConstructorUsedError;
 
   /// Serializes this ScreenObjectRect to a JSON map.
@@ -43,7 +47,6 @@ abstract class $ScreenObjectRectCopyWith<$Res> {
   factory $ScreenObjectRectCopyWith(
           ScreenObjectRect value, $Res Function(ScreenObjectRect) then) =
       _$ScreenObjectRectCopyWithImpl<$Res, ScreenObjectRect>;
-
   @useResult
   $Res call({int x, int y, int width, int height});
 }
@@ -55,7 +58,6 @@ class _$ScreenObjectRectCopyWithImpl<$Res, $Val extends ScreenObjectRect>
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -96,7 +98,6 @@ abstract class _$$ScreenObjectRectImplCopyWith<$Res>
   factory _$$ScreenObjectRectImplCopyWith(_$ScreenObjectRectImpl value,
           $Res Function(_$ScreenObjectRectImpl) then) =
       __$$ScreenObjectRectImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({int x, int y, int width, int height});
@@ -153,12 +154,19 @@ class _$ScreenObjectRectImpl implements _ScreenObjectRect {
   factory _$ScreenObjectRectImpl.fromJson(Map<String, dynamic> json) =>
       _$$ScreenObjectRectImplFromJson(json);
 
+  /// The horizontal position of the rectangle's top-left corner.
   @override
   final int x;
+
+  ///  The vertical position of the rectangle's top-left corner.
   @override
   final int y;
+
+  /// The width of the rectangle.
   @override
   final int width;
+
+  /// The height of the rectangle.
   @override
   final int height;
 
@@ -209,15 +217,19 @@ abstract class _ScreenObjectRect implements ScreenObjectRect {
   factory _ScreenObjectRect.fromJson(Map<String, dynamic> json) =
       _$ScreenObjectRectImpl.fromJson;
 
+  /// The horizontal position of the rectangle's top-left corner.
   @override
   int get x;
 
+  ///  The vertical position of the rectangle's top-left corner.
   @override
   int get y;
 
+  /// The width of the rectangle.
   @override
   int get width;
 
+  /// The height of the rectangle.
   @override
   int get height;
 
