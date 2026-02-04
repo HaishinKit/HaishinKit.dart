@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'screen_object.dart';
 
 /// An object that manages offscreen rendering a text source.
@@ -17,16 +19,16 @@ final class TextScreenObject extends ScreenObject {
     invalidateLayout();
   }
 
-  int _color = 0xFFFFFFFF;
+  Color _color = Colors.white;
 
   /// Gets the text color in ARGB format (`0xAARRGGBB`).
-  int get color => _color;
+  Color get color => _color;
 
   /// Sets the text color.
   ///
   /// If the same value is assigned, the update is ignored to avoid
   /// unnecessary layout invalidation.
-  set color(int value) {
+  set color(Color value) {
     if (_color == value) return;
     _color = value;
     invalidateLayout();
@@ -50,7 +52,8 @@ final class TextScreenObject extends ScreenObject {
   Map<String, String> get elements {
     return {
       "value": value,
-      "color": '#${color.toRadixString(16).padLeft(8, '0').toUpperCase()}',
+      "color":
+          '#${color.toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase()}',
       "size": size.toString()
     };
   }
@@ -58,8 +61,15 @@ final class TextScreenObject extends ScreenObject {
   @override
   set elements(Map<String, String> value) {
     _value = value["value"] ?? "";
-    _color = int.parse((value["color"] ?? '#FFFFFFFF').replaceFirst('#', ''),
-        radix: 16);
+    _color = _colorFromHex((value["color"] ?? '#FFFFFFFF'));
     _size = double.tryParse(value["size"] ?? '') ?? 0.0;
   }
+}
+
+Color _colorFromHex(String hex) {
+  final value = int.parse(
+    hex.replaceFirst('#', ''),
+    radix: 16,
+  );
+  return Color(value);
 }
