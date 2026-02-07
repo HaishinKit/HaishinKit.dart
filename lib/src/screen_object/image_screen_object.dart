@@ -58,9 +58,7 @@ class ImageScreenObject extends ScreenObject {
   @override
   set elements(Map<String, String> value) {
     final base64 = value['bitmap'];
-    _bitmap = (base64 == null || base64.isEmpty)
-        ? null
-        : base64Decode(base64);
+    _bitmap = (base64 == null || base64.isEmpty) ? null : base64Decode(base64);
     invalidateLayout();
   }
 }

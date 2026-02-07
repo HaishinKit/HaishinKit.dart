@@ -20,13 +20,55 @@ ScreenObjectSnapshot _$ScreenObjectSnapshotFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ScreenObjectSnapshot {
+  /// The type identifier of the screen object.
+  ///
+  /// This value is used to determine how the object should be interpreted
+  /// or rendered (for example: `"image"`, `"text"`).
   String get type => throw _privateConstructorUsedError;
+
+  /// The unique identifier of the screen object.
+  ///
+  /// This ID is stable across snapshots and can be used to track the same
+  /// object over time.
   String get id => throw _privateConstructorUsedError;
+
+  /// The layout frame of the object in screen coordinates.
+  ///
+  /// This defines the position and size of the object.
   ScreenObjectRect get frame => throw _privateConstructorUsedError;
+
+  /// Whether the object is currently visible.
+  ///
+  /// When `false`, the object should be ignored during rendering.
+  bool get isVisible => throw _privateConstructorUsedError;
+
+  /// The margin applied around the object during layout.
+  ///
+  /// This value affects how the object is positioned relative to its
+  /// parent and siblings.
   ScreenObjectEdgeInsets get layoutMargin => throw _privateConstructorUsedError;
+
+  /// The horizontal alignment of the object within its parent.
+  ///
+  /// The value is represented as an integer and typically maps to
+  /// predefined alignment constants.
   int get horizontalAlignment => throw _privateConstructorUsedError;
+
+  /// The vertical alignment of the object within its parent.
+  ///
+  /// The value is represented as an integer and typically maps to
+  /// predefined alignment constants.
   int get verticalAlignment => throw _privateConstructorUsedError;
+
+  /// A map of element-specific properties.
+  ///
+  /// The contents of this map depend on the object [type]. For example,
+  /// an image object may store Base64-encoded bitmap data.
   Map<String, String> get elements => throw _privateConstructorUsedError;
+
+  /// Child object snapshots.
+  ///
+  /// This allows screen objects to form a hierarchical tree structure.
   List<ScreenObjectSnapshot> get children => throw _privateConstructorUsedError;
 
   /// Serializes this ScreenObjectSnapshot to a JSON map.
@@ -44,11 +86,13 @@ abstract class $ScreenObjectSnapshotCopyWith<$Res> {
   factory $ScreenObjectSnapshotCopyWith(ScreenObjectSnapshot value,
           $Res Function(ScreenObjectSnapshot) then) =
       _$ScreenObjectSnapshotCopyWithImpl<$Res, ScreenObjectSnapshot>;
+
   @useResult
   $Res call(
       {String type,
       String id,
       ScreenObjectRect frame,
+      bool isVisible,
       ScreenObjectEdgeInsets layoutMargin,
       int horizontalAlignment,
       int verticalAlignment,
@@ -56,6 +100,7 @@ abstract class $ScreenObjectSnapshotCopyWith<$Res> {
       List<ScreenObjectSnapshot> children});
 
   $ScreenObjectRectCopyWith<$Res> get frame;
+
   $ScreenObjectEdgeInsetsCopyWith<$Res> get layoutMargin;
 }
 
@@ -67,6 +112,7 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
 
   // ignore: unused_field
   final $Val _value;
+
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -78,6 +124,7 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
     Object? type = null,
     Object? id = null,
     Object? frame = null,
+    Object? isVisible = null,
     Object? layoutMargin = null,
     Object? horizontalAlignment = null,
     Object? verticalAlignment = null,
@@ -97,6 +144,10 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
           ? _value.frame
           : frame // ignore: cast_nullable_to_non_nullable
               as ScreenObjectRect,
+      isVisible: null == isVisible
+          ? _value.isVisible
+          : isVisible // ignore: cast_nullable_to_non_nullable
+              as bool,
       layoutMargin: null == layoutMargin
           ? _value.layoutMargin
           : layoutMargin // ignore: cast_nullable_to_non_nullable
@@ -147,12 +198,14 @@ abstract class _$$ScreenObjectSnapshotImplCopyWith<$Res>
   factory _$$ScreenObjectSnapshotImplCopyWith(_$ScreenObjectSnapshotImpl value,
           $Res Function(_$ScreenObjectSnapshotImpl) then) =
       __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>;
+
   @override
   @useResult
   $Res call(
       {String type,
       String id,
       ScreenObjectRect frame,
+      bool isVisible,
       ScreenObjectEdgeInsets layoutMargin,
       int horizontalAlignment,
       int verticalAlignment,
@@ -161,6 +214,7 @@ abstract class _$$ScreenObjectSnapshotImplCopyWith<$Res>
 
   @override
   $ScreenObjectRectCopyWith<$Res> get frame;
+
   @override
   $ScreenObjectEdgeInsetsCopyWith<$Res> get layoutMargin;
 }
@@ -181,6 +235,7 @@ class __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>
     Object? type = null,
     Object? id = null,
     Object? frame = null,
+    Object? isVisible = null,
     Object? layoutMargin = null,
     Object? horizontalAlignment = null,
     Object? verticalAlignment = null,
@@ -200,6 +255,10 @@ class __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>
           ? _value.frame
           : frame // ignore: cast_nullable_to_non_nullable
               as ScreenObjectRect,
+      isVisible: null == isVisible
+          ? _value.isVisible
+          : isVisible // ignore: cast_nullable_to_non_nullable
+              as bool,
       layoutMargin: null == layoutMargin
           ? _value.layoutMargin
           : layoutMargin // ignore: cast_nullable_to_non_nullable
@@ -231,6 +290,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
       {required this.type,
       required this.id,
       required this.frame,
+      required this.isVisible,
       required this.layoutMargin,
       required this.horizontalAlignment,
       required this.verticalAlignment,
@@ -242,19 +302,63 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
   factory _$ScreenObjectSnapshotImpl.fromJson(Map<String, dynamic> json) =>
       _$$ScreenObjectSnapshotImplFromJson(json);
 
+  /// The type identifier of the screen object.
+  ///
+  /// This value is used to determine how the object should be interpreted
+  /// or rendered (for example: `"image"`, `"text"`).
   @override
   final String type;
+
+  /// The unique identifier of the screen object.
+  ///
+  /// This ID is stable across snapshots and can be used to track the same
+  /// object over time.
   @override
   final String id;
+
+  /// The layout frame of the object in screen coordinates.
+  ///
+  /// This defines the position and size of the object.
   @override
   final ScreenObjectRect frame;
+
+  /// Whether the object is currently visible.
+  ///
+  /// When `false`, the object should be ignored during rendering.
+  @override
+  final bool isVisible;
+
+  /// The margin applied around the object during layout.
+  ///
+  /// This value affects how the object is positioned relative to its
+  /// parent and siblings.
   @override
   final ScreenObjectEdgeInsets layoutMargin;
+
+  /// The horizontal alignment of the object within its parent.
+  ///
+  /// The value is represented as an integer and typically maps to
+  /// predefined alignment constants.
   @override
   final int horizontalAlignment;
+
+  /// The vertical alignment of the object within its parent.
+  ///
+  /// The value is represented as an integer and typically maps to
+  /// predefined alignment constants.
   @override
   final int verticalAlignment;
+
+  /// A map of element-specific properties.
+  ///
+  /// The contents of this map depend on the object [type]. For example,
+  /// an image object may store Base64-encoded bitmap data.
   final Map<String, String> _elements;
+
+  /// A map of element-specific properties.
+  ///
+  /// The contents of this map depend on the object [type]. For example,
+  /// an image object may store Base64-encoded bitmap data.
   @override
   Map<String, String> get elements {
     if (_elements is EqualUnmodifiableMapView) return _elements;
@@ -262,7 +366,14 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
     return EqualUnmodifiableMapView(_elements);
   }
 
+  /// Child object snapshots.
+  ///
+  /// This allows screen objects to form a hierarchical tree structure.
   final List<ScreenObjectSnapshot> _children;
+
+  /// Child object snapshots.
+  ///
+  /// This allows screen objects to form a hierarchical tree structure.
   @override
   List<ScreenObjectSnapshot> get children {
     if (_children is EqualUnmodifiableListView) return _children;
@@ -272,7 +383,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
 
   @override
   String toString() {
-    return 'ScreenObjectSnapshot(type: $type, id: $id, frame: $frame, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
+    return 'ScreenObjectSnapshot(type: $type, id: $id, frame: $frame, isVisible: $isVisible, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
   }
 
   @override
@@ -283,6 +394,8 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.frame, frame) || other.frame == frame) &&
+            (identical(other.isVisible, isVisible) ||
+                other.isVisible == isVisible) &&
             (identical(other.layoutMargin, layoutMargin) ||
                 other.layoutMargin == layoutMargin) &&
             (identical(other.horizontalAlignment, horizontalAlignment) ||
@@ -300,6 +413,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
       type,
       id,
       frame,
+      isVisible,
       layoutMargin,
       horizontalAlignment,
       verticalAlignment,
@@ -329,6 +443,7 @@ abstract class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
           {required final String type,
           required final String id,
           required final ScreenObjectRect frame,
+          required final bool isVisible,
           required final ScreenObjectEdgeInsets layoutMargin,
           required final int horizontalAlignment,
           required final int verticalAlignment,
@@ -339,20 +454,63 @@ abstract class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
   factory _ScreenObjectSnapshot.fromJson(Map<String, dynamic> json) =
       _$ScreenObjectSnapshotImpl.fromJson;
 
+  /// The type identifier of the screen object.
+  ///
+  /// This value is used to determine how the object should be interpreted
+  /// or rendered (for example: `"image"`, `"text"`).
   @override
   String get type;
+
+  /// The unique identifier of the screen object.
+  ///
+  /// This ID is stable across snapshots and can be used to track the same
+  /// object over time.
   @override
   String get id;
+
+  /// The layout frame of the object in screen coordinates.
+  ///
+  /// This defines the position and size of the object.
   @override
   ScreenObjectRect get frame;
+
+  /// Whether the object is currently visible.
+  ///
+  /// When `false`, the object should be ignored during rendering.
+  @override
+  bool get isVisible;
+
+  /// The margin applied around the object during layout.
+  ///
+  /// This value affects how the object is positioned relative to its
+  /// parent and siblings.
   @override
   ScreenObjectEdgeInsets get layoutMargin;
+
+  /// The horizontal alignment of the object within its parent.
+  ///
+  /// The value is represented as an integer and typically maps to
+  /// predefined alignment constants.
   @override
   int get horizontalAlignment;
+
+  /// The vertical alignment of the object within its parent.
+  ///
+  /// The value is represented as an integer and typically maps to
+  /// predefined alignment constants.
   @override
   int get verticalAlignment;
+
+  /// A map of element-specific properties.
+  ///
+  /// The contents of this map depend on the object [type]. For example,
+  /// an image object may store Base64-encoded bitmap data.
   @override
   Map<String, String> get elements;
+
+  /// Child object snapshots.
+  ///
+  /// This allows screen objects to form a hierarchical tree structure.
   @override
   List<ScreenObjectSnapshot> get children;
 

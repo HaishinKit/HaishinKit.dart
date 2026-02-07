@@ -47,6 +47,7 @@ abstract class $ScreenObjectRectCopyWith<$Res> {
   factory $ScreenObjectRectCopyWith(
           ScreenObjectRect value, $Res Function(ScreenObjectRect) then) =
       _$ScreenObjectRectCopyWithImpl<$Res, ScreenObjectRect>;
+
   @useResult
   $Res call({int x, int y, int width, int height});
 }
@@ -58,6 +59,7 @@ class _$ScreenObjectRectCopyWithImpl<$Res, $Val extends ScreenObjectRect>
 
   // ignore: unused_field
   final $Val _value;
+
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -98,6 +100,7 @@ abstract class _$$ScreenObjectRectImplCopyWith<$Res>
   factory _$$ScreenObjectRectImplCopyWith(_$ScreenObjectRectImpl value,
           $Res Function(_$ScreenObjectRectImpl) then) =
       __$$ScreenObjectRectImplCopyWithImpl<$Res>;
+
   @override
   @useResult
   $Res call({int x, int y, int width, int height});

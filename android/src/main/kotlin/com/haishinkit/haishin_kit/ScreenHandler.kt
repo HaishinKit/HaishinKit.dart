@@ -49,7 +49,8 @@ class ScreenHandler(
         val snapshot = json.decodeFromString<ScreenObjectSnapshot>(value)
         val screenObject =
             screen?.findById(snapshot.id) ?: return screenObjectFactory.create(snapshot)
-        screenObject.layoutMargins.set(snapshot.layoutMargin)
+        screenObject.isVisible = snapshot.isVisible
+        screenObject.layoutMargin.set(snapshot.layoutMargin)
         screenObject.horizontalAlignment = snapshot.horizontalAlignment
         screenObject.verticalAlignment = snapshot.verticalAlignment
         screenObject.elements = snapshot.elements

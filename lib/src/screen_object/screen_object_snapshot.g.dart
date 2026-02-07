@@ -12,6 +12,7 @@ _$ScreenObjectSnapshotImpl _$$ScreenObjectSnapshotImplFromJson(
       type: json['type'] as String,
       id: json['id'] as String,
       frame: ScreenObjectRect.fromJson(json['frame'] as Map<String, dynamic>),
+      isVisible: json['isVisible'] as bool,
       layoutMargin: ScreenObjectEdgeInsets.fromJson(
           json['layoutMargin'] as Map<String, dynamic>),
       horizontalAlignment: (json['horizontalAlignment'] as num).toInt(),
@@ -28,6 +29,7 @@ Map<String, dynamic> _$$ScreenObjectSnapshotImplToJson(
       'type': instance.type,
       'id': instance.id,
       'frame': instance.frame,
+      'isVisible': instance.isVisible,
       'layoutMargin': instance.layoutMargin,
       'horizontalAlignment': instance.horizontalAlignment,
       'verticalAlignment': instance.verticalAlignment,
