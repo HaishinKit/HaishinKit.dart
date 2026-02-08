@@ -1,6 +1,5 @@
 package com.haishinkit.haishin_kit
 
-import android.util.Log
 import com.haishinkit.screen.Screen
 import com.haishinkit.screen.ScreenObject
 import com.haishinkit.screen.ScreenObjectFactory
@@ -10,6 +9,7 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.serialization.json.Json
 
 class ScreenHandler(
+    private var plugin: HaishinKitPlugin?,
     private var screen: Screen?
 ) : MethodChannel.MethodCallHandler {
     private var json = Json {
@@ -33,6 +33,18 @@ class ScreenHandler(
                     result.success(null)
                 }
             }
+
+            "$TAG#removeChild" -> {
+                val value = call.argument<String>("value")
+                if (value == null) {
+                    result.error(INVALID_ARGUMENTS, null, null)
+                } else {
+                    val screenObject = screen?.findById(value)
+                    screenObject?.parent?.removeChild(screenObject)
+                    result.success(null)
+                }
+            }
+
             "$TAG#layout" -> {
                 val value = call.argument<String>("value")
                 if (value == null) {
@@ -41,6 +53,13 @@ class ScreenHandler(
                     getScreenObjectBySnapshot(value)
                     result.success(null)
                 }
+            }
+
+            "$TAG#dispose" -> {
+                plugin?.onDispose(hashCode())
+                plugin = null
+                screen = null
+                result.success(null)
             }
         }
     }

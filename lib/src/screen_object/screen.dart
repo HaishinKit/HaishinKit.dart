@@ -37,13 +37,20 @@ class Screen extends ScreenObjectContainer {
       "memory": _memory,
       "value": child.id,
     });
-    return super.addChild(child);
+    return super.removeChild(child);
   }
 
   @override
   void invalidateLayout() {
     layout(_renderer);
     super.invalidateLayout();
+  }
+
+  Future<void> dispose() async {
+    assert(_memory != null);
+    await ScreenPlatformInterface.instance.dispose({
+      "memory": _memory
+    });
   }
 
   ScreenRenderer _createRenderer() {

@@ -4,10 +4,10 @@ import android.graphics.Rect
 import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.haishinkit.device.CameraDevice
+import com.haishinkit.media.AudioMixerSettings
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.media.source.AudioRecordSource
-import com.haishinkit.media.AudioMixerSettings
 import com.haishinkit.media.source.Camera2Source
 import com.haishinkit.screen.ScreenObject.Companion.HORIZONTAL_ALIGNMENT_CENTER
 import com.haishinkit.screen.ScreenObject.Companion.VERTICAL_ALIGNMENT_MIDDLE
@@ -22,7 +22,7 @@ import kotlinx.serialization.json.Json
 
 @Suppress("UNUSED")
 class MediaMixerHandler(
-    private val plugin: HaishinKitPlugin
+    private var plugin: HaishinKitPlugin
 ) : MethodChannel.MethodCallHandler {
     companion object {
         private const val TAG = "MediaMixer"
@@ -62,7 +62,7 @@ class MediaMixerHandler(
     }
 
     fun createScreenHandler(): ScreenHandler {
-        return ScreenHandler(mixer?.screen)
+        return ScreenHandler(plugin, mixer?.screen)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {

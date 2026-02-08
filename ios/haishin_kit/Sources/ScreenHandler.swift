@@ -7,13 +7,20 @@ import FlutterMacOS
 #endif
 import HaishinKit
 
-@ScreenActor
 final class ScreenHandler: NSObject {
     private var screen: Screen?
     private lazy var decoder = JSONDecoder()
+    private var plugin: HaishinKitPlugin? {
+        didSet {
+            oldValue?.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
+        }
+    }
+
+    @ScreenActor
     private lazy var screenObjectFactory = ScreenObjectFactory()
 
-    init(screen: Screen?) {
+    init(plugin: HaishinKitPlugin, screen: Screen?) {
+        self.plugin = plugin
         self.screen = screen
         super.init()
     }
@@ -32,35 +39,55 @@ extension ScreenHandler: MethodCallHandler {
             guard
                 let value = arguments["value"] as? String,
                 let data = value.data(using: .utf8) else {
+                result(nil)
                 return
             }
-            do {
-                let snapshot = try decoder.decode(ScreenObjectSnapshot.self, from: data)
-                let screenObject = screenObjectFactory.make(snapshot)
-                try screen?.addChild(screenObject)
-                result(nil)
-            } catch {
-                result(nil)
+            Task { @ScreenActor in
+                do {
+                    let snapshot = try decoder.decode(ScreenObjectSnapshot.self, from: data)
+                    let screenObject = screenObjectFactory.make(snapshot)
+                    try screen?.addChild(screenObject)
+                    result(nil)
+                } catch {
+                    result(nil)
+                }
             }
         case "Screen#removeChild":
-            result(FlutterMethodNotImplemented)
+            guard let value = arguments["value"] as? String else {
+                result(nil)
+                return
+            }
+            Task { @ScreenActor in
+                if let screenObject = screen?.findById(value) {
+                    screenObject.parent?.removeChild(screenObject)
+                }
+                result(nil)
+            }
         case "Screen#layout":
             guard
                 let value = arguments["value"] as? String,
                 let data = value.data(using: .utf8) else {
+                result(nil)
                 return
             }
-            do {
-                try getScreenObjectBySnapshot(data)
-                result(nil)
-            } catch {
-                result(nil)
+            Task { @ScreenActor in
+                do {
+                    try getScreenObjectBySnapshot(data)
+                    result(nil)
+                } catch {
+                    result(nil)
+                }
             }
+        case "Screen#dispose":
+            screen = nil
+            plugin = nil
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
 
+    @ScreenActor
     private func getScreenObjectBySnapshot(_ snapshot: Data) throws -> ScreenObject? {
         let snapshot = try decoder.decode(ScreenObjectSnapshot.self, from: snapshot)
         guard var screenObject = screen?.findById(snapshot.id) else {

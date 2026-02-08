@@ -133,6 +133,7 @@ class MediaMixer {
   /// Disposes this mixer platform instance.
   Future<void> dispose() async {
     assert(_memory != null);
+    await screen?.dispose();
     await MediaMixerPlatformInterface.instance.dispose({"memory": _memory});
   }
 }

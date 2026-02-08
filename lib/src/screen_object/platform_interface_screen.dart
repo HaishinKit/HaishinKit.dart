@@ -27,4 +27,8 @@ abstract class ScreenPlatformInterface extends PlatformInterface {
   Future<void> layout(Map<String, dynamic> params) {
     throw UnimplementedError('layout() has not been implemented.');
   }
+
+  Future<void> dispose(Map<String, dynamic> params) {
+    throw UnimplementedError('dispose() has not been implemented.');
+  }
 }

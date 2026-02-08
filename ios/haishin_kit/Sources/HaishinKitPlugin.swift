@@ -89,7 +89,7 @@ extension HaishinKitPlugin: FlutterPlugin {
                 return
             }
             Task { @ScreenActor in
-                let handler = ScreenHandler(screen: await handler.mixer.screen)
+                let handler = ScreenHandler(plugin: self, screen: await handler.mixer.screen)
                 let memory = Int(bitPattern: ObjectIdentifier(handler))
                 handlers[memory] = handler
                 result(NSNumber(value: memory))
