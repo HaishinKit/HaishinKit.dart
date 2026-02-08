@@ -81,6 +81,19 @@ extension HaishinKitPlugin: FlutterPlugin {
                     result(nil)
                 }
             }
+        case "newScreen":
+            guard
+                let arguments = call.arguments as? [String: Any?],
+                let mixer = arguments["mixer"] as? Int,
+                let handler = handlers[mixer] as? MediaMixerHandler else {
+                return
+            }
+            Task { @ScreenActor in
+                let handler = ScreenHandler(screen: await handler.mixer.screen)
+                let memory = Int(bitPattern: ObjectIdentifier(handler))
+                handlers[memory] = handler
+                result(NSNumber(value: memory))
+            }
         case "newMediaMixer":
             let handler = MediaMixerHandler()
             let memory = Int(bitPattern: ObjectIdentifier(handler))

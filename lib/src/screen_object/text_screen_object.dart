@@ -34,7 +34,7 @@ final class TextScreenObject extends ScreenObject {
     invalidateLayout();
   }
 
-  double _size = 15.0;
+  double _size = 32.0;
 
   /// Gets the text size.
   double get size => _size;
@@ -63,6 +63,7 @@ final class TextScreenObject extends ScreenObject {
     _value = value["value"] ?? "";
     _color = _colorFromHex((value["color"] ?? '#FFFFFFFF'));
     _size = double.tryParse(value["size"] ?? '') ?? 0.0;
+    invalidateLayout();
   }
 }
 

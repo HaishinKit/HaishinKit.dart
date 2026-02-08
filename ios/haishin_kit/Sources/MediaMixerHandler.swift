@@ -23,7 +23,7 @@ final class MediaMixerHandler: NSObject {
         }
     }
 
-    private lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
+    internal private(set) lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
     private lazy var decoder = JSONDecoder()
 
     override init() {
@@ -183,6 +183,9 @@ extension MediaMixerHandler: MethodCallHandler {
             }
         case "MediaMixer#startRunning":
             Task {
+                var videoMixerSettings = await mixer.videoMixerSettings
+                videoMixerSettings.mode = .offscreen
+                await mixer.setVideoMixerSettings(videoMixerSettings)
                 await mixer.startRunning()
                 result(nil)
             }

@@ -142,6 +142,14 @@ class _PublishState extends State<PublishPage> {
     await mixer.attachAudio(0, AudioSource());
     await mixer.attachVideo(0, _mainVideoSource!);
 
+    final text = TextScreenObject();
+    text.value = "HaishinKit";
+    text.verticalAlignment = VerticalAlignment.middle;
+    text.horizontalAlignment = HorizontalAlignment.center;
+    text.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 60, right: 0);
+    text.size = 60;
+    mixer.screen?.addChild(text);
+
     StreamSession session = await StreamSession.create(
         Preference.shared.makeUrl(), StreamSessionMode.publish);
 
