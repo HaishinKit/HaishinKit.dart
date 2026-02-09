@@ -70,7 +70,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:0.18.0'
-    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:0.18.0'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:5463e15fd3'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:5463e15fd3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0'
 }

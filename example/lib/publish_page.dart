@@ -153,10 +153,10 @@ class _PublishState extends State<PublishPage> {
     mixer.screen?.addChild(text);
 
     final image = ImageScreenObject();
-    image.verticalAlignment = VerticalAlignment.bottom;
+    image.verticalAlignment = VerticalAlignment.top;
     image.horizontalAlignment = HorizontalAlignment.right;
-    image.frame = ScreenObjectRect(x: 0, y: 0, width: 60, height: 60);
-    image.setImage(ImageScreenObjectFormat.png, (await rootBundle.load("assets/icon.png")).buffer);
+    image.frame = ScreenObjectRect(x: 0, y: 0, width: 120, height: 120);
+    image.setImage(ImageScreenObjectFormat.png, (await rootBundle.load("images/icon.png")).buffer);
     mixer.screen?.addChild(image);
 
     StreamSession session = await StreamSession.create(
