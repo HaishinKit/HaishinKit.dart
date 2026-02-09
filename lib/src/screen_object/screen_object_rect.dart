@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'screen_object_rect.freezed.dart';
-
 part 'screen_object_rect.g.dart';
 
 /// Represents a rectangular area in screen coordinates.

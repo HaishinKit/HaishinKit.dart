@@ -4,7 +4,6 @@ import 'screen_object_edge_insets.dart';
 import 'screen_object_rect.dart';
 
 part 'screen_object_snapshot.freezed.dart';
-
 part 'screen_object_snapshot.g.dart';
 
 /// An immutable snapshot of a [ScreenObject].

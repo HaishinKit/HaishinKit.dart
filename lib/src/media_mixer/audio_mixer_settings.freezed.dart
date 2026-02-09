@@ -21,9 +21,13 @@ AudioMixerSettings _$AudioMixerSettingsFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$AudioMixerSettings {
   int get channels => throw _privateConstructorUsedError;
+
   bool get isMuted => throw _privateConstructorUsedError;
+
   int get mainTrack => throw _privateConstructorUsedError;
+
   int get maximumNumberOfChannels => throw _privateConstructorUsedError;
+
   double get sampleRate => throw _privateConstructorUsedError;
 
   /// Serializes this AudioMixerSettings to a JSON map.
@@ -41,6 +45,7 @@ abstract class $AudioMixerSettingsCopyWith<$Res> {
   factory $AudioMixerSettingsCopyWith(
           AudioMixerSettings value, $Res Function(AudioMixerSettings) then) =
       _$AudioMixerSettingsCopyWithImpl<$Res, AudioMixerSettings>;
+
   @useResult
   $Res call(
       {int channels,
@@ -57,6 +62,7 @@ class _$AudioMixerSettingsCopyWithImpl<$Res, $Val extends AudioMixerSettings>
 
   // ignore: unused_field
   final $Val _value;
+
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -102,6 +108,7 @@ abstract class _$$AudioMixerSettingsImplCopyWith<$Res>
   factory _$$AudioMixerSettingsImplCopyWith(_$AudioMixerSettingsImpl value,
           $Res Function(_$AudioMixerSettingsImpl) then) =
       __$$AudioMixerSettingsImplCopyWithImpl<$Res>;
+
   @override
   @useResult
   $Res call(
@@ -257,12 +264,16 @@ abstract class _AudioMixerSettings implements AudioMixerSettings {
 
   @override
   int get channels;
+
   @override
   bool get isMuted;
+
   @override
   int get mainTrack;
+
   @override
   int get maximumNumberOfChannels;
+
   @override
   double get sampleRate;
 

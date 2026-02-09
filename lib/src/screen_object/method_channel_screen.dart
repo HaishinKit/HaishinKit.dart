@@ -22,7 +22,7 @@ class MethodChannelScreen extends ScreenPlatformInterface {
 
   @override
   Future<void> dispose(Map<String, dynamic> params) async {
-  return await MethodChannelHaishinKit.channel
-      .invokeMethod<void>("Screen#dispose", params);
+    return await MethodChannelHaishinKit.channel
+        .invokeMethod<void>("Screen#dispose", params);
   }
 }

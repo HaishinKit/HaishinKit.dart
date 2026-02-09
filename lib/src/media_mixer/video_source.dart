@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'video_source.freezed.dart';
+
 part 'video_source.g.dart';
 
 /// Represents the position of the camera.

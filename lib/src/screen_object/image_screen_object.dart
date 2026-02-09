@@ -1,12 +1,52 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'screen_object.dart';
 
-/// A [ScreenObject] that represents an image element.
+/// Supported image formats for [ImageScreenObject].
 ///
-/// This object holds a bitmap as raw binary data ([Uint8List]) and exposes it
-/// as a Base64-encoded string through [elements] for serialization or
-/// platform-channel communication.
+/// Each enum value maps to a corresponding MIME type that can be used
+/// in a `data:` URI scheme.
+enum ImageScreenObjectFormat {
+  /// PNG image format (`image/png`).
+  png('image/png'),
+
+  /// JPEG image format (`image/jpeg`).
+  jpeg('image/jpeg');
+
+  const ImageScreenObjectFormat(this.mime);
+
+  /// The MIME type string associated with this image format.
+  final String mime;
+
+  /// Returns the corresponding [ImageScreenObjectFormat] for the given MIME type.
+  ///
+  /// If the MIME type is not supported, this method returns `null`.
+  static ImageScreenObjectFormat? fromString(String mime) {
+    return ImageScreenObjectFormat.values
+        .cast<ImageScreenObjectFormat?>()
+        .firstWhere(
+          (e) => e!.mime == mime,
+          orElse: () => null,
+        );
+  }
+}
+
+/// Internal keys used for serializing and deserializing [ImageScreenObject].
+///
+/// This class is file-private and is not intended to be accessed outside
+/// of this library.
+class _Keys {
+  /// Key for the image source value.
+  static const source = 'source';
+}
+
+/// A screen object that renders an image.
+///
+/// The image source is represented as a URI string, such as:
+/// - `data:` URI (e.g. base64-encoded image data)
+///
+/// The actual image loading and decoding is handled by the platform side.
 class ImageScreenObject extends ScreenObject {
   /// The object type identifier.
   ///
@@ -14,51 +54,46 @@ class ImageScreenObject extends ScreenObject {
   @override
   final String type = "image";
 
-  /// The raw bitmap data of the image.
+  /// The image source URI.
   ///
-  /// This value is nullable. When `null`, no image data is associated
-  /// with this object.
-  Uint8List? _bitmap;
+  /// This is typically a `data:` URI but may also be a `file:` or network URI,
+  /// depending on how the image is provided.
+  String _source = "";
 
-  /// Returns the raw bitmap data of the image.
-  ///
-  /// The returned value may be `null` if the image has not been set.
-  Uint8List? get bitmap => _bitmap;
+  /// Returns the current image source URI.
+  String get source => _source;
 
-  /// Sets the bitmap data for this image.
+  /// Returns the serializable elements of this screen object.
   ///
-  /// If the provided value is the same instance as the current bitmap,
-  /// this setter does nothing.
-  ///
-  /// When the bitmap changes, [invalidateLayout] is called to notify
-  /// that the layout or rendering state should be updated.
-  set bitmap(Uint8List? value) {
-    if (_bitmap == value) return;
-    _bitmap = value;
-    invalidateLayout();
-  }
-
-  /// A serialized representation of this object.
-  ///
-  /// The bitmap data is encoded as a Base64 string and stored under
-  /// the `"bitmap"` key.
-  ///
-  /// If the bitmap is `null`, an empty string is returned instead.
+  /// These values are used for state synchronization and persistence.
   @override
   Map<String, String> get elements {
     return {
-      "bitmap": (_bitmap == null) ? "" : base64Encode(_bitmap!),
+      _Keys.source: _source,
     };
   }
 
-  /// Restores the state of this object from a serialized representation.
+  /// Restores the state of this screen object from serialized elements.
   ///
-  /// This setter is intended to decode values provided via [elements],
-  /// such as Base64-encoded bitmap data.
+  /// If the source value changes, the layout is invalidated.
   @override
   set elements(Map<String, String> value) {
-    final base64 = value['bitmap'];
-    _bitmap = (base64 == null || base64.isEmpty) ? null : base64Decode(base64);
+    _source = value[_Keys.source] ?? "";
+    invalidateLayout();
+  }
+
+  /// Sets the image from raw binary data.
+  ///
+  /// The provided [buffer] is base64-encoded and converted into a `data:` URI
+  /// using the specified [format]. If the resulting source is identical to the
+  /// current one, no update is performed.
+  void setImage(ImageScreenObjectFormat format, ByteBuffer buffer) {
+    final source =
+        "data:${format.mime};base64,${base64Encode(buffer.asUint8List())}";
+
+    if (_source == source) return;
+
+    _source = source;
     invalidateLayout();
   }
 }

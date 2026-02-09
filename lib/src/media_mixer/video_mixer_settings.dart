@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'video_mixer_settings.freezed.dart';
+
 part 'video_mixer_settings.g.dart';
 
 /// The type of image rendering mode.

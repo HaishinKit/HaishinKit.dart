@@ -48,9 +48,7 @@ class Screen extends ScreenObjectContainer {
 
   Future<void> dispose() async {
     assert(_memory != null);
-    await ScreenPlatformInterface.instance.dispose({
-      "memory": _memory
-    });
+    await ScreenPlatformInterface.instance.dispose({"memory": _memory});
   }
 
   ScreenRenderer _createRenderer() {

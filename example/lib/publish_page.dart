@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:haishin_kit_example/preference.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:haishin_kit/haishin_kit.dart';
@@ -149,6 +151,13 @@ class _PublishState extends State<PublishPage> {
     text.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 60, right: 0);
     text.size = 60;
     mixer.screen?.addChild(text);
+
+    final image = ImageScreenObject();
+    image.verticalAlignment = VerticalAlignment.bottom;
+    image.horizontalAlignment = HorizontalAlignment.right;
+    image.frame = ScreenObjectRect(x: 0, y: 0, width: 60, height: 60);
+    image.setImage(ImageScreenObjectFormat.png, (await rootBundle.load("assets/icon.png")).buffer);
+    mixer.screen?.addChild(image);
 
     StreamSession session = await StreamSession.create(
         Preference.shared.makeUrl(), StreamSessionMode.publish);

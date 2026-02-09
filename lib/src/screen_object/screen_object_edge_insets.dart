@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'screen_object_edge_insets.freezed.dart';
-
 part 'screen_object_edge_insets.g.dart';
 
 /// Represents edge insets used for layout spacing around a [ScreenObject].
