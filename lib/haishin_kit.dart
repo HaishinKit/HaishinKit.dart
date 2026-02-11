@@ -11,6 +11,7 @@ export 'src/media_mixer/media_mixer_exception.dart';
 export 'src/media_mixer/screen_settings.dart';
 export 'src/media_mixer/video_mixer_settings.dart';
 export 'src/media_mixer/video_source.dart';
+export 'src/screen_object/horizontal_alignment.dart';
 
 // ScreenObject
 export 'src/screen_object/image_screen_object.dart';
@@ -20,8 +21,8 @@ export 'src/screen_object/screen_object_container.dart';
 export 'src/screen_object/screen_object_edge_insets.dart';
 export 'src/screen_object/screen_object_rect.dart';
 export 'src/screen_object/text_screen_object.dart';
-export 'src/screen_object/horizontal_alignment.dart';
 export 'src/screen_object/vertical_alignment.dart';
+export 'src/screen_object/video_screen_object.dart';
 
 // StreamSession
 export 'src/stream_session/audio_codec_settings.dart';
