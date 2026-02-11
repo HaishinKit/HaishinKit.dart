@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'screen_object_edge_insets.dart';
-import 'screen_object_rect.dart';
+import 'screen_object_size.dart';
 
 part 'screen_object_snapshot.freezed.dart';
 part 'screen_object_snapshot.g.dart';
@@ -34,7 +34,7 @@ class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
     /// The layout frame of the object in screen coordinates.
     ///
     /// This defines the position and size of the object.
-    required ScreenObjectRect frame,
+    required ScreenObjectSize size,
 
     /// Whether the object is currently visible.
     ///

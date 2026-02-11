@@ -71,7 +71,6 @@ class StreamSessionHandler(
                     result.success(null)
                 }
             }
-
             "$TAG#setAudioSettings" -> {
                 val source = call.argument<Map<String, Any?>>("settings")
                 if (source == null) {

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/HaishinKit/HaishinKit.swift",
       "state" : {
-        "branch" : "feature/screenobjectsnapshot",
-        "revision" : "42987b11b9ba31d0c7738204f2cdef8a3c52d311"
+        "branch" : "feature/advanced-screen-object",
+        "revision" : "9f2f17779cdfe42bebcb102fae44e3200068d984"
       }
     },
     {

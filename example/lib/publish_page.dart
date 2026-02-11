@@ -44,12 +44,12 @@ class _PublishState extends State<PublishPage> {
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     if (orientation == Orientation.portrait) {
-      _mixer?.screenSettings = ScreenSettings(
+      _mixer?.screen?.size = ScreenObjectSize(
         width: 720,
         height: 1280,
       );
     } else {
-      _mixer?.screenSettings = ScreenSettings(
+      _mixer?.screen?.size = ScreenObjectSize(
         width: 1280,
         height: 720,
       );
@@ -149,14 +149,14 @@ class _PublishState extends State<PublishPage> {
     text.verticalAlignment = VerticalAlignment.middle;
     text.horizontalAlignment = HorizontalAlignment.center;
     text.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 60, right: 0);
-    text.size = 60;
+    text.fontSize = 60;
     mixer.screen?.addChild(text);
 
     final image = ImageScreenObject();
     image.verticalAlignment = VerticalAlignment.bottom;
     image.horizontalAlignment = HorizontalAlignment.right;
     image.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 16, right: 16);
-    image.frame = ScreenObjectRect(x: 0, y: 0, width: 120, height: 120);
+    image.size = ScreenObjectSize(width: 120, height: 120);
     image.setImage(ImageScreenObjectFormat.png, (await rootBundle.load("images/icon.png")).buffer);
     mixer.screen?.addChild(image);
 
@@ -164,7 +164,7 @@ class _PublishState extends State<PublishPage> {
     video.track = 1;
     video.verticalAlignment = VerticalAlignment.top;
     video.horizontalAlignment = HorizontalAlignment.right;
-    video.frame = ScreenObjectRect(x: 0, y: 0, width: 90, height: 160);
+    video.size = ScreenObjectSize(width: 90, height: 160);
     video.layoutMargin = ScreenObjectEdgeInsets(top: 16, left: 0, bottom: 0, right: 16);
     mixer.screen?.addChild(video);
 

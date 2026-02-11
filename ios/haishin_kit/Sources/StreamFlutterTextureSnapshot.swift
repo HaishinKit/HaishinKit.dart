@@ -6,7 +6,7 @@ struct StreamFlutterTextureSnapshot: Codable, Sendable {
         case resize
         case resizeAspect
         case resizeAspectFill
-        
+
         var rawValue: AVLayerVideoGravity {
             switch self {
             case .resize:
@@ -23,4 +23,3 @@ struct StreamFlutterTextureSnapshot: Codable, Sendable {
     let height: Double
     let videoGravity: VideoGravity
 }
-

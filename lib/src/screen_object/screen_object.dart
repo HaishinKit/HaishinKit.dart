@@ -3,7 +3,7 @@ import 'dart:math';
 import 'horizontal_alignment.dart';
 import 'screen_object_container.dart';
 import 'screen_object_edge_insets.dart';
-import 'screen_object_rect.dart';
+import 'screen_object_size.dart';
 import 'screen_object_snapshot.dart';
 import 'screen_renderer.dart';
 import 'vertical_alignment.dart';
@@ -30,21 +30,21 @@ abstract class ScreenObject {
   /// and is commonly used for lookup, diffing, and state management.
   final String id;
 
-  ScreenObjectRect _frame = ScreenObjectRect(x: 0, y: 0, width: 0, height: 0);
+  ScreenObjectSize _size = ScreenObjectSize(width: 0, height: 0);
 
   /// Returns the frame rectangle of this object.
   ///
   /// The frame defines the position and size of the object
   /// in screen coordinates.
-  ScreenObjectRect get frame => _frame;
+  ScreenObjectSize get size => _size;
 
   /// Sets the frame rectangle of this object.
   ///
   /// If the value changes, the layout is invalidated and will be
   /// recalculated during the next layout pass.
-  set frame(ScreenObjectRect value) {
-    if (_frame == value) return;
-    _frame = value;
+  set size(ScreenObjectSize value) {
+    if (_size == value) return;
+    _size = value;
     invalidateLayout();
   }
 
@@ -180,7 +180,7 @@ abstract class ScreenObject {
     return ScreenObjectSnapshot(
       type: type,
       id: id,
-      frame: frame,
+      size: size,
       isVisible: isVisible,
       layoutMargin: layoutMargin,
       horizontalAlignment: horizontalAlignment.rawValue,

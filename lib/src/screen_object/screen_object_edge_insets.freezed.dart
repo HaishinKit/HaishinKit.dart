@@ -48,7 +48,6 @@ abstract class $ScreenObjectEdgeInsetsCopyWith<$Res> {
   factory $ScreenObjectEdgeInsetsCopyWith(ScreenObjectEdgeInsets value,
           $Res Function(ScreenObjectEdgeInsets) then) =
       _$ScreenObjectEdgeInsetsCopyWithImpl<$Res, ScreenObjectEdgeInsets>;
-
   @useResult
   $Res call({int top, int left, int bottom, int right});
 }
@@ -61,7 +60,6 @@ class _$ScreenObjectEdgeInsetsCopyWithImpl<$Res,
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -103,7 +101,6 @@ abstract class _$$ScreenObjectEdgeInsetsImplCopyWith<$Res>
           _$ScreenObjectEdgeInsetsImpl value,
           $Res Function(_$ScreenObjectEdgeInsetsImpl) then) =
       __$$ScreenObjectEdgeInsetsImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({int top, int left, int bottom, int right});

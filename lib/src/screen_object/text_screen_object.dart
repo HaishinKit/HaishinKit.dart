@@ -34,17 +34,17 @@ final class TextScreenObject extends ScreenObject {
     invalidateLayout();
   }
 
-  double _size = 32.0;
+  double _fontSize = 32.0;
 
   /// Gets the text size.
-  double get size => _size;
+  double get fontSize => _fontSize;
 
   /// Sets the text size.
   ///
   /// The layout is invalidated only when the value actually changes.
-  set size(double value) {
-    if (_size == value) return;
-    _size = value;
+  set fontSize(double value) {
+    if (_fontSize == value) return;
+    _fontSize = value;
     invalidateLayout();
   }
 
@@ -54,7 +54,7 @@ final class TextScreenObject extends ScreenObject {
       "value": value,
       "color":
           '#${color.toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase()}',
-      "size": size.toString()
+      "fontSize": fontSize.toString()
     };
   }
 
@@ -62,7 +62,7 @@ final class TextScreenObject extends ScreenObject {
   set elements(Map<String, String> value) {
     _value = value["value"] ?? "";
     _color = _colorFromHex((value["color"] ?? '#FFFFFFFF'));
-    _size = double.tryParse(value["size"] ?? '') ?? 0.0;
+    _fontSize = double.tryParse(value["size"] ?? '') ?? 0.0;
     invalidateLayout();
   }
 }

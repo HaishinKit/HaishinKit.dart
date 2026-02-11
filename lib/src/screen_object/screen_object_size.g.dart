@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'screen_object_rect.dart';
+part of 'screen_object_size.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -9,8 +9,6 @@ part of 'screen_object_rect.dart';
 _$ScreenObjectRectImpl _$$ScreenObjectRectImplFromJson(
         Map<String, dynamic> json) =>
     _$ScreenObjectRectImpl(
-      x: (json['x'] as num).toInt(),
-      y: (json['y'] as num).toInt(),
       width: (json['width'] as num).toInt(),
       height: (json['height'] as num).toInt(),
     );
@@ -18,8 +16,6 @@ _$ScreenObjectRectImpl _$$ScreenObjectRectImplFromJson(
 Map<String, dynamic> _$$ScreenObjectRectImplToJson(
         _$ScreenObjectRectImpl instance) =>
     <String, dynamic>{
-      'x': instance.x,
-      'y': instance.y,
       'width': instance.width,
       'height': instance.height,
     };

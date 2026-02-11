@@ -137,19 +137,6 @@ extension MediaMixerHandler: MethodCallHandler {
                 }
                 result(nil)
             }
-        case "MediaMixer#setScreenSettings":
-            guard
-                let settings = arguments["settings"] as? [String: Any?],
-                let width = settings["width"] as? NSNumber,
-                let height = settings["height"] as? NSNumber
-            else {
-                result(nil)
-                return
-            }
-            Task { @ScreenActor in
-                mixer.screen.size = CGSize(width: CGFloat(width.floatValue), height: CGFloat(height.floatValue))
-                result(nil)
-            }
         case "MediaMixer#attachVideo":
             guard let track = arguments["track"] as? UInt8 else {
                 result(ErrorCode.invalidArgument.makeFlutterError())

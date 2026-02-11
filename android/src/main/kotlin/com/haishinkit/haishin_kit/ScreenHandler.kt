@@ -1,5 +1,7 @@
 package com.haishinkit.haishin_kit
 
+import android.graphics.Rect
+import android.util.Log
 import com.haishinkit.screen.Screen
 import com.haishinkit.screen.ScreenObject
 import com.haishinkit.screen.ScreenObjectFactory
@@ -23,6 +25,16 @@ class ScreenHandler(
         result: MethodChannel.Result
     ) {
         when (call.method) {
+            "$TAG#setSize" -> {
+                val value = call.argument<String>("value")
+                if (value == null) {
+                    result.error(INVALID_ARGUMENTS, null, null)
+                } else {
+                    val size = json.decodeFromString<ScreenObjectSnapshot.Size>(value)
+                    screen?.frame = Rect(0, 0, size.width, size.height)
+                    result.success(null)
+                }
+            }
             "$TAG#addChild" -> {
                 val value = call.argument<String>("value")
                 if (value == null) {

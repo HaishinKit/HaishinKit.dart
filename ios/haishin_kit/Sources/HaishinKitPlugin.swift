@@ -26,9 +26,9 @@ public final class HaishinKitPlugin: NSObject {
     override init() {
         super.init()
         Task {
-            await SessionBuilderFactory.shared.register(RTMPSessionFactory())
-            await SessionBuilderFactory.shared.register(SRTSessionFactory())
-            await SessionBuilderFactory.shared.register(HTTPSessionFactory())
+            await StreamSessionBuilderFactory.shared.register(RTMPSessionFactory())
+            await StreamSessionBuilderFactory.shared.register(SRTSessionFactory())
+            await StreamSessionBuilderFactory.shared.register(HTTPSessionFactory())
         }
     }
 
@@ -57,9 +57,9 @@ extension HaishinKitPlugin: FlutterPlugin {
                 return
             }
             Task {
-                let mode: SessionMode = arguments["mode"] as? String == "publish" ? .publish : .playback
+                let mode: StreamSessionMode = arguments["mode"] as? String == "publish" ? .publish : .playback
                 do {
-                    let session = try await SessionBuilderFactory.shared.make(url).setMode(mode).build()
+                    let session = try await StreamSessionBuilderFactory.shared.make(url).setMode(mode).build()
                     if let session {
                         if mode == .publish {
                             for handler in handlers {

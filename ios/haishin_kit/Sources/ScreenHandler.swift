@@ -8,6 +8,13 @@ import FlutterMacOS
 import HaishinKit
 
 final class ScreenHandler: NSObject {
+    enum ErrorCode: String {
+        case invalidArgument = "INVALID_ARGUMENT"
+
+        func makeFlutterError(_ message: String? = nil, details: Any? = nil) -> FlutterError {
+            return FlutterError(code: self.rawValue, message: message, details: details)
+        }
+    }
     private var screen: Screen?
     private lazy var decoder = JSONDecoder()
     private var plugin: HaishinKitPlugin? {
@@ -39,22 +46,23 @@ extension ScreenHandler: MethodCallHandler {
             guard
                 let value = arguments["value"] as? String,
                 let data = value.data(using: .utf8) else {
-                result(nil)
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task { @ScreenActor in
                 do {
                     let snapshot = try decoder.decode(ScreenObjectSnapshot.self, from: data)
                     let screenObject = screenObjectFactory.make(snapshot)
+                    print(screenObject)
                     try screen?.addChild(screenObject)
                     result(nil)
                 } catch {
-                    result(nil)
+                    result(ErrorCode.invalidArgument.makeFlutterError())
                 }
             }
         case "Screen#removeChild":
             guard let value = arguments["value"] as? String else {
-                result(nil)
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task { @ScreenActor in
@@ -67,7 +75,7 @@ extension ScreenHandler: MethodCallHandler {
             guard
                 let value = arguments["value"] as? String,
                 let data = value.data(using: .utf8) else {
-                result(nil)
+                result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
             Task { @ScreenActor in
@@ -75,7 +83,7 @@ extension ScreenHandler: MethodCallHandler {
                     try getScreenObjectBySnapshot(data)
                     result(nil)
                 } catch {
-                    result(nil)
+                    result(ErrorCode.invalidArgument.makeFlutterError())
                 }
             }
         case "Screen#dispose":

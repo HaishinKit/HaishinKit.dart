@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'screen_object_rect.freezed.dart';
-part 'screen_object_rect.g.dart';
+part 'screen_object_size.freezed.dart';
+part 'screen_object_size.g.dart';
 
 /// Represents a rectangular area in screen coordinates.
 ///
@@ -10,15 +10,9 @@ part 'screen_object_rect.g.dart';
 ///
 /// Typically used for layout calculation, hit testing, or serialization.
 @freezed
-class ScreenObjectRect with _$ScreenObjectRect {
+class ScreenObjectSize with _$ScreenObjectSize {
   /// Creates a rectangle defined by its top-left position and size.
-  const factory ScreenObjectRect({
-    /// The horizontal position of the rectangle's top-left corner.
-    required int x,
-
-    ///  The vertical position of the rectangle's top-left corner.
-    required int y,
-
+  const factory ScreenObjectSize({
     /// The width of the rectangle.
     required int width,
 
@@ -26,6 +20,6 @@ class ScreenObjectRect with _$ScreenObjectRect {
     required int height,
   }) = _ScreenObjectRect;
 
-  factory ScreenObjectRect.fromJson(Map<String, dynamic> json) =>
-      _$ScreenObjectRectFromJson(json);
+  factory ScreenObjectSize.fromJson(Map<String, dynamic> json) =>
+      _$ScreenObjectSizeFromJson(json);
 }

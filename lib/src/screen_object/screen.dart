@@ -4,6 +4,7 @@ import '../haishin_kit/platform_interface_haishin_kit.dart';
 import '../media_mixer/media_mixer.dart';
 import 'platform_interface_screen.dart';
 import 'screen_object.dart';
+import 'screen_object_size.dart';
 import 'screen_object_container.dart';
 import 'screen_renderer.dart';
 
@@ -19,6 +20,16 @@ class Screen extends ScreenObjectContainer {
   late final ScreenRenderer _renderer = _createRenderer();
 
   Screen._();
+
+  @override
+  set size(ScreenObjectSize value) {
+    assert(_memory != null);
+    ScreenPlatformInterface.instance.setSize({
+      "memory": _memory,
+      "value": convert.json.encode(value.toJson())
+    });
+    super.size = value;
+  }
 
   @override
   void addChild(ScreenObject child) {

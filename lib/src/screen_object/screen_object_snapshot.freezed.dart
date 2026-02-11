@@ -35,7 +35,7 @@ mixin _$ScreenObjectSnapshot {
   /// The layout frame of the object in screen coordinates.
   ///
   /// This defines the position and size of the object.
-  ScreenObjectRect get frame => throw _privateConstructorUsedError;
+  ScreenObjectSize get size => throw _privateConstructorUsedError;
 
   /// Whether the object is currently visible.
   ///
@@ -86,12 +86,11 @@ abstract class $ScreenObjectSnapshotCopyWith<$Res> {
   factory $ScreenObjectSnapshotCopyWith(ScreenObjectSnapshot value,
           $Res Function(ScreenObjectSnapshot) then) =
       _$ScreenObjectSnapshotCopyWithImpl<$Res, ScreenObjectSnapshot>;
-
   @useResult
   $Res call(
       {String type,
       String id,
-      ScreenObjectRect frame,
+      ScreenObjectSize size,
       bool isVisible,
       ScreenObjectEdgeInsets layoutMargin,
       int horizontalAlignment,
@@ -99,8 +98,7 @@ abstract class $ScreenObjectSnapshotCopyWith<$Res> {
       Map<String, String> elements,
       List<ScreenObjectSnapshot> children});
 
-  $ScreenObjectRectCopyWith<$Res> get frame;
-
+  $ScreenObjectSizeCopyWith<$Res> get size;
   $ScreenObjectEdgeInsetsCopyWith<$Res> get layoutMargin;
 }
 
@@ -112,7 +110,6 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -123,7 +120,7 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
   $Res call({
     Object? type = null,
     Object? id = null,
-    Object? frame = null,
+    Object? size = null,
     Object? isVisible = null,
     Object? layoutMargin = null,
     Object? horizontalAlignment = null,
@@ -140,10 +137,10 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      frame: null == frame
-          ? _value.frame
-          : frame // ignore: cast_nullable_to_non_nullable
-              as ScreenObjectRect,
+      size: null == size
+          ? _value.size
+          : size // ignore: cast_nullable_to_non_nullable
+              as ScreenObjectSize,
       isVisible: null == isVisible
           ? _value.isVisible
           : isVisible // ignore: cast_nullable_to_non_nullable
@@ -175,9 +172,9 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $ScreenObjectRectCopyWith<$Res> get frame {
-    return $ScreenObjectRectCopyWith<$Res>(_value.frame, (value) {
-      return _then(_value.copyWith(frame: value) as $Val);
+  $ScreenObjectSizeCopyWith<$Res> get size {
+    return $ScreenObjectSizeCopyWith<$Res>(_value.size, (value) {
+      return _then(_value.copyWith(size: value) as $Val);
     });
   }
 
@@ -198,13 +195,12 @@ abstract class _$$ScreenObjectSnapshotImplCopyWith<$Res>
   factory _$$ScreenObjectSnapshotImplCopyWith(_$ScreenObjectSnapshotImpl value,
           $Res Function(_$ScreenObjectSnapshotImpl) then) =
       __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call(
       {String type,
       String id,
-      ScreenObjectRect frame,
+      ScreenObjectSize size,
       bool isVisible,
       ScreenObjectEdgeInsets layoutMargin,
       int horizontalAlignment,
@@ -213,8 +209,7 @@ abstract class _$$ScreenObjectSnapshotImplCopyWith<$Res>
       List<ScreenObjectSnapshot> children});
 
   @override
-  $ScreenObjectRectCopyWith<$Res> get frame;
-
+  $ScreenObjectSizeCopyWith<$Res> get size;
   @override
   $ScreenObjectEdgeInsetsCopyWith<$Res> get layoutMargin;
 }
@@ -234,7 +229,7 @@ class __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>
   $Res call({
     Object? type = null,
     Object? id = null,
-    Object? frame = null,
+    Object? size = null,
     Object? isVisible = null,
     Object? layoutMargin = null,
     Object? horizontalAlignment = null,
@@ -251,10 +246,10 @@ class __$$ScreenObjectSnapshotImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      frame: null == frame
-          ? _value.frame
-          : frame // ignore: cast_nullable_to_non_nullable
-              as ScreenObjectRect,
+      size: null == size
+          ? _value.size
+          : size // ignore: cast_nullable_to_non_nullable
+              as ScreenObjectSize,
       isVisible: null == isVisible
           ? _value.isVisible
           : isVisible // ignore: cast_nullable_to_non_nullable
@@ -289,7 +284,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
   const _$ScreenObjectSnapshotImpl(
       {required this.type,
       required this.id,
-      required this.frame,
+      required this.size,
       required this.isVisible,
       required this.layoutMargin,
       required this.horizontalAlignment,
@@ -320,7 +315,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
   ///
   /// This defines the position and size of the object.
   @override
-  final ScreenObjectRect frame;
+  final ScreenObjectSize size;
 
   /// Whether the object is currently visible.
   ///
@@ -383,7 +378,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
 
   @override
   String toString() {
-    return 'ScreenObjectSnapshot(type: $type, id: $id, frame: $frame, isVisible: $isVisible, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
+    return 'ScreenObjectSnapshot(type: $type, id: $id, size: $size, isVisible: $isVisible, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
   }
 
   @override
@@ -393,7 +388,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
             other is _$ScreenObjectSnapshotImpl &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.frame, frame) || other.frame == frame) &&
+            (identical(other.size, size) || other.size == size) &&
             (identical(other.isVisible, isVisible) ||
                 other.isVisible == isVisible) &&
             (identical(other.layoutMargin, layoutMargin) ||
@@ -412,7 +407,7 @@ class _$ScreenObjectSnapshotImpl implements _ScreenObjectSnapshot {
       runtimeType,
       type,
       id,
-      frame,
+      size,
       isVisible,
       layoutMargin,
       horizontalAlignment,
@@ -442,7 +437,7 @@ abstract class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
   const factory _ScreenObjectSnapshot(
           {required final String type,
           required final String id,
-          required final ScreenObjectRect frame,
+          required final ScreenObjectSize size,
           required final bool isVisible,
           required final ScreenObjectEdgeInsets layoutMargin,
           required final int horizontalAlignment,
@@ -472,7 +467,7 @@ abstract class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
   ///
   /// This defines the position and size of the object.
   @override
-  ScreenObjectRect get frame;
+  ScreenObjectSize get size;
 
   /// Whether the object is currently visible.
   ///

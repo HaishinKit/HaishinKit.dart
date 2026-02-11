@@ -45,19 +45,6 @@ class MediaMixer {
         {"memory": _memory, "value": sessionPreset.presetName});
   }
 
-  ScreenSettings _screenSettings = ScreenSettings();
-
-  /// Gets the screen properties.
-  ScreenSettings get screenSettings => _screenSettings;
-
-  /// Sets the screen properties.
-  set screenSettings(ScreenSettings screenSettings) {
-    assert(_memory != null);
-    _screenSettings = screenSettings;
-    MediaMixerPlatformInterface.instance.setScreenSettings(
-        {"memory": _memory, "settings": screenSettings.toMap()});
-  }
-
   VideoMixerSettings _videoMixerSettings = VideoMixerSettings();
 
   /// Gets the video mixer settings.

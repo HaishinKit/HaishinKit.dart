@@ -21,7 +21,7 @@ final class StreamSessionHandler: NSObject {
     }
 
     private let plugin: HaishinKitPlugin
-    private var session: Session?
+    private var session: StreamSession?
     private lazy var decoder = JSONDecoder()
     private var texture: StreamFlutterTexture?
     private var channel: FlutterEventChannel?
@@ -32,7 +32,7 @@ final class StreamSessionHandler: NSObject {
         }
     }
 
-    init(plugin: HaishinKitPlugin, session: Session) {
+    init(plugin: HaishinKitPlugin, session: StreamSession) {
         self.plugin = plugin
         self.session = session
         super.init()

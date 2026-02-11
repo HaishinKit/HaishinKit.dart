@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/HaishinKit/HaishinKit.swift",
-            branch: "feature/screenobjectsnapshot"
+            branch: "feature/advanced-screen-object"
         )
     ],
     targets: [

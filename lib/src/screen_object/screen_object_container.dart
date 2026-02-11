@@ -47,7 +47,7 @@ class ScreenObjectContainer extends ScreenObject {
     return ScreenObjectSnapshot(
         type: type,
         id: id,
-        frame: frame,
+        size: size,
         isVisible: isVisible,
         layoutMargin: layoutMargin,
         horizontalAlignment: horizontalAlignment.rawValue,

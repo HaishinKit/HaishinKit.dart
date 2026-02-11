@@ -13,10 +13,6 @@ import java.lang.ref.WeakReference
 
 class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
     StreamView, TextureRegistry.SurfaceProducer.Callback {
-    private companion object {
-        const val TAG = "StreamViewTexture"
-    }
-
     override var videoGravity: VideoGravity
         get() = pixelTransform.videoGravity
         set(value) {

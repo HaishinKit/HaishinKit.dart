@@ -94,20 +94,6 @@ class MediaMixerHandler(
                 result.success(null)
             }
 
-            "$TAG#setScreenSettings" -> {
-                val source = call.argument<Map<String, Any?>>("settings") ?: return
-                val frame = Rect(0, 0, 0, 0)
-                (source["width"] as? Int)?.let {
-                    frame.set(0, 0, it, frame.height())
-                }
-                (source["height"] as? Int)?.let {
-                    frame.set(0, 0, frame.width(), it)
-                }
-                Log.d(TAG, "setScreenSettings $frame")
-                mixer?.screen?.frame = frame
-                result.success(null)
-            }
-
             "$TAG#attachAudio" -> {
                 val source = call.argument<Map<String, Any?>>("source")
 

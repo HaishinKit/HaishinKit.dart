@@ -22,9 +22,7 @@ StreamSessionViewTextureSnapshot _$StreamSessionViewTextureSnapshotFromJson(
 /// @nodoc
 mixin _$StreamSessionViewTextureSnapshot {
   double get width => throw _privateConstructorUsedError;
-
   double get height => throw _privateConstructorUsedError;
-
   VideoGravity get videoGravity => throw _privateConstructorUsedError;
 
   /// Serializes this StreamSessionViewTextureSnapshot to a JSON map.
@@ -44,7 +42,6 @@ abstract class $StreamSessionViewTextureSnapshotCopyWith<$Res> {
           $Res Function(StreamSessionViewTextureSnapshot) then) =
       _$StreamSessionViewTextureSnapshotCopyWithImpl<$Res,
           StreamSessionViewTextureSnapshot>;
-
   @useResult
   $Res call({double width, double height, VideoGravity videoGravity});
 }
@@ -57,7 +54,6 @@ class _$StreamSessionViewTextureSnapshotCopyWithImpl<$Res,
 
   // ignore: unused_field
   final $Val _value;
-
   // ignore: unused_field
   final $Res Function($Val) _then;
 
@@ -94,7 +90,6 @@ abstract class _$$StreamSessionViewTextureSnapshotImplCopyWith<$Res>
           _$StreamSessionViewTextureSnapshotImpl value,
           $Res Function(_$StreamSessionViewTextureSnapshotImpl) then) =
       __$$StreamSessionViewTextureSnapshotImplCopyWithImpl<$Res>;
-
   @override
   @useResult
   $Res call({double width, double height, VideoGravity videoGravity});
@@ -211,10 +206,8 @@ abstract class _StreamSessionViewTextureSnapshot
 
   @override
   double get width;
-
   @override
   double get height;
-
   @override
   VideoGravity get videoGravity;
 

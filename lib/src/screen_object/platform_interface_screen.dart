@@ -16,6 +16,10 @@ abstract class ScreenPlatformInterface extends PlatformInterface {
     _instance = instance;
   }
 
+  Future<void> setSize(Map<String, dynamic> params) {
+    throw UnimplementedError('setSize() has not been implemented.');
+  }
+
   Future<void> addChild(Map<String, dynamic> params) {
     throw UnimplementedError('addChild() has not been implemented.');
   }
