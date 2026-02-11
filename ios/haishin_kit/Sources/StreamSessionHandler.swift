@@ -14,7 +14,7 @@ final class StreamSessionHandler: NSObject {
     enum ErrorCode: String {
         case connectFailed = "CONNECT_FAILED"
         case invalidArgument = "INVALID_ARGUMENT"
-        
+
         func makeFlutterError(_ message: String? = nil, details: Any? = nil) -> FlutterError {
             return FlutterError(code: self.rawValue, message: message, details: details)
         }
@@ -145,9 +145,9 @@ extension StreamSessionHandler: MethodCallHandler {
                 return
             }
 
-                texture.bounds = CGSize(width: snapshot.width, height: snapshot.height)
-                texture.videoGravity = snapshot.videoGravity.rawValue
-                result(nil)
+            texture.bounds = CGSize(width: snapshot.width, height: snapshot.height)
+            texture.videoGravity = snapshot.videoGravity.rawValue
+            result(nil)
 
         case "StreamSession#connect":
             Task {
