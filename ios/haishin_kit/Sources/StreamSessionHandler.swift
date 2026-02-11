@@ -13,10 +13,16 @@ import VideoToolbox
 final class StreamSessionHandler: NSObject {
     enum ErrorCode: String {
         case connectFailed = "CONNECT_FAILED"
+        case invalidArgument = "INVALID_ARGUMENT"
+        
+        func makeFlutterError(_ message: String? = nil, details: Any? = nil) -> FlutterError {
+            return FlutterError(code: self.rawValue, message: message, details: details)
+        }
     }
 
     private let plugin: HaishinKitPlugin
     private var session: Session?
+    private lazy var decoder = JSONDecoder()
     private var texture: StreamFlutterTexture?
     private var channel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
@@ -126,20 +132,23 @@ extension StreamSessionHandler: MethodCallHandler {
                 registry.unregisterTexture(textureId)
             }
             result(nil)
-        case "StreamSession#updateTextureSize":
-            guard let _ = plugin.registrar?.textures() else {
+        case "StreamSession#updateTexture":
+            guard let _ = plugin.registrar?.textures(), let texture else {
                 result(nil)
                 return
             }
-            if let texture {
-                if let width = arguments["width"] as? NSNumber,
-                   let height = arguments["height"] as? NSNumber {
-                    texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
-                }
-                result(texture.id)
-            } else {
-                result(nil)
+            guard
+                let value = ((arguments["value"] as? String) ?? "").data(using: .utf8),
+                let snapshot = try? decoder.decode(StreamFlutterTextureSnapshot.self, from: value)
+            else {
+                result(ErrorCode.invalidArgument.makeFlutterError())
+                return
             }
+
+                texture.bounds = CGSize(width: snapshot.width, height: snapshot.height)
+                texture.videoGravity = snapshot.videoGravity.rawValue
+                result(nil)
+
         case "StreamSession#connect":
             Task {
                 do {

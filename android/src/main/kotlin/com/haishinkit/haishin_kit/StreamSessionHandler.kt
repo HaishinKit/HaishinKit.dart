@@ -4,7 +4,6 @@ import android.media.MediaFormat.KEY_LEVEL
 import android.media.MediaFormat.KEY_PROFILE
 import android.os.Build
 import android.util.Log
-import android.util.Size
 import com.haishinkit.codec.CodecOption
 import com.haishinkit.stream.StreamSession
 import io.flutter.plugin.common.EventChannel
@@ -17,6 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class StreamSessionHandler(
     private val plugin: HaishinKitPlugin,
@@ -43,6 +43,9 @@ class StreamSessionHandler(
             field?.dispose()
             field = value
         }
+    private var json = Json {
+        ignoreUnknownKeys = true
+    }
     private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
@@ -123,11 +126,16 @@ class StreamSessionHandler(
                 result.success(null)
             }
 
-            "$TAG#updateTextureSize" -> {
-                val width = call.argument<Double>("width") ?: 0
-                val height = call.argument<Double>("height") ?: 0
-                texture?.imageExtent = Size(width.toInt(), height.toInt())
-                result.success(texture?.id)
+            "$TAG#updateTexture" -> {
+                val value = call.argument<String>("value")
+                if (value == null) {
+                    result.error("INVALID_ARGUMENT", "value is null", null)
+                } else {
+                    val snapshot = json.decodeFromString<StreamViewTextureSnapshot>(value)
+                    texture?.imageExtent = snapshot.size
+                    texture?.videoGravity = snapshot.videoGravity
+                    result.success(texture?.id)
+                }
             }
 
             "$TAG#connect" -> {

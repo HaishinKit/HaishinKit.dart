@@ -69,11 +69,11 @@ final class StreamSession {
         .unregisterTexture(params);
   }
 
-  Future<int?> updateTextureSize(Map<String, dynamic> params) async {
+  Future<int?> updateTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
     return await StreamSessionPlatformInterface.instance
-        .updateTextureSize(params);
+        .updateTexture(params);
   }
 
   /// Creates a two-way connection to a server.

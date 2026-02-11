@@ -12,3 +12,5 @@ PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.haishin_kit.example
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2025 com.haishinkit. All rights reserved.
+
+MACOSX_DEPLOYMENT_TARGET = 12.0

@@ -28,9 +28,9 @@ class MethodChannelStreamSession extends StreamSessionPlatformInterface {
   }
 
   @override
-  Future<int?> updateTextureSize(Map<String, dynamic> params) async {
+  Future<int?> updateTexture(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<int>("StreamSession#updateTextureSize", params);
+        .invokeMethod<int>("StreamSession#updateTexture", params);
   }
 
   @override

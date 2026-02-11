@@ -39,8 +39,8 @@ abstract class StreamSessionPlatformInterface extends PlatformInterface {
     throw UnimplementedError('unregisterTexture() has not been implemented.');
   }
 
-  Future<int?> updateTextureSize(Map<String, dynamic> params) async {
-    throw UnimplementedError('updateTextureSize() has not been implemented.');
+  Future<int?> updateTexture(Map<String, dynamic> params) async {
+    throw UnimplementedError('updateTexture() has not been implemented.');
   }
 
   /// Connects the session.
