@@ -153,11 +153,24 @@ class _PublishState extends State<PublishPage> {
     mixer.screen?.addChild(text);
 
     final image = ImageScreenObject();
-    image.verticalAlignment = VerticalAlignment.top;
+    image.verticalAlignment = VerticalAlignment.bottom;
     image.horizontalAlignment = HorizontalAlignment.right;
+    image.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 16, right: 16);
     image.frame = ScreenObjectRect(x: 0, y: 0, width: 120, height: 120);
     image.setImage(ImageScreenObjectFormat.png, (await rootBundle.load("images/icon.png")).buffer);
     mixer.screen?.addChild(image);
+
+    final video = VideoScreenObject();
+    video.track = 1;
+    video.verticalAlignment = VerticalAlignment.top;
+    video.horizontalAlignment = HorizontalAlignment.right;
+    video.frame = ScreenObjectRect(x: 0, y: 0, width: 90, height: 160);
+    video.layoutMargin = ScreenObjectEdgeInsets(top: 16, left: 0, bottom: 0, right: 16);
+    mixer.screen?.addChild(video);
+
+    if (2 <= _videoSources.length) {
+      mixer.attachVideo(1, _videoSources[1]);
+    }
 
     StreamSession session = await StreamSession.create(
         Preference.shared.makeUrl(), StreamSessionMode.publish);
