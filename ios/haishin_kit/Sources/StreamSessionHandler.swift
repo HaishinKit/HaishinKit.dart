@@ -144,11 +144,9 @@ extension StreamSessionHandler: MethodCallHandler {
                 result(ErrorCode.invalidArgument.makeFlutterError())
                 return
             }
-
             texture.bounds = CGSize(width: snapshot.width, height: snapshot.height)
             texture.videoGravity = snapshot.videoGravity.rawValue
-            result(nil)
-
+            result(texture.id)
         case "StreamSession#connect":
             Task {
                 do {
