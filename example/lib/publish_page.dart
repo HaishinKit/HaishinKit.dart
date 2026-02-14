@@ -141,24 +141,29 @@ class _PublishState extends State<PublishPage> {
 
     final mixer = await MediaMixer.create();
     await mixer.startRunning();
+
     await mixer.attachAudio(0, AudioSource());
     await mixer.attachVideo(0, _mainVideoSource!);
 
     final text = TextScreenObject();
-    text.value = "HaishinKit";
-    text.verticalAlignment = VerticalAlignment.middle;
-    text.horizontalAlignment = HorizontalAlignment.center;
-    text.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 60, right: 0);
+    text.value = "by HaishinKit";
+    text.verticalAlignment = VerticalAlignment.bottom;
+    text.horizontalAlignment = HorizontalAlignment.right;
+    text.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 60, right: 16);
     text.fontSize = 60;
     mixer.screen?.addChild(text);
 
     final image = ImageScreenObject();
-    image.verticalAlignment = VerticalAlignment.bottom;
-    image.horizontalAlignment = HorizontalAlignment.right;
-    image.layoutMargin = ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 16, right: 16);
+    image.verticalAlignment = VerticalAlignment.top;
+    image.horizontalAlignment = HorizontalAlignment.left;
+    image.layoutMargin = ScreenObjectEdgeInsets(top: 16, left: 16, bottom: 0, right: 0);
     image.size = ScreenObjectSize(width: 120, height: 120);
     image.setImage(ImageScreenObjectFormat.png, (await rootBundle.load("images/icon.png")).buffer);
     mixer.screen?.addChild(image);
+
+    if (2 <= _videoSources.length) {
+      mixer.attachVideo(1, _videoSources[1]);
+    }
 
     final video = VideoScreenObject();
     video.track = 1;
@@ -167,10 +172,6 @@ class _PublishState extends State<PublishPage> {
     video.size = ScreenObjectSize(width: 90, height: 160);
     video.layoutMargin = ScreenObjectEdgeInsets(top: 16, left: 0, bottom: 0, right: 16);
     mixer.screen?.addChild(video);
-
-    if (2 <= _videoSources.length) {
-      mixer.attachVideo(1, _videoSources[1]);
-    }
 
     StreamSession session = await StreamSession.create(
         Preference.shared.makeUrl(), StreamSessionMode.publish);
