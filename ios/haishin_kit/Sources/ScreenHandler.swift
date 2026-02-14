@@ -42,6 +42,22 @@ extension ScreenHandler: MethodCallHandler {
             return
         }
         switch call.method {
+        case "Screen#setSize":
+            guard
+                let value = arguments["value"] as? String,
+                let data = value.data(using: .utf8) else {
+                result(ErrorCode.invalidArgument.makeFlutterError())
+                return
+            }
+            Task { @ScreenActor in
+                do {
+                    let size = try decoder.decode(ScreenObjectSnapshot.Size.self, from: data)
+                    screen?.size = CGSize(width: CGFloat(size.width), height: CGFloat(size.height))
+                    result(nil)
+                } catch {
+                    result(ErrorCode.invalidArgument.makeFlutterError())
+                }
+            }
         case "Screen#addChild":
             guard
                 let value = arguments["value"] as? String,
@@ -53,7 +69,6 @@ extension ScreenHandler: MethodCallHandler {
                 do {
                     let snapshot = try decoder.decode(ScreenObjectSnapshot.self, from: data)
                     let screenObject = screenObjectFactory.make(snapshot)
-                    print(screenObject)
                     try screen?.addChild(screenObject)
                     result(nil)
                 } catch {
