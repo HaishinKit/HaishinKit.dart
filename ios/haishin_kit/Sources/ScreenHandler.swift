@@ -123,6 +123,7 @@ extension ScreenHandler: MethodCallHandler {
             bottom: CGFloat(snapshot.layoutMargin.bottom),
             right: CGFloat(snapshot.layoutMargin.right)
         )
+        screenObject.size = .init(width: .init(snapshot.size.width), height: .init(snapshot.size.height))
         screenObject.horizontalAlignment = .init(rawValue: snapshot.horizontalAlignment) ?? .left
         screenObject.verticalAlignment = .init(rawValue: snapshot.verticalAlignment) ?? .top
         screenObject.elements = snapshot.elements

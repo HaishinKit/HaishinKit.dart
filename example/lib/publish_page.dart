@@ -140,8 +140,6 @@ class _PublishState extends State<PublishPage> {
     ));
 
     final mixer = await MediaMixer.create();
-    await mixer.startRunning();
-
     await mixer.attachAudio(0, AudioSource());
     await mixer.attachVideo(0, _mainVideoSource!);
 
@@ -172,6 +170,8 @@ class _PublishState extends State<PublishPage> {
     video.size = ScreenObjectSize(width: 90, height: 160);
     video.layoutMargin = ScreenObjectEdgeInsets(top: 16, left: 0, bottom: 0, right: 16);
     mixer.screen?.addChild(video);
+
+    await mixer.startRunning();
 
     StreamSession session = await StreamSession.create(
         Preference.shared.makeUrl(), StreamSessionMode.publish);

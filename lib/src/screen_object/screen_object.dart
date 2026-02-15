@@ -137,7 +137,7 @@ abstract class ScreenObject {
     return parent;
   }
 
-  bool _shouldInvalidateLayout = true;
+  bool _shouldInvalidateLayout = false;
 
   /// Whether this object requires a layout update.
   bool get shouldInvalidateLayout => _shouldInvalidateLayout;
