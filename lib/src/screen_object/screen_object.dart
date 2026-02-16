@@ -96,7 +96,7 @@ abstract class ScreenObject {
     invalidateLayout();
   }
 
-  VerticalAlignment _verticalAlignment = VerticalAlignment.bottom;
+  VerticalAlignment _verticalAlignment = VerticalAlignment.top;
 
   /// The vertical alignment of this object within its parent.
   VerticalAlignment get verticalAlignment => _verticalAlignment;

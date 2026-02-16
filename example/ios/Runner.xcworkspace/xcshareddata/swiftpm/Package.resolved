@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/HaishinKit/HaishinKit.swift",
       "state" : {
-        "branch" : "feature/advanced-screen-object",
-        "revision" : "42a0154c6826c436070f72a775b778bcbf58eda9"
+        "branch" : "feature/fix-screen-size",
+        "revision" : "7a570c6718cfe5a0753bdc72f4526390dcb7ce91"
       }
     },
     {
