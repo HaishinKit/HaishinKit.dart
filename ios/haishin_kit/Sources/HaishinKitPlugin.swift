@@ -95,7 +95,8 @@ extension HaishinKitPlugin: FlutterPlugin {
                 result(NSNumber(value: memory))
             }
         case "newMediaMixer":
-            let handler = MediaMixerHandler()
+            let options: MediaMixerOptions? = try? PluginUtil.decode(call: call)
+            let handler = MediaMixerHandler(options: options ?? .init())
             let memory = Int(bitPattern: ObjectIdentifier(handler))
             handlers[memory] = handler
             result(NSNumber(value: memory))

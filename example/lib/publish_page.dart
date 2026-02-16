@@ -138,8 +138,9 @@ class _PublishState extends State<PublishPage> {
       avAudioSessionCategoryOptions:
           AVAudioSessionCategoryOptions.allowBluetooth,
     ));
-
-    final mixer = await MediaMixer.create();
+    final mixer = await MediaMixer.create(options: MediaMixerOptions(
+      captureSessionMode: CaptureSessionMode.multi,
+    ));
     await mixer.attachAudio(0, AudioSource());
     await mixer.attachVideo(0, _mainVideoSource!);
 

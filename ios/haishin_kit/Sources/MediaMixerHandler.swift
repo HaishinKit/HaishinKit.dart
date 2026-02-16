@@ -17,16 +17,21 @@ final class MediaMixerHandler: NSObject {
     enum ErrorCode: String {
         case invalidArgument = "INVALID_ARGUMENT"
         case deviceNotFound = "DEVICE_NOT_FOUND"
+        case failedToAttach = "FAILED_TO_ATTACH"
 
         func makeFlutterError(_ message: String? = nil, details: Any? = nil) -> FlutterError {
             return FlutterError(code: self.rawValue, message: message, details: details)
         }
     }
-
-    internal private(set) lazy var mixer = MediaMixer(multiTrackAudioMixingEnabled: false)
+    internal private(set) lazy var mixer = MediaMixer(
+        captureSessionMode: options.captureSessionMode,
+        multiTrackAudioMixingEnabled: options.multiTrackAudioMixingEnabled
+    )
+    private let options: MediaMixerOptions
     private lazy var decoder = JSONDecoder()
 
-    override init() {
+    init(options: MediaMixerOptions) {
+        self.options = options
         super.init()
         #if canImport(UIKit)
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -162,7 +167,7 @@ extension MediaMixerHandler: MethodCallHandler {
                         try await mixer.attachVideo(device, track: track)
                         result(nil)
                     } catch {
-                        result(nil)
+                        result(ErrorCode.failedToAttach.makeFlutterError())
                     }
                 } else {
                     result(ErrorCode.deviceNotFound.makeFlutterError())

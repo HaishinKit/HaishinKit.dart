@@ -2,14 +2,18 @@ import 'dart:convert' as convert;
 
 import 'package:flutter/services.dart';
 import 'package:haishin_kit/haishin_kit.dart';
+import 'package:haishin_kit/src/media_mixer/media_mixer_options.dart';
 
 import '../stream_session/av_capture_session_preset.dart';
 import 'platform_interface_media_mixer.dart';
 
 class MediaMixer {
-  static Future<MediaMixer> create() async {
-    var object = MediaMixer._();
-    object._memory = await HaishinKitPlatformInterface.instance.newMediaMixer();
+  static Future<MediaMixer> create({
+    MediaMixerOptions options = const MediaMixerOptions(),
+  }) async {
+    final object = MediaMixer._();
+    object._memory =
+    await HaishinKitPlatformInterface.instance.newMediaMixer(options);
     object._screen = await Screen.create(object);
     return object;
   }
@@ -127,6 +131,8 @@ class MediaMixer {
 
 MediaMixerException _mapPlatformException(PlatformException e) {
   switch (e.code) {
+    case "FAILED_TO_ATTACH":
+      return MediaMixerFailedToAttachException(e.message ?? "Unknown error");
     default:
       return MediaMixerUnknownException(e.message ?? 'Unknown error');
   }
