@@ -5,8 +5,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/HaishinKit/HaishinKit.swift",
       "state" : {
-        "branch" : "feature/fix-screen-size",
-        "revision" : "48399860d891deba2ef81335cff67d466d9b8af5"
+        "revision" : "fe04d3ec6f9fd3b89624df50b02d4cd92181971f"
       }
     },
     {

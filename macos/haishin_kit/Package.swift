@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/HaishinKit/HaishinKit.swift",
-            branch: "feature/fix-screen-size"
+            .revision("fe04d3ec6f9fd3b89624df50b02d4cd92181971f")
         )
     ],
     targets: [
