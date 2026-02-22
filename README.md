@@ -36,6 +36,11 @@ Issues/Discussions with priority response.
     * Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to
       response a few days.
 
+## 🎨 Features
+- **Protocols** ✨Publish and playback feature are available RTMP.
+- **Multi Streaming** ✨Allowing live streaming to separate services. Views also support this, enabling the verification of raw video data.
+- **Video mixing** ✨Possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
+
 # 🌏 Dependencies
 
  Project name                                                                          | Notes                                                                          | License                                                                                                          
@@ -62,22 +67,6 @@ Please contains `macos/Runner/Debug.Entitlements` and `macos/Runner/Release.Enti
 <key>com.apple.security.device.camera</key>
 <true />
 ```
-
-## 🎨 Features
-
-### RTMP
-
-- [x] Authentication
-- [x] Publish and Recording (H264/AAC)
-- [x] _Playback (Beta)_
-- [x] Adaptive bitrate streaming
-    - [x] Automatic drop frames
-- [ ] Action Message Format
-    - [x] AMF0
-    - [ ] AMF3
-- [x] SharedObject
-- [x] RTMPS
-    - [x] Native (RTMP over SSL/TLS)
 
 # 🔧 Develop
 
