@@ -1,6 +1,8 @@
 package com.haishinkit.haishin_kit
 
 import android.graphics.Rect
+import com.haishinkit.graphics.ImageOrientation
+import com.haishinkit.screen.VideoScreenObject
 import android.util.Log
 import com.haishinkit.screen.Screen
 import com.haishinkit.screen.ScreenObject
@@ -85,7 +87,40 @@ class ScreenHandler(
         screenObject.horizontalAlignment = snapshot.horizontalAlignment
         screenObject.verticalAlignment = snapshot.verticalAlignment
         screenObject.elements = snapshot.elements
+        applyVideoOrientation(screenObject, snapshot.elements)
         return screenObject
+    }
+
+    /**
+     * Applies the orientation elements to a [VideoScreenObject].
+     *
+     * [VideoScreenObject] already supports imageOrientation, deviceOrientation
+     * and rotatesWithContent, but its own `elements` setter reads only `track`,
+     * so none of them can be reached from Dart. Without deviceOrientation the
+     * capture keeps whatever rotation it had when the video source was
+     * attached, and a device held in landscape renders rotated by 90 degrees.
+     */
+    private fun applyVideoOrientation(
+        screenObject: ScreenObject,
+        elements: Map<String, String>,
+    ) {
+        if (screenObject !is VideoScreenObject) return
+        elements["deviceOrientation"]?.toIntOrNull()?.let {
+            screenObject.deviceOrientation = it
+        }
+        elements["rotatesWithContent"]?.let {
+            screenObject.isRotatesWithContent = it.toBoolean()
+        }
+        elements["imageOrientation"]?.let { name ->
+            val orientation = when (name.lowercase()) {
+                "up" -> ImageOrientation.UP
+                "down" -> ImageOrientation.DOWN
+                "left" -> ImageOrientation.LEFT
+                "right" -> ImageOrientation.RIGHT
+                else -> null
+            }
+            if (orientation != null) screenObject.imageOrientation = orientation
+        }
     }
 
     private companion object {
