@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.13.2")
+        classpath("com.android.tools.build:gradle:9.2.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
     }
@@ -30,7 +30,7 @@ apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 android {
     namespace = "com.haishinkit.haishin_kit"
 
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -70,7 +70,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:0.18.2'
-    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:0.18.2'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:haishinkit:acb1b86b70d56f9cb636e4306f0a0ce4b67e55aa'
+    implementation 'com.github.HaishinKit.HaishinKit~kt:rtmp:acb1b86b70d56f9cb636e4306f0a0ce4b67e55aa'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0'
 }

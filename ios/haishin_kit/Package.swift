@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/HaishinKit/HaishinKit.swift",
-            .revision("fe04d3ec6f9fd3b89624df50b02d4cd92181971f")
+            .revision("b94dbd69187a4ab971961a0968fe2e2345d1f33c")
         )
     ],
     targets: [

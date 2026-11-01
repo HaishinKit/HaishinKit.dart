@@ -50,6 +50,19 @@ Issues/Discussions with priority response.
 
 ## 🔧 Setup
 
+The native dependencies are pinned to commits containing the cross-platform
+`ScreenObjectSnapshot` fixes. iOS and macOS use Swift Package Manager for these
+versions.
+
+Android apps consuming this plugin need `compileSdk = 37` or newer. The example
+uses Android Gradle Plugin 9.2.1 and Gradle 9.4.1. With the current Kotlin plugin
+configuration, also set these properties in `android/gradle.properties`:
+
+```properties
+android.builtInKotlin=false
+android.newDsl=false
+```
+
 Please contains `macos/Runner/Info.plist` and `ios/Runner/Info.plist` files.
 
 ```xml

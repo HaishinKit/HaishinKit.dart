@@ -52,7 +52,7 @@ class ScreenObjectContainer extends ScreenObject {
         layoutMargin: layoutMargin,
         horizontalAlignment: horizontalAlignment.rawValue,
         verticalAlignment: verticalAlignment.rawValue,
-        elements: elements,
+        elements: Map<String, String>.of(elements),
         children: children.map((child) {
           return child.snapshot();
         }).toList());

@@ -62,7 +62,7 @@ final class TextScreenObject extends ScreenObject {
   set elements(Map<String, String> value) {
     _value = value["value"] ?? "";
     _color = _colorFromHex((value["color"] ?? '#FFFFFFFF'));
-    _fontSize = double.tryParse(value["size"] ?? '') ?? 0.0;
+    _fontSize = double.tryParse(value["fontSize"] ?? '') ?? 0.0;
     invalidateLayout();
   }
 }
