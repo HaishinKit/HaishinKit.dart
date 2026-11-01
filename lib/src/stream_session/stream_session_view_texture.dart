@@ -11,7 +11,7 @@ import '../haishin_kit/video_gravity.dart';
 ///
 /// This widget displays video frames using Flutter's [Texture] widget,
 /// where the underlying texture is registered and managed by the native
-/// platform (iOS/Android).
+/// platform (iOS, macOS, or Android).
 ///
 /// The scaling behavior of the video inside its layout bounds is controlled
 /// by [videoGravity]. The actual scaling is applied on the native side.

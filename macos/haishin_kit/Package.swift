@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -12,15 +12,17 @@ let package = Package(
         .library(name: "haishin-kit", targets: ["haishin_kit"])
     ],
     dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(
             url: "https://github.com/HaishinKit/HaishinKit.swift",
-            .revision("b94dbd69187a4ab971961a0968fe2e2345d1f33c")
+            exact: "2.3.0"
         )
     ],
     targets: [
         .target(
             name: "haishin_kit",
             dependencies: [
+                .product(name: "FlutterFramework", package: "FlutterFramework"),
                 .product(name: "HaishinKit", package: "HaishinKit.swift"),
                 .product(name: "RTMPHaishinKit", package: "HaishinKit.swift"),
                 .product(name: "SRTHaishinKit", package: "HaishinKit.swift"),
@@ -29,5 +31,6 @@ let package = Package(
             resources: [
             ]
         )
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )

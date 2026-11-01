@@ -32,13 +32,12 @@ abstract class ScreenObject {
 
   ScreenObjectSize _size = ScreenObjectSize(width: 0, height: 0);
 
-  /// Returns the frame rectangle of this object.
+  /// The requested width and height of this object.
   ///
-  /// The frame defines the position and size of the object
-  /// in screen coordinates.
+  /// Position is determined by alignment and [layoutMargin] within its parent.
   ScreenObjectSize get size => _size;
 
-  /// Sets the frame rectangle of this object.
+  /// Sets the requested width and height of this object.
   ///
   /// If the value changes, the layout is invalidated and will be
   /// recalculated during the next layout pass.

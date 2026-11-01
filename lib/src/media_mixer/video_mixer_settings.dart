@@ -28,6 +28,8 @@ class VideoMixerSettings with _$VideoMixerSettings {
     ///
     /// If the value is missing or an unknown enum value is received from JSON,
     /// [VideoRenderingMode.offscreen] will be used as the default.
+    // Freezed forwards this annotation to the generated field.
+    // ignore: invalid_annotation_target
     @JsonKey(
       defaultValue: VideoRenderingMode.offscreen,
       unknownEnumValue: VideoRenderingMode.offscreen,

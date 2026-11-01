@@ -1,8 +1,6 @@
 import 'package:haishin_kit/haishin_kit.dart';
-import 'package:haishin_kit/src/media_mixer/media_mixer_options.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import '../media_mixer/media_mixer_options.dart';
 import 'method_channel_haishin_kit.dart';
 
 /// The HaishinKit platform interface.

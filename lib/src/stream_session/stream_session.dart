@@ -8,7 +8,16 @@ import 'stream_session_mode.dart';
 import 'stream_session_ready_state.dart';
 import 'video_codec_settings.dart';
 
+/// A native streaming session for publishing or playback.
+///
+/// Create a session with [create], observe [readyState], and call [connect].
+/// Call [close] to disconnect and [dispose] when the session is no longer needed.
 final class StreamSession {
+  /// Creates a native session for [url] in the specified [mode].
+  ///
+  /// Use an absolute streaming URL supported by the target platform, such as
+  /// `rtmp://example.com/live/stream`. Creating a session does not connect it;
+  /// call [connect] to establish the connection.
   static Future<StreamSession> create(
       String url, StreamSessionMode mode) async {
     var object = StreamSession._();
@@ -29,6 +38,7 @@ final class StreamSession {
   /// The platform memory address.
   int? get memory => _memory;
 
+  /// Connection state changes reported by the native session.
   Stream<StreamSessionReadyState> get readyState => _channel
       .receiveBroadcastStream()
       .map((value) => StreamSessionReadyState.values.byName(value));

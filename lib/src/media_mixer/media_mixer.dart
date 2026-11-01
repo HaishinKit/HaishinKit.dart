@@ -2,12 +2,19 @@ import 'dart:convert' as convert;
 
 import 'package:flutter/services.dart';
 import 'package:haishin_kit/haishin_kit.dart';
-import 'package:haishin_kit/src/media_mixer/media_mixer_options.dart';
 
 import '../stream_session/av_capture_session_preset.dart';
 import 'platform_interface_media_mixer.dart';
 
+/// Captures and mixes audio and video for native streaming sessions.
+///
+/// Attach sources with [attachAudio] and [attachVideo], add overlays to [screen],
+/// and call [startRunning] to start capture. Release native resources with
+/// [dispose] when the mixer is no longer needed.
 class MediaMixer {
+  /// Creates a native mixer and its composition screen.
+  ///
+  /// [options] configures capture session behavior on supported Apple platforms.
   static Future<MediaMixer> create({
     MediaMixerOptions options = const MediaMixerOptions(),
   }) async {
@@ -81,6 +88,7 @@ class MediaMixer {
 
   Screen? _screen;
 
+  /// The native composition screen associated with this mixer.
   Screen? get screen => _screen;
 
   MediaMixer._();
@@ -110,12 +118,14 @@ class MediaMixer {
     }
   }
 
+  /// Starts native audio/video capture and offscreen composition.
   Future<void> startRunning() async {
     assert(_memory != null);
     await MediaMixerPlatformInterface.instance
         .startRunning({"memory": _memory});
   }
 
+  /// Stops capture while retaining the mixer for reuse.
   Future<void> stopRunning() async {
     assert(_memory != null);
     await MediaMixerPlatformInterface.instance.stopRunning({"memory": _memory});

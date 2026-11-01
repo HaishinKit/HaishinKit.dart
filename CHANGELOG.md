@@ -1,3 +1,20 @@
+## 0.17.0
+
+* Update Android dependencies to HaishinKit.kt 0.19.0 and iOS/macOS dependencies to HaishinKit.swift 2.3.0.
+* Fix cross-platform screen snapshots, including unique object identifiers, nested children, ARGB text colors, and fractional font sizes.
+* Align Android screen layout and text rendering with the Swift implementation.
+* Require Flutter 3.44 or newer, plus Swift Package Manager and Xcode 26 or newer for Apple platforms. Remove the obsolete CocoaPods specification; minimum deployment targets remain iOS 15 and macOS 12.
+* Update the API reference and native dependency setup instructions.
+
+## 0.16.0
+
+* Add screen composition with image, text, and camera-track objects.
+* Add native screen sizing, layout updates, and screen object disposal on iOS and macOS.
+* Rename `ScreenObject.frame` to `size`.
+* Add `MediaMixerOptions` for capture session configuration.
+* Add video gravity controls for texture previews and update native texture handling.
+* Update Android dependencies to HaishinKit.kt 0.18.2 and use the development version of HaishinKit.swift required by the screen APIs.
+
 ## 0.15.0
 
 * Bump up HaishinKit.swift to 2.1.3

@@ -48,11 +48,29 @@ Issues/Discussions with priority response.
  [HaishinKit for iOS, macOS and tvOS.](https://github.com/HaishinKit/HaishinKit.swift) | Camera and Microphone streaming library via RTMP, HLS for iOS, macOS and tvOS. | [BSD 3-Clause "New" or "Revised" License](https://github.com/HaishinKit/HaishinKit.swift/blob/master/LICENSE.md) 
  [HaishinKit for Android.](https://github.com/HaishinKit/HaishinKit.kt)                | Camera and Microphone streaming library via RTMP for Android.                  | [BSD 3-Clause "New" or "Revised" License](https://github.com/HaishinKit/HaishinKit.kt/blob/master/LICENSE.md)    
 
+[API reference](https://docs.haishinkit.com/dart/latest/)
+
 ## 🔧 Setup
 
-The native dependencies are pinned to commits containing the cross-platform
-`ScreenObjectSnapshot` fixes. iOS and macOS use Swift Package Manager for these
-versions.
+iOS and macOS use HaishinKit.swift 2.3.0 through Swift Package Manager.
+Use Flutter 3.44 or newer and Xcode 26 or newer. The minimum deployment
+targets remain iOS 15 and macOS 12.
+The Flutter bridge uses Swift 5 language mode with the Swift 6 toolchain.
+
+Enable Swift Package Manager before building an Apple application:
+
+```sh
+flutter config --enable-swift-package-manager
+flutter clean
+flutter pub get
+```
+
+CocoaPods installation of this plugin is no longer supported. HaishinKit.swift
+2.3.0 distributes its SRT and WebRTC dependencies through Swift packages.
+The Dart API is unchanged; existing `StreamSession`, `MediaMixer`, and screen
+snapshot calls continue to use the shared iOS/macOS bridge.
+Android uses HaishinKit.kt 0.19.0 (`haishinkit` and `rtmp`) from JitPack,
+including the cross-platform `ScreenObjectSnapshot` and rendering fixes.
 
 Android apps consuming this plugin need `compileSdk = 37` or newer. The example
 uses Android Gradle Plugin 9.2.1 and Gradle 9.4.1. With the current Kotlin plugin
