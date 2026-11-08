@@ -11,7 +11,7 @@
 
 |             | Android | iOS       | macOS  | 
 |-------------|---------|-----------|--------|
-| **Support** | SDK 21+ | iOS 15.0+ | 12.0+	 |
+| **Support** | SDK 23+ | iOS 15.0+ | 12.0+	 |
 
 ## 💖 Sponsors
 
@@ -69,11 +69,12 @@ CocoaPods installation of this plugin is no longer supported. HaishinKit.swift
 2.3.0 distributes its SRT and WebRTC dependencies through Swift packages.
 The Dart API is unchanged; existing `StreamSession`, `MediaMixer`, and screen
 snapshot calls continue to use the shared iOS/macOS bridge.
-Android uses HaishinKit.kt 0.19.0 (`haishinkit` and `rtmp`) from JitPack,
-including the cross-platform `ScreenObjectSnapshot` and rendering fixes.
+Android uses HaishinKit.kt 0.20.0 (`haishinkit` and `rtmp`) from JitPack.
+Screen composition, encoding, and Flutter texture previews use OpenGL; the
+optional Vulkan module is not included.
 
-Android apps consuming this plugin need `compileSdk = 37` or newer. The example
-uses Android Gradle Plugin 9.2.1 and Gradle 9.4.1. With the current Kotlin plugin
+Android apps consuming this plugin need `minSdk = 23` and `compileSdk = 37` or newer.
+The example uses Android Gradle Plugin 9.2.1 and Gradle 9.4.1. With the current Kotlin plugin
 configuration, also set these properties in `android/gradle.properties`:
 
 ```properties

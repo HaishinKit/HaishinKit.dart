@@ -1,3 +1,8 @@
+## Unreleased
+
+* Update Android dependencies to HaishinKit.kt 0.20.0 and require Android API 23 or newer.
+* Use OpenGL for Android texture previews and explicitly release rendering resources when disposing a preview.
+
 ## 0.17.0
 
 * Update Android dependencies to HaishinKit.kt 0.19.0 and iOS/macOS dependencies to HaishinKit.swift 2.3.0.

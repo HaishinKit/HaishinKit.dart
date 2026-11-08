@@ -53,7 +53,7 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
         }
 
     private val pixelTransform: PixelTransform by lazy {
-        PixelTransform.create(binding.applicationContext)
+        PixelTransform.createOpenGL(binding.applicationContext)
     }
 
     private val flutterPluginBinding = binding
@@ -122,7 +122,7 @@ class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
 
     fun dispose() {
         synchronized(surfaceLock) {
-            pixelTransform.surface = null
+            pixelTransform.close()
             producer?.release()
             producer = null
         }
