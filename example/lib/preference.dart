@@ -5,6 +5,9 @@ class Preference {
   String streamName = "live";
 
   String makeUrl() {
+    if (url.toLowerCase().startsWith('srt://')) {
+      return url;
+    }
     return "$url/$streamName";
   }
 }

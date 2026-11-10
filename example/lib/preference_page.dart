@@ -22,7 +22,7 @@ class PreferenceState extends State<PreferencePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("RTMP URL:"),
+                        Text("RTMP / SRT URL:"),
                         TextFormField(
                           initialValue: Preference.shared.url,
                           onChanged: (text) {
@@ -34,7 +34,7 @@ class PreferenceState extends State<PreferencePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("RTMP streamName:"),
+                        Text("RTMP streamName (ignored for SRT):"),
                         TextFormField(
                           initialValue: Preference.shared.streamName,
                           onChanged: (text) {

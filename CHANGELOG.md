@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Preserve complete SRT URLs in the example without appending the RTMP stream name.
 * Register Android SRT sessions through the HaishinKit.kt 0.20.0 SRT module.
 * Update Android dependencies to HaishinKit.kt 0.20.0 and require Android API 23 or newer.
 * Use OpenGL for Android texture previews and explicitly release rendering resources when disposing a preview.
