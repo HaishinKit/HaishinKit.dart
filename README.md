@@ -69,7 +69,10 @@ CocoaPods installation of this plugin is no longer supported. HaishinKit.swift
 2.3.0 distributes its SRT and WebRTC dependencies through Swift packages.
 The Dart API is unchanged; existing `StreamSession`, `MediaMixer`, and screen
 snapshot calls continue to use the shared iOS/macOS bridge.
-Android uses HaishinKit.kt 0.20.0 (`haishinkit` and `rtmp`) from JitPack.
+Android uses HaishinKit.kt 0.20.0 (`haishinkit`, `rtmp`, and `srt`) from JitPack.
+Use a complete `srt://host:port` URL, including any query options, with
+`StreamSession.create` for SRT publishing or playback. The example currently
+appends a separate RTMP stream name, so pass SRT URLs directly to the API.
 Screen composition, encoding, and Flutter texture previews use OpenGL; the
 optional Vulkan module is not included.
 

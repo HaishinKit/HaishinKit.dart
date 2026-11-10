@@ -4,6 +4,7 @@ import androidx.core.net.toUri
 import com.haishinkit.device.CameraDeviceManager
 import com.haishinkit.media.MediaOutput
 import com.haishinkit.rtmp.RtmpStreamSessionFactory
+import com.haishinkit.srt.SrtStreamSessionFactory
 import com.haishinkit.stream.StreamSession
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -35,6 +36,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
 
     init {
         StreamSession.Builder.registerFactory(RtmpStreamSessionFactory)
+        StreamSession.Builder.registerFactory(SrtStreamSessionFactory)
     }
 
     fun onDispose(id: Int) {
