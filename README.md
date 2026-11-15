@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/haishin_kit.svg)](https://pub.dev/packages/haishin_kit)
 
-* A Flutter plugin for iOS, Android. Camera and Microphone streaming library via RTMP.
+* A Flutter plugin for RTMP and SRT streaming on Android, iOS, and macOS.
 
 > [!NOTE]
 > This project is being developed with the goal of defining a Flutter interface for HaishinKit.
@@ -37,7 +37,7 @@ Issues/Discussions with priority response.
       response a few days.
 
 ## 🎨 Features
-- **Protocols** ✨Publish and playback feature are available RTMP.
+- **Protocols** Publish and play RTMP and SRT streams.
 - **Multi Streaming** ✨Allowing live streaming to separate services. Views also support this, enabling the verification of raw video data.
 - **Video mixing** ✨Possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
 
