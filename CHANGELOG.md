@@ -1,9 +1,10 @@
-## Unreleased
+## 0.18.0
 
 * Preserve complete SRT URLs in the example without appending the RTMP stream name.
 * Register Android SRT sessions through the HaishinKit.kt SRT module.
 * Update Android dependencies to HaishinKit.kt 0.20.2 and require Android API 23 or newer.
 * Use OpenGL for Android texture previews and explicitly release rendering resources when disposing a preview.
+* Update Dart dependencies and migrate model generation to Freezed 3. Require Dart 3.12, bundled with Flutter 3.44.
 
 ## 0.17.0
 
