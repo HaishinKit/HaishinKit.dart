@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +99,7 @@ class _PublishState extends State<PublishPage> {
     try {
       await _session?.connect();
     } on StreamSessionException catch (e) {
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (context) {

@@ -6,18 +6,19 @@ part of 'media_mixer_options.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$MediaMixerOptionsImpl _$$MediaMixerOptionsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$MediaMixerOptionsImpl(
-      captureSessionMode: $enumDecodeNullable(
-              _$CaptureSessionModeEnumMap, json['captureSessionMode']) ??
+_MediaMixerOptions _$MediaMixerOptionsFromJson(Map<String, dynamic> json) =>
+    _MediaMixerOptions(
+      captureSessionMode:
+          $enumDecodeNullable(
+            _$CaptureSessionModeEnumMap,
+            json['captureSessionMode'],
+          ) ??
           CaptureSessionMode.single,
       multiTrackAudioMixingEnabled:
           json['multiTrackAudioMixingEnabled'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$MediaMixerOptionsImplToJson(
-        _$MediaMixerOptionsImpl instance) =>
+Map<String, dynamic> _$MediaMixerOptionsToJson(_MediaMixerOptions instance) =>
     <String, dynamic>{
       'captureSessionMode':
           _$CaptureSessionModeEnumMap[instance.captureSessionMode]!,

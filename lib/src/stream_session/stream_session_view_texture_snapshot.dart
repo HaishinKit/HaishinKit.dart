@@ -6,7 +6,7 @@ part 'stream_session_view_texture_snapshot.freezed.dart';
 part 'stream_session_view_texture_snapshot.g.dart';
 
 @freezed
-class StreamSessionViewTextureSnapshot with _$StreamSessionViewTextureSnapshot {
+abstract class StreamSessionViewTextureSnapshot with _$StreamSessionViewTextureSnapshot {
   const factory StreamSessionViewTextureSnapshot(
           {@Default(0.0) double width,
           @Default(0.0) double height,

@@ -40,7 +40,7 @@ enum CaptureSessionMode {
 ///
 /// This class is immutable. To modify values, use `copyWith`.
 @freezed
-class MediaMixerOptions with _$MediaMixerOptions {
+abstract class MediaMixerOptions with _$MediaMixerOptions {
   const factory MediaMixerOptions({
     /// Specifies how capture sessions are managed. iOS only.
     @Default(CaptureSessionMode.single)

@@ -29,8 +29,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-  audio_session: any
-  permission_handler: any
+  audio_session: ">=0.2.2 <0.2.4"
+  permission_handler: ^12.0.1
 dev_dependencies:
   integration_test:
     sdk: flutter
@@ -43,9 +43,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
-  cupertino_icons: ^1.0.2
-  permission_handler: any
-  audio_session: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

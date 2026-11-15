@@ -13,7 +13,7 @@ part 'screen_object_snapshot.g.dart';
 /// rendering, persistence, or communication across isolates or platform
 /// channels.
 @freezed
-class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
+abstract class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
   /// Creates a new immutable [ScreenObjectSnapshot].
   ///
   /// All properties are required to ensure the snapshot fully describes

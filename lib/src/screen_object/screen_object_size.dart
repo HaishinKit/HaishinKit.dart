@@ -10,7 +10,7 @@ part 'screen_object_size.g.dart';
 ///
 /// Typically used for layout calculation, hit testing, or serialization.
 @freezed
-class ScreenObjectSize with _$ScreenObjectSize {
+abstract class ScreenObjectSize with _$ScreenObjectSize {
   /// Creates a rectangle defined by its top-left position and size.
   const factory ScreenObjectSize({
     /// The width of the rectangle.
