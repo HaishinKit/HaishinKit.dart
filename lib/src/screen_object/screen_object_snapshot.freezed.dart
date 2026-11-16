@@ -23,9 +23,7 @@ mixin _$ScreenObjectSnapshot {
 ///
 /// This ID is stable across snapshots and can be used to track the same
 /// object over time.
- String get id;/// The layout frame of the object in screen coordinates.
-///
-/// This defines the position and size of the object.
+ String get id;/// The requested width and height of the object.
  ScreenObjectSize get size;/// Whether the object is currently visible.
 ///
 /// When `false`, the object should be ignored during rendering.
@@ -281,9 +279,7 @@ class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
 /// This ID is stable across snapshots and can be used to track the same
 /// object over time.
 @override final  String id;
-/// The layout frame of the object in screen coordinates.
-///
-/// This defines the position and size of the object.
+/// The requested width and height of the object.
 @override final  ScreenObjectSize size;
 /// Whether the object is currently visible.
 ///

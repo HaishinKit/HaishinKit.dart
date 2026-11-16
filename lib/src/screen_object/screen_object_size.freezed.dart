@@ -22,8 +22,8 @@ ScreenObjectSize _$ScreenObjectSizeFromJson(
 /// @nodoc
 mixin _$ScreenObjectSize {
 
-/// The width of the rectangle.
- int get width;/// The height of the rectangle.
+/// The width of the screen object.
+ int get width;/// The height of the screen object.
  int get height;
 /// Create a copy of ScreenObjectSize
 /// with the given fields replaced by the non-null parameter values.
@@ -222,9 +222,9 @@ class _ScreenObjectRect implements ScreenObjectSize {
   const _ScreenObjectRect({required this.width, required this.height});
   factory _ScreenObjectRect.fromJson(Map<String, dynamic> json) => _$ScreenObjectRectFromJson(json);
 
-/// The width of the rectangle.
+/// The width of the screen object.
 @override final  int width;
-/// The height of the rectangle.
+/// The height of the screen object.
 @override final  int height;
 
 /// Create a copy of ScreenObjectSize

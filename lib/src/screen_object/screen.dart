@@ -8,7 +8,12 @@ import 'screen_object_size.dart';
 import 'screen_object_container.dart';
 import 'screen_renderer.dart';
 
+/// The root of a mixer's native video composition.
+///
+/// Set [size] to configure the composition dimensions. Use [addChild] to
+/// place text, images, or video tracks in the composition.
 class Screen extends ScreenObjectContainer {
+  /// Creates a screen associated with [mixer].
   static Future<Screen> create(MediaMixer mixer) async {
     var object = Screen._();
     object._memory =
@@ -57,6 +62,7 @@ class Screen extends ScreenObjectContainer {
     super.invalidateLayout();
   }
 
+  /// Releases the native screen handle.
   Future<void> dispose() async {
     assert(_memory != null);
     await ScreenPlatformInterface.instance.dispose({"memory": _memory});

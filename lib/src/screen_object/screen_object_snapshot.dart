@@ -31,9 +31,7 @@ abstract class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
     /// object over time.
     required String id,
 
-    /// The layout frame of the object in screen coordinates.
-    ///
-    /// This defines the position and size of the object.
+    /// The requested width and height of the object.
     required ScreenObjectSize size,
 
     /// Whether the object is currently visible.

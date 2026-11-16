@@ -6,42 +6,22 @@ import 'stream_session_view_texture_snapshot.dart';
 import 'stream_session.dart';
 import '../haishin_kit/video_gravity.dart';
 
-/// A Flutter widget that renders a native video texture provided by a
-/// [StreamSession].
-///
-/// This widget displays video frames using Flutter's [Texture] widget,
-/// where the underlying texture is registered and managed by the native
-/// platform (iOS, macOS, or Android).
-///
-/// The scaling behavior of the video inside its layout bounds is controlled
-/// by [videoGravity]. The actual scaling is applied on the native side.
+/// Displays a native video texture from a [StreamSession].
 class StreamSessionViewTexture extends StatefulWidget {
-  /// Creates a widget that renders the video texture associated with
-  /// the given [StreamSession].
+  /// Displays video from [session], or an empty view when [session] is null.
   ///
-  /// If [session] is null, no texture will be rendered.
-  ///
-  /// The [videoGravity] parameter controls how the video content is scaled
-  /// within its container. By default, the video preserves its aspect ratio
-  /// and fits entirely within the view (`resizeAspect`).
+  /// By default, [videoGravity] fits the entire video inside the view while
+  /// preserving its aspect ratio.
   const StreamSessionViewTexture(
     this.session, {
     super.key,
     this.videoGravity = VideoGravity.resizeAspect,
   });
 
-  /// The streaming session responsible for registering and updating
-  /// the underlying native texture.
-  ///
-  /// This object typically manages communication with the platform side
-  /// and provides texture lifecycle control.
+  /// The session that provides the video texture.
   final StreamSession? session;
 
-  /// Controls how the video is resized or scaled within the widget bounds.
-  ///
-  /// This value is forwarded to the native layer, where the actual scaling
-  /// behavior is applied (e.g., AVLayerVideoGravity on iOS or Matrix scaling
-  /// on Android).
+  /// How the video fits within the widget's bounds.
   final VideoGravity videoGravity;
 
   @override

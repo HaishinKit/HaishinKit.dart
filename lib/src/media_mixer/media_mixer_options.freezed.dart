@@ -15,8 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MediaMixerOptions {
 
-/// Specifies how capture sessions are managed. iOS only.
- CaptureSessionMode get captureSessionMode;/// Enables mixing multiple audio tracks independently when set to true. Defaults to false. iOS Only.
+/// The capture session mode. Defaults to [CaptureSessionMode.single].
+ CaptureSessionMode get captureSessionMode;/// Whether to mix multiple audio tracks. Defaults to `false`.
  bool get multiTrackAudioMixingEnabled;
 /// Create a copy of MediaMixerOptions
 /// with the given fields replaced by the non-null parameter values.
@@ -215,9 +215,9 @@ class _MediaMixerOptions implements MediaMixerOptions {
   const _MediaMixerOptions({this.captureSessionMode = CaptureSessionMode.single, this.multiTrackAudioMixingEnabled = false});
   factory _MediaMixerOptions.fromJson(Map<String, dynamic> json) => _$MediaMixerOptionsFromJson(json);
 
-/// Specifies how capture sessions are managed. iOS only.
+/// The capture session mode. Defaults to [CaptureSessionMode.single].
 @override@JsonKey() final  CaptureSessionMode captureSessionMode;
-/// Enables mixing multiple audio tracks independently when set to true. Defaults to false. iOS Only.
+/// Whether to mix multiple audio tracks. Defaults to `false`.
 @override@JsonKey() final  bool multiTrackAudioMixingEnabled;
 
 /// Create a copy of MediaMixerOptions

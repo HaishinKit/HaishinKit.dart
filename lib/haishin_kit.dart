@@ -1,11 +1,10 @@
-/// Capture, mix, preview, publish, and play audio and video on native platforms.
+/// Capture, mix, and preview audio and video on Android, iOS, and macOS.
 ///
 /// Use [MediaMixer] to attach input sources and compose overlays through its
-/// [Screen]. Use [StreamSession] to publish or play a stream and
+/// [Screen]. Use [StreamSession] to publish or play RTMP and SRT streams and
 /// [StreamSessionViewTexture] to display the native video texture.
 ///
-/// Apple platforms use HaishinKit.swift 2.3.0 through Swift Package Manager;
-/// Android uses HaishinKit.kt 0.19.0. See the package README for native setup.
+/// See the package README for native dependencies and setup instructions.
 library;
 
 // HaishinKit
