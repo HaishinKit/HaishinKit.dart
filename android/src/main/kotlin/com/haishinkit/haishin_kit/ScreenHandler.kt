@@ -67,7 +67,22 @@ class ScreenHandler(
                 }
             }
 
+            "$TAG#getBounds" -> {
+                val ids = call.argument<List<String>>("ids")
+                if (ids == null) {
+                    result.error(INVALID_ARGUMENTS, null, null)
+                } else {
+                    val values = ids.mapNotNull { id ->
+                        screen?.findById(id)?.bounds?.let { bounds ->
+                            id to listOf(bounds.left.toDouble(), bounds.top.toDouble(), bounds.right.toDouble(), bounds.bottom.toDouble())
+                        }
+                    }.toMap()
+                    result.success(values)
+                }
+            }
+
             "$TAG#dispose" -> {
+
                 plugin?.onDispose(hashCode())
                 plugin = null
                 screen = null
@@ -86,6 +101,7 @@ class ScreenHandler(
         screenObject.horizontalAlignment = snapshot.horizontalAlignment
         screenObject.verticalAlignment = snapshot.verticalAlignment
         screenObject.elements = snapshot.elements
+        screenObject.invalidateLayout()
         return screenObject
     }
 
