@@ -211,8 +211,15 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
 
   Widget _resizeButton(IconData icon, double scale) => IconButton(
         tooltip: scale > 1 ? 'Enlarge object' : 'Shrink object',
-        icon: Icon(icon, color: Colors.black, size: 16),
-        style: IconButton.styleFrom(backgroundColor: Colors.white),
+        icon: Container(
+          width: 22,
+          height: 22,
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 3)]),
+          child: Icon(icon, color: Colors.black, size: 16),
+        ),
         onPressed: () {
           final selected = _selected;
           final bounds = selected == null ? null : _editor.boundsOf(selected);
