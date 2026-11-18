@@ -60,7 +60,7 @@ class Screen extends ScreenObjectContainer {
 
   @override
   void invalidateLayout() {
-    layout(_renderer);
+    if (!isUpdatingLayout) layout(_renderer);
     super.invalidateLayout();
   }
 

@@ -143,6 +143,9 @@ abstract class ScreenObject {
   bool _shouldInvalidateLayout = false;
   int _layoutUpdateDepth = 0;
 
+  /// Whether related layout changes are currently being batched.
+  bool get isUpdatingLayout => _layoutUpdateDepth > 0;
+
   /// Whether this object requires a layout update.
   bool get shouldInvalidateLayout => _shouldInvalidateLayout;
 
@@ -174,7 +177,7 @@ abstract class ScreenObject {
     } finally {
       _layoutUpdateDepth--;
       if (_layoutUpdateDepth == 0 && _shouldInvalidateLayout) {
-        parent?.invalidateLayout();
+        invalidateLayout();
       }
     }
   }

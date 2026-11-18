@@ -127,4 +127,35 @@ void main() {
       await mixer.dispose();
     },
   );
+  test(
+    'root batches nested child edits and moves preserve automatic size',
+    () async {
+      final mixer = await MediaMixer.create();
+      final screen = mixer.screen!
+        ..size = const ScreenObjectSize(width: 1000, height: 1000);
+      final text = TextScreenObject()..value = 'Automatic';
+      screen.addChild(text);
+      measured[text.id] = [100, 100, 300, 200];
+      final editor = ScreenObjectEditor(screen);
+      await editor.refresh();
+      updates.clear();
+      screen.updateLayout(() {
+        text.fontSize = 70;
+        screen.updateLayout(() {
+          text.layoutMargin = const ScreenObjectEdgeInsets(
+            top: 150,
+            left: 150,
+            bottom: 0,
+            right: 0,
+          );
+        });
+        expect(updates, isEmpty);
+      });
+      expect(updates, hasLength(1));
+      editor.moveTo(text, const Offset(200, 200));
+      expect(text.size, const ScreenObjectSize(width: 0, height: 0));
+      expect(editor.boundsOf(text), const Rect.fromLTWH(200, 200, 200, 100));
+      await mixer.dispose();
+    },
+  );
 }

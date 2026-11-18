@@ -113,10 +113,12 @@ class ScreenObjectEditor {
       if (object is TextScreenObject && factor != 1) {
         object.fontSize *= factor;
       }
-      object.size = ScreenObjectSize(
-        width: dimensions.width.round(),
-        height: dimensions.height.round(),
-      );
+      if (factor != 1) {
+        object.size = ScreenObjectSize(
+          width: dimensions.width.round(),
+          height: dimensions.height.round(),
+        );
+      }
     });
     _pending[object.id] = next;
     return next;
