@@ -1,3 +1,9 @@
+## Unreleased
+
+* Update Android dependencies to HaishinKit.kt 0.20.3.
+* Add Android WHIP publishing and WHEP playback with API 23 support.
+* Add Android screen object corner radii with backward-compatible snapshots.
+
 ## 0.18.0
 
 * Preserve complete SRT URLs in the example without appending the RTMP stream name.

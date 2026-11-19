@@ -47,6 +47,24 @@ abstract class ScreenObject {
     invalidateLayout();
   }
 
+  double _cornerRadius = 0;
+
+  /// The corner radius in composition pixels. Supported on Android.
+  double get cornerRadius => _cornerRadius;
+
+  set cornerRadius(double value) {
+    if (!value.isFinite || value < 0) {
+      throw ArgumentError.value(
+        value,
+        'cornerRadius',
+        'Must be finite and non-negative',
+      );
+    }
+    if (_cornerRadius == value) return;
+    _cornerRadius = value;
+    invalidateLayout();
+  }
+
   bool _isVisible = true;
 
   /// Whether this object is visible.
@@ -204,6 +222,7 @@ abstract class ScreenObject {
       id: id,
       size: size,
       isVisible: isVisible,
+      cornerRadius: cornerRadius,
       layoutMargin: layoutMargin,
       horizontalAlignment: horizontalAlignment.rawValue,
       verticalAlignment: verticalAlignment.rawValue,

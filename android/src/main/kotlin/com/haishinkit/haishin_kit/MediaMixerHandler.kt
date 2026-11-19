@@ -105,7 +105,7 @@ class MediaMixerHandler(
                 } else {
                     scope.launch {
                         mixer?.attachAudio(
-                            0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext)
+                            0, AudioRecordSource(plugin.flutterPluginBinding.applicationContext).apply { (source["sampleRate"] as? Int)?.let { sampleRate = it } }
                         )
                         result.success(null)
                     }

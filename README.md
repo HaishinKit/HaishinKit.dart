@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/haishin_kit.svg)](https://pub.dev/packages/haishin_kit)
 
-* A Flutter plugin for RTMP and SRT streaming on Android, iOS, and macOS.
+* A Flutter plugin for RTMP and SRT streaming on Android, iOS, and macOS, with WHIP publishing and WHEP playback on Android.
 
 > [!NOTE]
 > This project is being developed with the goal of defining a Flutter interface for HaishinKit.
@@ -37,8 +37,10 @@ Issues/Discussions with priority response.
       response a few days.
 
 ## 🎨 Features
-- **Protocols** Publish and play RTMP and SRT streams.
+
+- **Protocols** Publish and play RTMP and SRT streams. Android also supports WHIP publishing and WHEP playback.
 - **Multi Streaming** ✨Allowing live streaming to separate services. Views also support this, enabling the verification of raw video data.
+- **Rounded corners** Set `ScreenObject.cornerRadius` for Android screen compositions.
 - **Video mixing** ✨Possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
 
 # 🌏 Dependencies
@@ -69,7 +71,7 @@ CocoaPods installation of this plugin is no longer supported. HaishinKit.swift
 2.3.0 distributes its SRT and WebRTC dependencies through Swift packages.
 The Dart API is unchanged; existing `StreamSession`, `MediaMixer`, and screen
 snapshot calls continue to use the shared iOS/macOS bridge.
-Android uses HaishinKit.kt 0.20.2 (`haishinkit`, `rtmp`, and `srt`) from JitPack.
+Android uses HaishinKit.kt 0.20.3 (`haishinkit`, `rtmp`, `srt`, and `rtc`) from JitPack.
 Use a complete `srt://host:port` URL, including any query options, with
 `StreamSession.create` for SRT publishing or playback. In the example, enter the
 complete SRT URL in the URL field; the RTMP stream name is ignored for SRT.
@@ -102,6 +104,77 @@ Please contains `macos/Runner/Debug.Entitlements` and `macos/Runner/Release.Enti
 <key>com.apple.security.device.camera</key>
 <true />
 ```
+
+## Streaming on Android
+
+HaishinKit.kt 0.20.3 supports RTMP, SRT, WHIP, and WHEP with Android API 23 or newer.
+
+### WHIP publishing
+
+Use the full HTTP(S) WHIP endpoint URL and capture microphone audio at 48 kHz.
+Request camera and microphone permissions before attaching sources.
+
+```dart
+final mixer = await MediaMixer.create();
+await mixer.attachAudio(0, AudioSource(sampleRate: 48000));
+final cameras = await HaishinKitPlatformInterface.instance.videoSources;
+await mixer.attachVideo(0, cameras.first);
+
+final session = await StreamSession.create(
+  'https://example.com/whip',
+  StreamSessionMode.publish,
+);
+await mixer.startRunning();
+await session.connect();
+
+// When publishing is finished:
+await session.close();
+await session.dispose();
+await mixer.dispose();
+```
+
+WHIP uses Opus audio and H.264 Baseline level 3.1 video. Keep custom video
+settings within that profile and level.
+
+### WHEP playback
+
+Use the full HTTP(S) WHEP endpoint URL with playback mode.
+
+```dart
+final session = await StreamSession.create(
+  'https://example.com/whep',
+  StreamSessionMode.playback,
+);
+```
+
+Display `StreamSessionViewTexture(session)` in the widget tree before calling
+`await session.connect()`. Close and dispose the session when playback is finished.
+
+The example's URL field accepts complete SRT, WHIP, and WHEP endpoints, including
+query parameters. Open Publish for WHIP or Playback for WHEP. The stream name
+field applies to RTMP.
+
+RTC sessions use the native default ICE and authentication settings. The Dart API
+currently provides no parameters for STUN/TURN servers or bearer tokens. Plain
+HTTP endpoints require the consuming app's Android network security policy to
+allow cleartext traffic.
+
+### Rounded corners
+
+Set `cornerRadius` in composition pixels to round an Android screen object's corners.
+
+```dart
+final video = VideoScreenObject()
+  ..track = 0
+  ..size = const ScreenObjectSize(width: 320, height: 180)
+  ..cornerRadius = 16.0;
+mixer.screen?.addChild(video);
+```
+
+The radius defaults to `0.0`. Assign a finite, non-negative value. Changes update
+the native layout, and snapshots preserve the radius. Older snapshots that omit
+`cornerRadius` load with a radius of zero. The current Dart bridge applies rounded
+corners on Android.
 
 # 🔧 Develop
 

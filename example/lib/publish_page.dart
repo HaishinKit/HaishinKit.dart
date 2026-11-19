@@ -147,7 +147,14 @@ class _PublishState extends State<PublishPage> {
         options: MediaMixerOptions(
       captureSessionMode: CaptureSessionMode.multi,
     ));
-    await mixer.attachAudio(0, AudioSource());
+    final scheme = Uri.tryParse(Preference.shared.url)?.scheme;
+    await mixer.attachAudio(
+        0,
+        AudioSource(
+            sampleRate:
+                Platform.isAndroid && (scheme == 'http' || scheme == 'https')
+                    ? 48000
+                    : null));
     await mixer.attachVideo(0, _mainVideoSource!);
 
     final text = TextScreenObject();

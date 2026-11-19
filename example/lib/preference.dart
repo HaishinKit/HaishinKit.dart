@@ -5,7 +5,7 @@ class Preference {
   String streamName = "live";
 
   String makeUrl() {
-    if (url.toLowerCase().startsWith('srt://')) {
+    if (['srt', 'http', 'https'].contains(Uri.tryParse(url)?.scheme)) {
       return url;
     }
     return "$url/$streamName";

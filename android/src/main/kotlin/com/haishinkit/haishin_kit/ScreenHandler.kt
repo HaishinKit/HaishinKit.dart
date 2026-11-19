@@ -97,6 +97,7 @@ class ScreenHandler(
             screen?.findById(snapshot.id) ?: return screenObjectFactory.create(snapshot)
         screenObject.frame = Rect(0, 0, snapshot.size.width, snapshot.size.height)
         screenObject.isVisible = snapshot.isVisible
+        screenObject.cornerRadius = snapshot.cornerRadius
         screenObject.layoutMargin.set(snapshot.layoutMargin)
         screenObject.horizontalAlignment = snapshot.horizontalAlignment
         screenObject.verticalAlignment = snapshot.verticalAlignment

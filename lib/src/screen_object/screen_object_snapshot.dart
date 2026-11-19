@@ -16,8 +16,7 @@ part 'screen_object_snapshot.g.dart';
 abstract class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
   /// Creates a new immutable [ScreenObjectSnapshot].
   ///
-  /// All properties are required to ensure the snapshot fully describes
-  /// the state of the screen object and its hierarchy.
+  /// The corner radius defaults to zero for snapshots created by older versions.
   const factory ScreenObjectSnapshot({
     /// The type identifier of the screen object.
     ///
@@ -38,6 +37,9 @@ abstract class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
     ///
     /// When `false`, the object should be ignored during rendering.
     required bool isVisible,
+
+    /// The corner radius in composition pixels on Android.
+    @Default(0.0) double cornerRadius,
 
     /// The margin applied around the object during layout.
     ///

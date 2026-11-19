@@ -114,4 +114,13 @@ void main() {
     expect(snapshot.elements, {'label': 'original'});
     expect(snapshot.children.single.elements, {'track': '1'});
   });
+test('corner radius defaults for legacy snapshots and preserves fractional values', () {
+  final legacy = fixture()..remove('cornerRadius');
+  expect(ScreenObjectSnapshot.fromJson(legacy).cornerRadius, 0);
+  final object = VideoScreenObject()..cornerRadius = 12.5;
+  final snapshot = object.snapshot();
+  expect(ScreenObjectSnapshot.fromJson(jsonDecode(jsonEncode(snapshot.toJson()))).cornerRadius, 12.5);
+  expect(() => object.cornerRadius = -1, throwsArgumentError);
+});
+
 }
