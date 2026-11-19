@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/haishin_kit.svg)](https://pub.dev/packages/haishin_kit)
 
-* A Flutter plugin for RTMP and SRT streaming on Android, iOS, and macOS, with WHIP publishing and WHEP playback on Android.
+* A Flutter plugin for RTMP, SRT, WHIP, and WHEP streaming on Android, iOS, and macOS.
 
 > [!NOTE]
 > This project is being developed with the goal of defining a Flutter interface for HaishinKit.
@@ -38,7 +38,7 @@ Issues/Discussions with priority response.
 
 ## 🎨 Features
 
-- **Protocols** Publish and play RTMP and SRT streams. Android also supports WHIP publishing and WHEP playback.
+- **Protocols** Publish and play RTMP and SRT streams, publish with WHIP, and play with WHEP on Android, iOS, and macOS.
 - **Multi Streaming** ✨Allowing live streaming to separate services. Views also support this, enabling the verification of raw video data.
 - **Rounded corners** Set `ScreenObject.cornerRadius` for Android screen compositions.
 - **Video mixing** ✨Possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
@@ -105,14 +105,17 @@ Please contains `macos/Runner/Debug.Entitlements` and `macos/Runner/Release.Enti
 <true />
 ```
 
-## Streaming on Android
+## Streaming
 
-HaishinKit.kt 0.20.3 supports RTMP, SRT, WHIP, and WHEP with Android API 23 or newer.
+RTMP, SRT, WHIP publishing, and WHEP playback are available on Android, iOS,
+and macOS. Android uses HaishinKit.kt 0.20.3 with API 23 or newer. Apple
+platforms use HaishinKit.swift 2.3.0.
 
 ### WHIP publishing
 
-Use the full HTTP(S) WHIP endpoint URL and capture microphone audio at 48 kHz.
-Request camera and microphone permissions before attaching sources.
+Use the full HTTP(S) WHIP endpoint URL. On Android, capture microphone audio at
+48 kHz with `AudioSource(sampleRate: 48000)`. This capture-rate option applies
+to Android. Request camera and microphone permissions before attaching sources.
 
 ```dart
 final mixer = await MediaMixer.create();
@@ -133,7 +136,7 @@ await session.dispose();
 await mixer.dispose();
 ```
 
-WHIP uses Opus audio and H.264 Baseline level 3.1 video. Keep custom video
+Android WHIP uses Opus audio and H.264 Baseline level 3.1 video. Keep custom video
 settings within that profile and level.
 
 ### WHEP playback
