@@ -1,6 +1,6 @@
 name: haishin_kit
-description: A Flutter plugin for Camera and Microphone streaming library via RTMP.
-version: 0.18.0
+description: A Flutter plugin for capturing, mixing, publishing, and playing audio and video with RTMP, SRT, WHIP, and WHEP.
+version: 0.19.0
 homepage: https://github.com/HaishinKit/HaishinKit.dart
 documentation: https://docs.haishinkit.com/dart/latest/
 

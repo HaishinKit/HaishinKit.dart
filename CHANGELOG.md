@@ -1,8 +1,11 @@
-## Unreleased
+## 0.19.0
 
 * Update Android dependencies to HaishinKit.kt 0.20.3.
 * Add Android WHIP publishing and WHEP playback with API 23 support.
 * Add Android screen object corner radii with backward-compatible snapshots.
+* Add screen object editing APIs for hit testing, positioning, resizing, and native bounds queries, with an interactive example.
+* Batch layout changes while preserving automatic object sizing.
+* Improve English API documentation and document WHIP/WHEP support on Android, iOS, and macOS.
 
 ## 0.18.0
 
