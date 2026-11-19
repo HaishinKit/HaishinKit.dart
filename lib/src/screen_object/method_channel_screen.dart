@@ -4,31 +4,48 @@ import 'platform_interface_screen.dart';
 class MethodChannelScreen extends ScreenPlatformInterface {
   @override
   Future<void> setSize(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Screen#setSize", params);
+    return await MethodChannelHaishinKit.channel.invokeMethod<void>(
+      "Screen#setSize",
+      params,
+    );
   }
 
   @override
   Future<void> addChild(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Screen#addChild", params);
+    return await MethodChannelHaishinKit.channel.invokeMethod<void>(
+      "Screen#addChild",
+      params,
+    );
   }
 
   @override
   Future<void> removeChild(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Screen#removeChild", params);
+    return await MethodChannelHaishinKit.channel.invokeMethod<void>(
+      "Screen#removeChild",
+      params,
+    );
   }
 
   @override
   Future<void> layout(Map<String, dynamic> params) async {
+    return await MethodChannelHaishinKit.channel.invokeMethod<void>(
+      "Screen#layout",
+      params,
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> getBounds(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Screen#layout", params);
+            .invokeMapMethod<String, dynamic>('Screen#getBounds', params) ??
+        {};
   }
 
   @override
   Future<void> dispose(Map<String, dynamic> params) async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<void>("Screen#dispose", params);
+    return await MethodChannelHaishinKit.channel.invokeMethod<void>(
+      "Screen#dispose",
+      params,
+    );
   }
 }

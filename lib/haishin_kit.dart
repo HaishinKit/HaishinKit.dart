@@ -19,6 +19,9 @@ export 'src/media_mixer/video_mixer_settings.dart';
 export 'src/media_mixer/video_source.dart';
 export 'src/screen_object/horizontal_alignment.dart';
 // ScreenObject
+export 'src/haishin_kit/video_gravity.dart';
+export 'src/screen_object/screen_coordinate_transform.dart';
+export 'src/screen_object/screen_object_editor.dart';
 export 'src/screen_object/image_screen_object.dart';
 export 'src/screen_object/screen.dart';
 export 'src/screen_object/screen_object.dart';

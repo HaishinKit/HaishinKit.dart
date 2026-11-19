@@ -32,6 +32,10 @@ abstract class ScreenPlatformInterface extends PlatformInterface {
     throw UnimplementedError('layout() has not been implemented.');
   }
 
+  Future<Map<String, dynamic>> getBounds(Map<String, dynamic> params) {
+    throw UnimplementedError('getBounds() has not been implemented.');
+  }
+
   Future<void> dispose(Map<String, dynamic> params) {
     throw UnimplementedError('dispose() has not been implemented.');
   }
