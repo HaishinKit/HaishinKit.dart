@@ -162,22 +162,6 @@ currently provides no parameters for STUN/TURN servers or bearer tokens. Plain
 HTTP endpoints require the consuming app's Android network security policy to
 allow cleartext traffic.
 
-### Rounded corners
-
-Set `cornerRadius` in composition pixels to round an Android screen object's corners.
-
-```dart
-final video = VideoScreenObject()
-  ..track = 0
-  ..size = const ScreenObjectSize(width: 320, height: 180)
-  ..cornerRadius = 16.0;
-mixer.screen?.addChild(video);
-```
-
-The radius defaults to `0.0`. Assign a finite, non-negative value. Changes update
-the native layout, and snapshots preserve the radius. Older snapshots that omit
-`cornerRadius` load with a radius of zero. The current Dart bridge applies rounded
-corners on Android.
 
 # 🔧 Develop
 
