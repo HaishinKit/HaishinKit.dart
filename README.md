@@ -1,4 +1,4 @@
-# HaishinKit Plugin
+# 📡 [HaishinKit](https://haishinkit.com/) Plugin
 
 [![pub package](https://img.shields.io/pub/v/haishin_kit.svg)](https://pub.dev/packages/haishin_kit)
 
