@@ -2,15 +2,21 @@ require 'fileutils'
 
 desc "[CI] Review PullRequest."
 lane :review do
-  begin
+  sh('flutter pub get')
+  sh('dart run build_runner build --delete-conflicting-outputs')
+  sh('flutter analyze')
+  sh('flutter test')
+  Dir.chdir('../example') do
     sh('flutter pub get')
-    sh('flutter analyze > ../flutter_analyze_report.txt')
-    danger(
-      danger_id: 'danger',
-      dangerfile: 'Dangerfile',
-      verbose: true
-    )
-  rescue
+    sh('flutter analyze')
+    sh('flutter test')
+  end
+end
+
+desc "[CI] Build the Android example."
+lane :android_check do
+  Dir.chdir('../example') do
+    sh('flutter build apk --debug')
   end
 end
 
