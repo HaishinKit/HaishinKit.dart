@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:haishin_kit/haishin_kit.dart';
 
 import 'studio_theme.dart';

@@ -1,6 +1,6 @@
 import 'dart:convert' as convert;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'stream_session_view_texture_snapshot.dart';
 
 import 'stream_session.dart';
@@ -79,7 +79,7 @@ class _StreamSessionViewTextureState extends State<StreamSessionViewTexture>
   Widget build(BuildContext context) {
     if (_textureId == null) {
       return Container(
-        color: Colors.black,
+        color: const Color(0xFF000000),
       );
     }
 
