@@ -23,6 +23,8 @@ Flutter example on Android, shown in English on a Pixel 5a:
 Use Flutter **3.44+** and Dart **3.12+**, matching the plugin requirements.
 The Android example follows Flutter's minimum SDK (API 24 with Flutter 3.44);
 the iOS example targets iOS 15+. Configure the platform SDKs before building.
+Apple builds use Swift Package Manager. iOS simulator builds require arm64
+(Apple Silicon), matching the native SRT/RTC binary dependencies.
 
 ```sh
 cd example

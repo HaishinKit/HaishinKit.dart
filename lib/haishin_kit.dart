@@ -7,7 +7,7 @@
 /// ## Platform integration
 ///
 /// Use Flutter 3.44+, Dart 3.12+, and Xcode 26+ for Apple builds. The native Apple
-/// bridge uses HaishinKit.swift 2.3.0 through Swift Package Manager, targeting
+/// bridge uses HaishinKit.swift 2.3.1 through Swift Package Manager, targeting
 /// iOS 15 and macOS 12. CocoaPods installation of this plugin is not supported.
 /// Enable Swift Package Manager before resolving the consuming app:
 ///

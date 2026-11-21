@@ -1,3 +1,9 @@
+## Unreleased
+
+* Update the iOS/macOS native dependency to HaishinKit.swift 2.3.1.
+* Remove obsolete CocoaPods wiring from the iOS example, which uses Swift Package Manager.
+* Align iOS example simulator builds with the arm64 native SRT/RTC binaries.
+
 ## 0.19.0
 
 * Update Android dependencies to HaishinKit.kt 0.20.3.
