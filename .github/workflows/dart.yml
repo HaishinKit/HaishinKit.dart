@@ -5,8 +5,6 @@ on:
       - main
 permissions:
   contents: read
-  checks: write
-  pull-requests: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,13 +16,17 @@ jobs:
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
+      - name: Setup Java
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17'
       - name: Setup Ruby
-        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-      - name: Fastlane
-        env:
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bundle exec fastlane review
+      - name: Generate, analyze and test
+        run: bundle exec fastlane review
+      - name: Build Android example
+        run: bundle exec fastlane android_check

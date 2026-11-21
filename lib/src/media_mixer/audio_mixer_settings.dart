@@ -5,7 +5,7 @@ part 'audio_mixer_settings.freezed.dart';
 
 part 'audio_mixer_settings.g.dart';
 
-/// Constraints on the audio mixier settings.
+/// Settings for mixing captured audio.
 @freezed
 abstract class AudioMixerSettings with _$AudioMixerSettings {
   const factory AudioMixerSettings(

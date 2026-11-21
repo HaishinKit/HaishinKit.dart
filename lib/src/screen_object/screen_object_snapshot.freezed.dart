@@ -23,13 +23,12 @@ mixin _$ScreenObjectSnapshot {
 ///
 /// This ID is stable across snapshots and can be used to track the same
 /// object over time.
- String get id;/// The layout frame of the object in screen coordinates.
-///
-/// This defines the position and size of the object.
+ String get id;/// The requested width and height of the object.
  ScreenObjectSize get size;/// Whether the object is currently visible.
 ///
 /// When `false`, the object should be ignored during rendering.
- bool get isVisible;/// The margin applied around the object during layout.
+ bool get isVisible;/// The corner radius in composition pixels on Android.
+ double get cornerRadius;/// The margin applied around the object during layout.
 ///
 /// This value affects how the object is positioned relative to its
 /// parent and siblings.
@@ -61,16 +60,16 @@ $ScreenObjectSnapshotCopyWith<ScreenObjectSnapshot> get copyWith => _$ScreenObje
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenObjectSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.size, size) || other.size == size)&&(identical(other.isVisible, isVisible) || other.isVisible == isVisible)&&(identical(other.layoutMargin, layoutMargin) || other.layoutMargin == layoutMargin)&&(identical(other.horizontalAlignment, horizontalAlignment) || other.horizontalAlignment == horizontalAlignment)&&(identical(other.verticalAlignment, verticalAlignment) || other.verticalAlignment == verticalAlignment)&&const DeepCollectionEquality().equals(other.elements, elements)&&const DeepCollectionEquality().equals(other.children, children));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenObjectSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.size, size) || other.size == size)&&(identical(other.isVisible, isVisible) || other.isVisible == isVisible)&&(identical(other.cornerRadius, cornerRadius) || other.cornerRadius == cornerRadius)&&(identical(other.layoutMargin, layoutMargin) || other.layoutMargin == layoutMargin)&&(identical(other.horizontalAlignment, horizontalAlignment) || other.horizontalAlignment == horizontalAlignment)&&(identical(other.verticalAlignment, verticalAlignment) || other.verticalAlignment == verticalAlignment)&&const DeepCollectionEquality().equals(other.elements, elements)&&const DeepCollectionEquality().equals(other.children, children));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id,size,isVisible,layoutMargin,horizontalAlignment,verticalAlignment,const DeepCollectionEquality().hash(elements),const DeepCollectionEquality().hash(children));
+int get hashCode => Object.hash(runtimeType,type,id,size,isVisible,cornerRadius,layoutMargin,horizontalAlignment,verticalAlignment,const DeepCollectionEquality().hash(elements),const DeepCollectionEquality().hash(children));
 
 @override
 String toString() {
-  return 'ScreenObjectSnapshot(type: $type, id: $id, size: $size, isVisible: $isVisible, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
+  return 'ScreenObjectSnapshot(type: $type, id: $id, size: $size, isVisible: $isVisible, cornerRadius: $cornerRadius, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
 }
 
 
@@ -81,7 +80,7 @@ abstract mixin class $ScreenObjectSnapshotCopyWith<$Res>  {
   factory $ScreenObjectSnapshotCopyWith(ScreenObjectSnapshot value, $Res Function(ScreenObjectSnapshot) _then) = _$ScreenObjectSnapshotCopyWithImpl;
 @useResult
 $Res call({
- String type, String id, ScreenObjectSize size, bool isVisible, ScreenObjectEdgeInsets layoutMargin, int horizontalAlignment, int verticalAlignment, Map<String, String> elements, List<ScreenObjectSnapshot> children
+ String type, String id, ScreenObjectSize size, bool isVisible, double cornerRadius, ScreenObjectEdgeInsets layoutMargin, int horizontalAlignment, int verticalAlignment, Map<String, String> elements, List<ScreenObjectSnapshot> children
 });
 
 
@@ -98,13 +97,14 @@ class _$ScreenObjectSnapshotCopyWithImpl<$Res>
 
 /// Create a copy of ScreenObjectSnapshot
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? id = null,Object? size = null,Object? isVisible = null,Object? layoutMargin = null,Object? horizontalAlignment = null,Object? verticalAlignment = null,Object? elements = null,Object? children = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? id = null,Object? size = null,Object? isVisible = null,Object? cornerRadius = null,Object? layoutMargin = null,Object? horizontalAlignment = null,Object? verticalAlignment = null,Object? elements = null,Object? children = null,}) {
   return _then(_self.copyWith(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,size: null == size ? _self.size : size // ignore: cast_nullable_to_non_nullable
 as ScreenObjectSize,isVisible: null == isVisible ? _self.isVisible : isVisible // ignore: cast_nullable_to_non_nullable
-as bool,layoutMargin: null == layoutMargin ? _self.layoutMargin : layoutMargin // ignore: cast_nullable_to_non_nullable
+as bool,cornerRadius: null == cornerRadius ? _self.cornerRadius : cornerRadius // ignore: cast_nullable_to_non_nullable
+as double,layoutMargin: null == layoutMargin ? _self.layoutMargin : layoutMargin // ignore: cast_nullable_to_non_nullable
 as ScreenObjectEdgeInsets,horizontalAlignment: null == horizontalAlignment ? _self.horizontalAlignment : horizontalAlignment // ignore: cast_nullable_to_non_nullable
 as int,verticalAlignment: null == verticalAlignment ? _self.verticalAlignment : verticalAlignment // ignore: cast_nullable_to_non_nullable
 as int,elements: null == elements ? _self.elements : elements // ignore: cast_nullable_to_non_nullable
@@ -212,10 +212,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String type,  String id,  ScreenObjectSize size,  bool isVisible,  ScreenObjectEdgeInsets layoutMargin,  int horizontalAlignment,  int verticalAlignment,  Map<String, String> elements,  List<ScreenObjectSnapshot> children)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String type,  String id,  ScreenObjectSize size,  bool isVisible,  double cornerRadius,  ScreenObjectEdgeInsets layoutMargin,  int horizontalAlignment,  int verticalAlignment,  Map<String, String> elements,  List<ScreenObjectSnapshot> children)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenObjectSnapshot() when $default != null:
-return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.layoutMargin,_that.horizontalAlignment,_that.verticalAlignment,_that.elements,_that.children);case _:
+return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.cornerRadius,_that.layoutMargin,_that.horizontalAlignment,_that.verticalAlignment,_that.elements,_that.children);case _:
   return orElse();
 
 }
@@ -233,10 +233,10 @@ return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.layoutMargi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String type,  String id,  ScreenObjectSize size,  bool isVisible,  ScreenObjectEdgeInsets layoutMargin,  int horizontalAlignment,  int verticalAlignment,  Map<String, String> elements,  List<ScreenObjectSnapshot> children)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String type,  String id,  ScreenObjectSize size,  bool isVisible,  double cornerRadius,  ScreenObjectEdgeInsets layoutMargin,  int horizontalAlignment,  int verticalAlignment,  Map<String, String> elements,  List<ScreenObjectSnapshot> children)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenObjectSnapshot():
-return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.layoutMargin,_that.horizontalAlignment,_that.verticalAlignment,_that.elements,_that.children);case _:
+return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.cornerRadius,_that.layoutMargin,_that.horizontalAlignment,_that.verticalAlignment,_that.elements,_that.children);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -253,10 +253,10 @@ return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.layoutMargi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String type,  String id,  ScreenObjectSize size,  bool isVisible,  ScreenObjectEdgeInsets layoutMargin,  int horizontalAlignment,  int verticalAlignment,  Map<String, String> elements,  List<ScreenObjectSnapshot> children)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String type,  String id,  ScreenObjectSize size,  bool isVisible,  double cornerRadius,  ScreenObjectEdgeInsets layoutMargin,  int horizontalAlignment,  int verticalAlignment,  Map<String, String> elements,  List<ScreenObjectSnapshot> children)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenObjectSnapshot() when $default != null:
-return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.layoutMargin,_that.horizontalAlignment,_that.verticalAlignment,_that.elements,_that.children);case _:
+return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.cornerRadius,_that.layoutMargin,_that.horizontalAlignment,_that.verticalAlignment,_that.elements,_that.children);case _:
   return null;
 
 }
@@ -268,7 +268,7 @@ return $default(_that.type,_that.id,_that.size,_that.isVisible,_that.layoutMargi
 @JsonSerializable()
 
 class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
-  const _ScreenObjectSnapshot({required this.type, required this.id, required this.size, required this.isVisible, required this.layoutMargin, required this.horizontalAlignment, required this.verticalAlignment, required final  Map<String, String> elements, required final  List<ScreenObjectSnapshot> children}): _elements = elements,_children = children;
+  const _ScreenObjectSnapshot({required this.type, required this.id, required this.size, required this.isVisible, this.cornerRadius = 0.0, required this.layoutMargin, required this.horizontalAlignment, required this.verticalAlignment, required final  Map<String, String> elements, required final  List<ScreenObjectSnapshot> children}): _elements = elements,_children = children;
   factory _ScreenObjectSnapshot.fromJson(Map<String, dynamic> json) => _$ScreenObjectSnapshotFromJson(json);
 
 /// The type identifier of the screen object.
@@ -281,14 +281,14 @@ class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
 /// This ID is stable across snapshots and can be used to track the same
 /// object over time.
 @override final  String id;
-/// The layout frame of the object in screen coordinates.
-///
-/// This defines the position and size of the object.
+/// The requested width and height of the object.
 @override final  ScreenObjectSize size;
 /// Whether the object is currently visible.
 ///
 /// When `false`, the object should be ignored during rendering.
 @override final  bool isVisible;
+/// The corner radius in composition pixels on Android.
+@override@JsonKey() final  double cornerRadius;
 /// The margin applied around the object during layout.
 ///
 /// This value affects how the object is positioned relative to its
@@ -346,16 +346,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenObjectSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.size, size) || other.size == size)&&(identical(other.isVisible, isVisible) || other.isVisible == isVisible)&&(identical(other.layoutMargin, layoutMargin) || other.layoutMargin == layoutMargin)&&(identical(other.horizontalAlignment, horizontalAlignment) || other.horizontalAlignment == horizontalAlignment)&&(identical(other.verticalAlignment, verticalAlignment) || other.verticalAlignment == verticalAlignment)&&const DeepCollectionEquality().equals(other._elements, _elements)&&const DeepCollectionEquality().equals(other._children, _children));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenObjectSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.id, id) || other.id == id)&&(identical(other.size, size) || other.size == size)&&(identical(other.isVisible, isVisible) || other.isVisible == isVisible)&&(identical(other.cornerRadius, cornerRadius) || other.cornerRadius == cornerRadius)&&(identical(other.layoutMargin, layoutMargin) || other.layoutMargin == layoutMargin)&&(identical(other.horizontalAlignment, horizontalAlignment) || other.horizontalAlignment == horizontalAlignment)&&(identical(other.verticalAlignment, verticalAlignment) || other.verticalAlignment == verticalAlignment)&&const DeepCollectionEquality().equals(other._elements, _elements)&&const DeepCollectionEquality().equals(other._children, _children));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,id,size,isVisible,layoutMargin,horizontalAlignment,verticalAlignment,const DeepCollectionEquality().hash(_elements),const DeepCollectionEquality().hash(_children));
+int get hashCode => Object.hash(runtimeType,type,id,size,isVisible,cornerRadius,layoutMargin,horizontalAlignment,verticalAlignment,const DeepCollectionEquality().hash(_elements),const DeepCollectionEquality().hash(_children));
 
 @override
 String toString() {
-  return 'ScreenObjectSnapshot(type: $type, id: $id, size: $size, isVisible: $isVisible, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
+  return 'ScreenObjectSnapshot(type: $type, id: $id, size: $size, isVisible: $isVisible, cornerRadius: $cornerRadius, layoutMargin: $layoutMargin, horizontalAlignment: $horizontalAlignment, verticalAlignment: $verticalAlignment, elements: $elements, children: $children)';
 }
 
 
@@ -366,7 +366,7 @@ abstract mixin class _$ScreenObjectSnapshotCopyWith<$Res> implements $ScreenObje
   factory _$ScreenObjectSnapshotCopyWith(_ScreenObjectSnapshot value, $Res Function(_ScreenObjectSnapshot) _then) = __$ScreenObjectSnapshotCopyWithImpl;
 @override @useResult
 $Res call({
- String type, String id, ScreenObjectSize size, bool isVisible, ScreenObjectEdgeInsets layoutMargin, int horizontalAlignment, int verticalAlignment, Map<String, String> elements, List<ScreenObjectSnapshot> children
+ String type, String id, ScreenObjectSize size, bool isVisible, double cornerRadius, ScreenObjectEdgeInsets layoutMargin, int horizontalAlignment, int verticalAlignment, Map<String, String> elements, List<ScreenObjectSnapshot> children
 });
 
 
@@ -383,13 +383,14 @@ class __$ScreenObjectSnapshotCopyWithImpl<$Res>
 
 /// Create a copy of ScreenObjectSnapshot
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? id = null,Object? size = null,Object? isVisible = null,Object? layoutMargin = null,Object? horizontalAlignment = null,Object? verticalAlignment = null,Object? elements = null,Object? children = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? id = null,Object? size = null,Object? isVisible = null,Object? cornerRadius = null,Object? layoutMargin = null,Object? horizontalAlignment = null,Object? verticalAlignment = null,Object? elements = null,Object? children = null,}) {
   return _then(_ScreenObjectSnapshot(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,size: null == size ? _self.size : size // ignore: cast_nullable_to_non_nullable
 as ScreenObjectSize,isVisible: null == isVisible ? _self.isVisible : isVisible // ignore: cast_nullable_to_non_nullable
-as bool,layoutMargin: null == layoutMargin ? _self.layoutMargin : layoutMargin // ignore: cast_nullable_to_non_nullable
+as bool,cornerRadius: null == cornerRadius ? _self.cornerRadius : cornerRadius // ignore: cast_nullable_to_non_nullable
+as double,layoutMargin: null == layoutMargin ? _self.layoutMargin : layoutMargin // ignore: cast_nullable_to_non_nullable
 as ScreenObjectEdgeInsets,horizontalAlignment: null == horizontalAlignment ? _self.horizontalAlignment : horizontalAlignment // ignore: cast_nullable_to_non_nullable
 as int,verticalAlignment: null == verticalAlignment ? _self.verticalAlignment : verticalAlignment // ignore: cast_nullable_to_non_nullable
 as int,elements: null == elements ? _self._elements : elements // ignore: cast_nullable_to_non_nullable

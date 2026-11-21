@@ -1,3 +1,4 @@
+/// The H.264 profile and level requested for video encoding.
 enum ProfileLevel {
   h264Baseline31('H264_Baseline_3_1'),
   h264Baseline32('H264_Baseline_3_2'),
@@ -45,11 +46,16 @@ enum ProfileLevel {
   final String profileLevelName;
 }
 
+/// Settings for the session's video encoder.
 class VideoCodecSettings {
+  /// The encoded video width in pixels.
   final int width;
+  /// The encoded video height in pixels.
   final int height;
+  /// The target video bitrate in bits per second.
   final int bitrate;
   final int frameInterval;
+  /// The requested H.264 profile and level.
   final ProfileLevel profileLevel;
 
 //<editor-fold desc="Data Methods">

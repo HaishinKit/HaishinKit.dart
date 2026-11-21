@@ -3,20 +3,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'screen_object_size.freezed.dart';
 part 'screen_object_size.g.dart';
 
-/// Represents a rectangular area in screen coordinates.
-///
-/// This class is an immutable value object that describes the position
-/// and size of a screen object using integer-based coordinates.
-///
-/// Typically used for layout calculation, hit testing, or serialization.
+/// The requested width and height of a screen object.
 @freezed
 abstract class ScreenObjectSize with _$ScreenObjectSize {
-  /// Creates a rectangle defined by its top-left position and size.
+  /// Creates a size from the given width and height.
   const factory ScreenObjectSize({
-    /// The width of the rectangle.
+    /// The width of the screen object.
     required int width,
 
-    /// The height of the rectangle.
+    /// The height of the screen object.
     required int height,
   }) = _ScreenObjectRect;
 

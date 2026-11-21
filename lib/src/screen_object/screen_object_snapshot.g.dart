@@ -13,6 +13,7 @@ _ScreenObjectSnapshot _$ScreenObjectSnapshotFromJson(
   id: json['id'] as String,
   size: ScreenObjectSize.fromJson(json['size'] as Map<String, dynamic>),
   isVisible: json['isVisible'] as bool,
+  cornerRadius: (json['cornerRadius'] as num?)?.toDouble() ?? 0.0,
   layoutMargin: ScreenObjectEdgeInsets.fromJson(
     json['layoutMargin'] as Map<String, dynamic>,
   ),
@@ -31,6 +32,7 @@ Map<String, dynamic> _$ScreenObjectSnapshotToJson(
   'id': instance.id,
   'size': instance.size,
   'isVisible': instance.isVisible,
+  'cornerRadius': instance.cornerRadius,
   'layoutMargin': instance.layoutMargin,
   'horizontalAlignment': instance.horizontalAlignment,
   'verticalAlignment': instance.verticalAlignment,

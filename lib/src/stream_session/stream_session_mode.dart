@@ -1,8 +1,8 @@
-/// Represents the type of session to establish.
+/// Determines the direction of media transfer.
 enum StreamSessionMode {
-  /// A publishing session, used to stream media from the local device to a server or peers.
+  /// Sends local media to the remote endpoint.
   publish,
 
-  /// A playback session, used to receive and play media streamed from a server or peers.
+  /// Receives media from the remote endpoint for playback.
   playback
 }

@@ -4,17 +4,17 @@ class _Keys {
   static const track = 'track';
 }
 
-/// An object that manages offscreen rendering a video source.
+/// Displays a video track on the composition screen.
 final class VideoScreenObject extends ScreenObject {
   @override
   final String type = "video";
 
   int _track = 0;
 
-  /// Gets the track.
+  /// The mixer video track to display. Defaults to track 0.
   int get track => _track;
 
-  /// Sets the track.
+  /// Changes the displayed track and invalidates layout.
   set track(int value) {
     if (_track == value) return;
     _track = value;
