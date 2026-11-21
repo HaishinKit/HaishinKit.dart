@@ -6,6 +6,7 @@
     "height": 180
   },
   "isVisible": false,
+  "cornerRadius": 0.0,
   "layoutMargin": {
     "top": 11,
     "left": 22,
@@ -24,6 +25,7 @@
         "height": 180
       },
       "isVisible": false,
+      "cornerRadius": 0.0,
       "layoutMargin": {
         "top": 11,
         "left": 22,
@@ -45,6 +47,7 @@
         "height": 180
       },
       "isVisible": false,
+      "cornerRadius": 0.0,
       "layoutMargin": {
         "top": 11,
         "left": 22,
@@ -63,6 +66,7 @@
             "height": 180
           },
           "isVisible": false,
+          "cornerRadius": 0.0,
           "layoutMargin": {
             "top": 11,
             "left": 22,
@@ -86,6 +90,7 @@
             "height": 180
           },
           "isVisible": false,
+          "cornerRadius": 0.0,
           "layoutMargin": {
             "top": 11,
             "left": 22,

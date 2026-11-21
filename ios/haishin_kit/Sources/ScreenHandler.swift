@@ -101,7 +101,22 @@ extension ScreenHandler: MethodCallHandler {
                     result(ErrorCode.invalidArgument.makeFlutterError())
                 }
             }
+        case "Screen#getBounds":
+            guard let ids = arguments["ids"] as? [String] else {
+                result(ErrorCode.invalidArgument.makeFlutterError())
+                return
+            }
+            Task { @ScreenActor in
+                var values: [String: [Double]] = [:]
+                for id in ids {
+                    guard let object = screen?.findById(id) else { continue }
+                    let bounds = object.bounds
+                    values[id] = [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].map(Double.init)
+                }
+                result(values)
+            }
         case "Screen#dispose":
+
             screen = nil
             plugin = nil
             result(nil)
@@ -127,6 +142,7 @@ extension ScreenHandler: MethodCallHandler {
         screenObject.horizontalAlignment = .init(rawValue: snapshot.horizontalAlignment) ?? .left
         screenObject.verticalAlignment = .init(rawValue: snapshot.verticalAlignment) ?? .top
         screenObject.elements = snapshot.elements
+        screenObject.invalidateLayout()
         return screenObject
     }
 }

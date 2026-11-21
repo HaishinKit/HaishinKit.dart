@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:ui';
 
 import '../haishin_kit/platform_interface_haishin_kit.dart';
 import '../media_mixer/media_mixer.dart';
@@ -8,11 +9,17 @@ import 'screen_object_size.dart';
 import 'screen_object_container.dart';
 import 'screen_renderer.dart';
 
+/// The root of a mixer's native video composition.
+///
+/// Set [size] to configure the composition dimensions. Use [addChild] to
+/// place text, images, or video tracks in the composition.
 class Screen extends ScreenObjectContainer {
+  /// Creates a screen associated with [mixer].
   static Future<Screen> create(MediaMixer mixer) async {
     var object = Screen._();
-    object._memory =
-        await HaishinKitPlatformInterface.instance.newScreen(mixer.memory);
+    object._memory = await HaishinKitPlatformInterface.instance.newScreen(
+      mixer.memory,
+    );
     return object;
   }
 
@@ -26,7 +33,7 @@ class Screen extends ScreenObjectContainer {
     assert(_memory != null);
     ScreenPlatformInterface.instance.setSize({
       "memory": _memory,
-      "value": convert.json.encode(value.toJson())
+      "value": convert.json.encode(value.toJson()),
     });
     super.size = value;
   }
@@ -36,7 +43,7 @@ class Screen extends ScreenObjectContainer {
     assert(_memory != null);
     ScreenPlatformInterface.instance.addChild({
       "memory": _memory,
-      "value": convert.json.encode(child.snapshot().toJson())
+      "value": convert.json.encode(child.snapshot().toJson()),
     });
     return super.addChild(child);
   }
@@ -53,9 +60,42 @@ class Screen extends ScreenObjectContainer {
 
   @override
   void invalidateLayout() {
-    layout(_renderer);
+    if (!isUpdatingLayout) layout(_renderer);
     super.invalidateLayout();
   }
+
+  /// Reads the latest native layout rectangles in composition pixels.
+  ///
+  /// Text and automatic image sizes use the native renderer's measurements.
+  Future<Map<String, Rect>> getBounds() async {
+    final ids = <String>[];
+    void collect(ScreenObjectContainer container) {
+      for (final child in container.children) {
+        ids.add(child.id);
+        if (child is ScreenObjectContainer) collect(child);
+      }
+    }
+
+    collect(this);
+    final values = await ScreenPlatformInterface.instance.getBounds({
+      'memory': _memory,
+      'ids': ids,
+    });
+    return values.map((id, value) {
+      final numbers = (value as List).cast<num>();
+      return MapEntry(
+        id,
+        Rect.fromLTRB(
+          numbers[0].toDouble(),
+          numbers[1].toDouble(),
+          numbers[2].toDouble(),
+          numbers[3].toDouble(),
+        ),
+      );
+    });
+  }
+
+  /// Releases the native screen handle.
 
   Future<void> dispose() async {
     assert(_memory != null);

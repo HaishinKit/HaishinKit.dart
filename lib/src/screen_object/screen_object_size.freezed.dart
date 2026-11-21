@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,184 +9,283 @@ part of 'screen_object_size.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ScreenObjectSize _$ScreenObjectSizeFromJson(Map<String, dynamic> json) {
-  return _ScreenObjectRect.fromJson(json);
+ScreenObjectSize _$ScreenObjectSizeFromJson(
+  Map<String, dynamic> json
+) {
+    return _ScreenObjectRect.fromJson(
+      json
+    );
 }
 
 /// @nodoc
 mixin _$ScreenObjectSize {
-  /// The width of the rectangle.
-  int get width => throw _privateConstructorUsedError;
 
-  /// The height of the rectangle.
-  int get height => throw _privateConstructorUsedError;
+/// The width of the screen object.
+ int get width;/// The height of the screen object.
+ int get height;
+/// Create a copy of ScreenObjectSize
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ScreenObjectSizeCopyWith<ScreenObjectSize> get copyWith => _$ScreenObjectSizeCopyWithImpl<ScreenObjectSize>(this as ScreenObjectSize, _$identity);
 
   /// Serializes this ScreenObjectSize to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ScreenObjectSize
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ScreenObjectSizeCopyWith<ScreenObjectSize> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenObjectSize&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,width,height);
+
+@override
+String toString() {
+  return 'ScreenObjectSize(width: $width, height: $height)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ScreenObjectSizeCopyWith<$Res> {
-  factory $ScreenObjectSizeCopyWith(
-          ScreenObjectSize value, $Res Function(ScreenObjectSize) then) =
-      _$ScreenObjectSizeCopyWithImpl<$Res, ScreenObjectSize>;
-  @useResult
-  $Res call({int width, int height});
-}
+abstract mixin class $ScreenObjectSizeCopyWith<$Res>  {
+  factory $ScreenObjectSizeCopyWith(ScreenObjectSize value, $Res Function(ScreenObjectSize) _then) = _$ScreenObjectSizeCopyWithImpl;
+@useResult
+$Res call({
+ int width, int height
+});
 
+
+
+
+}
 /// @nodoc
-class _$ScreenObjectSizeCopyWithImpl<$Res, $Val extends ScreenObjectSize>
+class _$ScreenObjectSizeCopyWithImpl<$Res>
     implements $ScreenObjectSizeCopyWith<$Res> {
-  _$ScreenObjectSizeCopyWithImpl(this._value, this._then);
+  _$ScreenObjectSizeCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ScreenObjectSize _self;
+  final $Res Function(ScreenObjectSize) _then;
 
-  /// Create a copy of ScreenObjectSize
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? width = null,
-    Object? height = null,
-  }) {
-    return _then(_value.copyWith(
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as int,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
+/// Create a copy of ScreenObjectSize
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? width = null,Object? height = null,}) {
+  return _then(_self.copyWith(
+width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ScreenObjectRectImplCopyWith<$Res>
-    implements $ScreenObjectSizeCopyWith<$Res> {
-  factory _$$ScreenObjectRectImplCopyWith(_$ScreenObjectRectImpl value,
-          $Res Function(_$ScreenObjectRectImpl) then) =
-      __$$ScreenObjectRectImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int width, int height});
 }
 
-/// @nodoc
-class __$$ScreenObjectRectImplCopyWithImpl<$Res>
-    extends _$ScreenObjectSizeCopyWithImpl<$Res, _$ScreenObjectRectImpl>
-    implements _$$ScreenObjectRectImplCopyWith<$Res> {
-  __$$ScreenObjectRectImplCopyWithImpl(_$ScreenObjectRectImpl _value,
-      $Res Function(_$ScreenObjectRectImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of ScreenObjectSize
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? width = null,
-    Object? height = null,
-  }) {
-    return _then(_$ScreenObjectRectImpl(
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as int,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
+/// Adds pattern-matching-related methods to [ScreenObjectSize].
+extension ScreenObjectSizePatterns on ScreenObjectSize {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ScreenObjectRect value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ScreenObjectRect() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ScreenObjectRect value)  $default,){
+final _that = this;
+switch (_that) {
+case _ScreenObjectRect():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ScreenObjectRect value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ScreenObjectRect() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int width,  int height)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ScreenObjectRect() when $default != null:
+return $default(_that.width,_that.height);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int width,  int height)  $default,) {final _that = this;
+switch (_that) {
+case _ScreenObjectRect():
+return $default(_that.width,_that.height);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int width,  int height)?  $default,) {final _that = this;
+switch (_that) {
+case _ScreenObjectRect() when $default != null:
+return $default(_that.width,_that.height);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ScreenObjectRectImpl implements _ScreenObjectRect {
-  const _$ScreenObjectRectImpl({required this.width, required this.height});
 
-  factory _$ScreenObjectRectImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ScreenObjectRectImplFromJson(json);
+class _ScreenObjectRect implements ScreenObjectSize {
+  const _ScreenObjectRect({required this.width, required this.height});
+  factory _ScreenObjectRect.fromJson(Map<String, dynamic> json) => _$ScreenObjectRectFromJson(json);
 
-  /// The width of the rectangle.
-  @override
-  final int width;
+/// The width of the screen object.
+@override final  int width;
+/// The height of the screen object.
+@override final  int height;
 
-  /// The height of the rectangle.
-  @override
-  final int height;
+/// Create a copy of ScreenObjectSize
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ScreenObjectRectCopyWith<_ScreenObjectRect> get copyWith => __$ScreenObjectRectCopyWithImpl<_ScreenObjectRect>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'ScreenObjectSize(width: $width, height: $height)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ScreenObjectRectImpl &&
-            (identical(other.width, width) || other.width == width) &&
-            (identical(other.height, height) || other.height == height));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, width, height);
-
-  /// Create a copy of ScreenObjectSize
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ScreenObjectRectImplCopyWith<_$ScreenObjectRectImpl> get copyWith =>
-      __$$ScreenObjectRectImplCopyWithImpl<_$ScreenObjectRectImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ScreenObjectRectImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ScreenObjectRectToJson(this, );
 }
 
-abstract class _ScreenObjectRect implements ScreenObjectSize {
-  const factory _ScreenObjectRect(
-      {required final int width,
-      required final int height}) = _$ScreenObjectRectImpl;
-
-  factory _ScreenObjectRect.fromJson(Map<String, dynamic> json) =
-      _$ScreenObjectRectImpl.fromJson;
-
-  /// The width of the rectangle.
-  @override
-  int get width;
-
-  /// The height of the rectangle.
-  @override
-  int get height;
-
-  /// Create a copy of ScreenObjectSize
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ScreenObjectRectImplCopyWith<_$ScreenObjectRectImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenObjectRect&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,width,height);
+
+@override
+String toString() {
+  return 'ScreenObjectSize(width: $width, height: $height)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ScreenObjectRectCopyWith<$Res> implements $ScreenObjectSizeCopyWith<$Res> {
+  factory _$ScreenObjectRectCopyWith(_ScreenObjectRect value, $Res Function(_ScreenObjectRect) _then) = __$ScreenObjectRectCopyWithImpl;
+@override @useResult
+$Res call({
+ int width, int height
+});
+
+
+
+
+}
+/// @nodoc
+class __$ScreenObjectRectCopyWithImpl<$Res>
+    implements _$ScreenObjectRectCopyWith<$Res> {
+  __$ScreenObjectRectCopyWithImpl(this._self, this._then);
+
+  final _ScreenObjectRect _self;
+  final $Res Function(_ScreenObjectRect) _then;
+
+/// Create a copy of ScreenObjectSize
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? width = null,Object? height = null,}) {
+  return _then(_ScreenObjectRect(
+width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+// dart format on

@@ -27,15 +27,15 @@ class MediaMixer {
 
   int? _memory;
 
-  /// The platform memory address.
+  /// The handle used to identify this mixer on the native platform.
   int? get memory => _memory;
 
   int _frameRate = 30;
 
-  /// Gets the frameRate.
+  /// The requested video frame rate in frames per second.
   int get frameRate => _frameRate;
 
-  /// Sets the frameRate.
+  /// Requests a video frame rate in frames per second.
   set frameRate(int frameRate) {
     assert(_memory != null);
     _frameRate = frameRate;
@@ -45,10 +45,10 @@ class MediaMixer {
 
   AVCaptureSessionPreset _sessionPreset = AVCaptureSessionPreset.hd1280x720;
 
-  /// Gets the sessionPreset.
+  /// The requested capture session preset.
   AVCaptureSessionPreset get sessionPreset => _sessionPreset;
 
-  /// Sets the sessionPreset for iOS.
+  /// Sets the capture session preset on supported Apple platforms.
   set sessionPreset(AVCaptureSessionPreset sessionPreset) {
     assert(_memory != null);
     _sessionPreset = sessionPreset;
@@ -58,7 +58,7 @@ class MediaMixer {
 
   VideoMixerSettings _videoMixerSettings = VideoMixerSettings();
 
-  /// Gets the video mixer settings.
+  /// The current video mixing settings.
   VideoMixerSettings get videoMixerSettings => _videoMixerSettings;
 
   /// Sets the video mixer settings.
@@ -73,7 +73,7 @@ class MediaMixer {
 
   AudioMixerSettings _audioMixerSettings = AudioMixerSettings();
 
-  /// Gets the audio mixer settings.
+  /// The current audio mixing settings.
   AudioMixerSettings get audioMixerSettings => _audioMixerSettings;
 
   /// Sets the audio mixer settings.
@@ -93,7 +93,9 @@ class MediaMixer {
 
   MediaMixer._();
 
-  /// Attaches an AudioSource to this mixer.
+  /// Attaches the default audio input. Pass `null` to detach it.
+  ///
+  /// The built-in platform implementations use the default audio track.
   Future<void> attachAudio(int track, AudioSource? audio) async {
     assert(_memory != null);
     try {
@@ -104,7 +106,7 @@ class MediaMixer {
     }
   }
 
-  /// Attaches a VideoSource to this mixer.
+  /// Attaches [video] to [track]. Pass `null` to detach that track.
   Future<void> attachVideo(int track, VideoSource? video) async {
     assert(_memory != null);
     try {
@@ -118,7 +120,7 @@ class MediaMixer {
     }
   }
 
-  /// Starts native audio/video capture and offscreen composition.
+  /// Starts audio and video capture and screen composition.
   Future<void> startRunning() async {
     assert(_memory != null);
     await MediaMixerPlatformInterface.instance
@@ -131,7 +133,7 @@ class MediaMixer {
     await MediaMixerPlatformInterface.instance.stopRunning({"memory": _memory});
   }
 
-  /// Disposes this mixer platform instance.
+  /// Releases the native mixer and its composition screen.
   Future<void> dispose() async {
     assert(_memory != null);
     await screen?.dispose();

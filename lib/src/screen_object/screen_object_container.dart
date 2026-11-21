@@ -49,6 +49,7 @@ class ScreenObjectContainer extends ScreenObject {
         id: id,
         size: size,
         isVisible: isVisible,
+        cornerRadius: cornerRadius,
         layoutMargin: layoutMargin,
         horizontalAlignment: horizontalAlignment.rawValue,
         verticalAlignment: verticalAlignment.rawValue,

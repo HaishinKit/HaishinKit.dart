@@ -32,21 +32,15 @@ enum ImageScreenObjectFormat {
   }
 }
 
-/// Internal keys used for serializing and deserializing [ImageScreenObject].
-///
-/// This class is file-private and is not intended to be accessed outside
-/// of this library.
 class _Keys {
   /// Key for the image source value.
   static const source = 'source';
 }
 
-/// A screen object that renders an image.
+/// Displays an image overlay on the composition screen.
 ///
-/// The image source is represented as a URI string, such as:
-/// - `data:` URI (e.g. base64-encoded image data)
-///
-/// The actual image loading and decoding is handled by the platform side.
+/// Use [setImage] to supply encoded PNG or JPEG bytes. The native platform
+/// decodes and renders the image.
 class ImageScreenObject extends ScreenObject {
   /// The object type identifier.
   ///
@@ -54,13 +48,9 @@ class ImageScreenObject extends ScreenObject {
   @override
   final String type = "image";
 
-  /// The image source URI.
-  ///
-  /// This is typically a `data:` URI but may also be a `file:` or network URI,
-  /// depending on how the image is provided.
   String _source = "";
 
-  /// Returns the current image source URI.
+  /// The URI of the current image, or an empty string before an image is set.
   String get source => _source;
 
   /// Returns the serializable elements of this screen object.
@@ -75,14 +65,14 @@ class ImageScreenObject extends ScreenObject {
 
   /// Restores the state of this screen object from serialized elements.
   ///
-  /// If the source value changes, the layout is invalidated.
+  /// Updating the elements invalidates layout.
   @override
   set elements(Map<String, String> value) {
     _source = value[_Keys.source] ?? "";
     invalidateLayout();
   }
 
-  /// Sets the image from raw binary data.
+  /// Sets the image from encoded PNG or JPEG bytes.
   ///
   /// The provided [buffer] is base64-encoded and converted into a `data:` URI
   /// using the specified [format]. If the resulting source is identical to the

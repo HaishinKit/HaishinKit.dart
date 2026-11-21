@@ -6,24 +6,23 @@ part of 'stream_session_view_texture_snapshot.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$StreamSessionViewTextureSnapshotImpl
-    _$$StreamSessionViewTextureSnapshotImplFromJson(
-            Map<String, dynamic> json) =>
-        _$StreamSessionViewTextureSnapshotImpl(
-          width: (json['width'] as num?)?.toDouble() ?? 0.0,
-          height: (json['height'] as num?)?.toDouble() ?? 0.0,
-          videoGravity: $enumDecodeNullable(
-                  _$VideoGravityEnumMap, json['videoGravity']) ??
-              VideoGravity.resizeAspect,
-        );
+_StreamSessionViewTextureSnapshot _$StreamSessionViewTextureSnapshotFromJson(
+  Map<String, dynamic> json,
+) => _StreamSessionViewTextureSnapshot(
+  width: (json['width'] as num?)?.toDouble() ?? 0.0,
+  height: (json['height'] as num?)?.toDouble() ?? 0.0,
+  videoGravity:
+      $enumDecodeNullable(_$VideoGravityEnumMap, json['videoGravity']) ??
+      VideoGravity.resizeAspect,
+);
 
-Map<String, dynamic> _$$StreamSessionViewTextureSnapshotImplToJson(
-        _$StreamSessionViewTextureSnapshotImpl instance) =>
-    <String, dynamic>{
-      'width': instance.width,
-      'height': instance.height,
-      'videoGravity': _$VideoGravityEnumMap[instance.videoGravity]!,
-    };
+Map<String, dynamic> _$StreamSessionViewTextureSnapshotToJson(
+  _StreamSessionViewTextureSnapshot instance,
+) => <String, dynamic>{
+  'width': instance.width,
+  'height': instance.height,
+  'videoGravity': _$VideoGravityEnumMap[instance.videoGravity]!,
+};
 
 const _$VideoGravityEnumMap = {
   VideoGravity.resize: 'resize',

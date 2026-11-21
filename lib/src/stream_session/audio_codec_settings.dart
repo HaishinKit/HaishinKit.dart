@@ -1,4 +1,6 @@
+/// Settings for the session's audio encoder.
 class AudioCodecSettings {
+  /// The target audio bitrate in bits per second.
   int bitrate;
 
 //<editor-fold desc="Data Methods">

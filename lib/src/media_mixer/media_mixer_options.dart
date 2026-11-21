@@ -3,34 +3,21 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'media_mixer_options.freezed.dart';
 part 'media_mixer_options.g.dart';
 
-/// Specifies the capture session mode used by the media mixer.
-///
-/// This enum defines how capture sessions are managed:
-///
-/// - [single]: Uses a single capture session. This is the default mode and is
-///   suitable for most use cases where only one input source is required.
-/// - [multi]: Uses multiple capture sessions simultaneously. This mode enables
-///   handling multiple input sources independently.
-/// - [manual]: Uses a manually managed capture session. This mode allows the
-///   application to control the capture session lifecycle and configuration.
+/// Determines how the native mixer manages capture on Apple platforms.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum CaptureSessionMode {
   /// Uses a single capture session.
   single,
 
-  /// Uses multiple capture sessions.
+  /// Uses an Apple multicamera capture session where supported.
   multi,
 
-  /// Uses a manually managed capture session.
+  /// Uses manual input mode for media supplied by the application.
   manual
 }
 
-/// Configuration options for the media mixer.
+/// Configures native capture and audio mixing on Apple platforms.
 ///
-/// This class defines how the media mixer captures and mixes audio and video.
-/// It supports JSON serialization/deserialization via `freezed` and `json_serializable`.
-///
-/// Example:
 /// ```dart
 /// final options = MediaMixerOptions(
 ///   captureSessionMode: CaptureSessionMode.multi,
@@ -38,15 +25,15 @@ enum CaptureSessionMode {
 /// );
 /// ```
 ///
-/// This class is immutable. To modify values, use `copyWith`.
+/// Use `copyWith` to create a copy with different settings.
 @freezed
-class MediaMixerOptions with _$MediaMixerOptions {
+abstract class MediaMixerOptions with _$MediaMixerOptions {
   const factory MediaMixerOptions({
-    /// Specifies how capture sessions are managed. iOS only.
+    /// The capture session mode. Defaults to [CaptureSessionMode.single].
     @Default(CaptureSessionMode.single)
     CaptureSessionMode captureSessionMode,
 
-    /// Enables mixing multiple audio tracks independently when set to true. Defaults to false. iOS Only.
+    /// Whether to mix multiple audio tracks. Defaults to `false`.
     @Default(false)
     bool multiTrackAudioMixingEnabled,
   }) = _MediaMixerOptions;

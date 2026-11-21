@@ -15,9 +15,10 @@ import 'video_codec_settings.dart';
 final class StreamSession {
   /// Creates a native session for [url] in the specified [mode].
   ///
-  /// Use an absolute streaming URL supported by the target platform, such as
-  /// `rtmp://example.com/live/stream`. Creating a session does not connect it;
-  /// call [connect] to establish the connection.
+  /// For RTMP, include the stream name in [url], as in
+  /// `rtmp://example.com/live/camera`. For SRT, pass the complete
+  /// `srt://` URL with any query options required by the server.
+  /// Call [connect] when ready to start publishing or playback.
   static Future<StreamSession> create(
       String url, StreamSessionMode mode) async {
     var object = StreamSession._();
@@ -35,7 +36,7 @@ final class StreamSession {
 
   StreamSession._();
 
-  /// The platform memory address.
+  /// The handle used to identify this session on the native platform.
   int? get memory => _memory;
 
   /// Connection state changes reported by the native session.
@@ -43,9 +44,10 @@ final class StreamSession {
       .receiveBroadcastStream()
       .map((value) => StreamSessionReadyState.values.byName(value));
 
+  /// The current video encoding settings.
   VideoCodecSettings get videoSettings => _videoSettings;
 
-  /// Specifies the video codec properties.
+  /// Applies video encoding settings to the native session.
   set videoSettings(VideoCodecSettings videoSettings) {
     assert(_memory != null);
     _videoSettings = videoSettings;
@@ -53,9 +55,10 @@ final class StreamSession {
         {"memory": _memory, "settings": videoSettings.toMap()});
   }
 
+  /// The current audio encoding settings.
   AudioCodecSettings get audioSettings => _audioSettings;
 
-  /// Specifies the audio codec properties.
+  /// Applies audio encoding settings to the native session.
   set audioSettings(AudioCodecSettings audioSettings) {
     assert(_memory != null);
     _audioSettings = audioSettings;
@@ -63,7 +66,7 @@ final class StreamSession {
         {"memory": _memory, "settings": audioSettings.toMap()});
   }
 
-  /// Registers a texture to this session.
+  /// Registers a Flutter texture for this session and returns its ID.
   Future<int?> registerTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
@@ -71,7 +74,7 @@ final class StreamSession {
         .registerTexture(params);
   }
 
-  /// Unregisters a texture to this session.
+  /// Unregisters the Flutter texture for this session.
   Future<void> unregisterTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
@@ -79,6 +82,7 @@ final class StreamSession {
         .unregisterTexture(params);
   }
 
+  /// Updates the native texture configuration.
   Future<int?> updateTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
@@ -86,7 +90,7 @@ final class StreamSession {
         .updateTexture(params);
   }
 
-  /// Creates a two-way connection to a server.
+  /// Connects to the endpoint to publish or play the stream.
   Future<void> connect() async {
     assert(_memory != null);
     try {
@@ -97,14 +101,14 @@ final class StreamSession {
     }
   }
 
-  /// Closes the session from the server.
+  /// Disconnects the session from its endpoint.
   Future<void> close() async {
     assert(_memory != null);
     return await StreamSessionPlatformInterface.instance
         .close({"memory": _memory});
   }
 
-  /// Disposes the session platform instance.
+  /// Releases the native session resources.
   Future<void> dispose() async {
     assert(_memory != null);
     return await StreamSessionPlatformInterface.instance

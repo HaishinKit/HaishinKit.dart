@@ -5,7 +5,8 @@ description: "Demonstrates how to use the haishin_kit plugin."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.13.0 <4.0.0"
+  flutter: '>=3.47.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -16,6 +17,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.11.1
 
   haishin_kit:
     # When depending on this package from a real application you should use:
@@ -29,8 +31,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-  audio_session: any
-  permission_handler: any
+  audio_session: ">=0.2.2 <0.2.4"
+  permission_handler: ^12.0.1
 dev_dependencies:
   integration_test:
     sdk: flutter
@@ -43,9 +45,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
-  cupertino_icons: ^1.0.2
-  permission_handler: any
-  audio_session: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

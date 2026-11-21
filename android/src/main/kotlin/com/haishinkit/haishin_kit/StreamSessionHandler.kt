@@ -5,6 +5,8 @@ import android.media.MediaFormat.KEY_PROFILE
 import android.os.Build
 import android.util.Log
 import com.haishinkit.codec.CodecOption
+import com.haishinkit.rtc.RTCSession
+import com.haishinkit.codec.VideoCodecProfileLevel
 import com.haishinkit.stream.StreamSession
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -98,6 +100,12 @@ class StreamSessionHandler(
                     session?.stream?.videoSetting?.bitRate = it
                 }
                 (source["profileLevel"] as? String)?.let {
+                    val activeSession = session
+                    if (activeSession is RTCSession) {
+                        VideoCodecProfileLevel.entries.firstOrNull { profile -> profile.rawValue == it }
+                            ?.let { profile -> activeSession.stream.videoSetting.profileLevel = profile }
+                        return@let
+                    }
                     try {
                         val profileLevel = ProfileLevel.valueOf(it)
                         val options = mutableListOf<CodecOption>()
@@ -142,7 +150,7 @@ class StreamSessionHandler(
                     session?.connect()?.onSuccess {
                         result.success(null)
                     }?.onFailure {
-                        result.error(CONNECT_FAILED, null, null)
+                        result.error(CONNECT_FAILED, it.message, null)
                     }
                 }
             }
@@ -157,9 +165,19 @@ class StreamSessionHandler(
             "$TAG#dispose" -> {
                 plugin.onDispose(hashCode())
                 texture = null
+                val activeSession = session
                 session = null
-                scope.cancel()
-                result.success(null)
+                scope.launch {
+                    try {
+                        activeSession?.close()
+                    } finally {
+                        activeSession?.stream?.dispose()
+                        channel.setStreamHandler(null)
+                        eventSink = null
+                        result.success(null)
+                        scope.cancel()
+                    }
+                }
             }
         }
     }
