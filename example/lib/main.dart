@@ -1,66 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'playback_page.dart';
 import 'preference_page.dart';
 import 'publish_page.dart';
+import 'studio_theme.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   runApp(const HaishinKitExampleApp());
 }
 
 class HaishinKitExampleApp extends StatelessWidget {
-  const HaishinKitExampleApp({super.key});
+  const HaishinKitExampleApp({super.key, this.initialDestination = 0});
+
+  final int initialDestination;
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: HaishinKitExample());
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'HaishinKit Flutter',
+        debugShowCheckedModeBanner: false,
+        theme: studioTheme(),
+        supportedLocales: const [Locale('en'), Locale('ja')],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        home: HaishinKitExample(initialDestination: initialDestination),
+      );
 }
 
 class HaishinKitExample extends StatefulWidget {
-  const HaishinKitExample({super.key});
+  const HaishinKitExample({super.key, this.initialDestination = 0});
+
+  final int initialDestination;
 
   @override
   State<HaishinKitExample> createState() => _HaishinKitExampleState();
 }
 
 class _HaishinKitExampleState extends State<HaishinKitExample> {
-  int _selectedIndex = 0;
+  late int _selectedIndex = widget.initialDestination;
 
-  final _childPageList = [PublishPage(), PlaybackPage(), PreferencePage()];
-
-  @override
-  void initState() {
-    super.initState();
-    _initPlatformState();
-  }
+  void _select(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _childPageList[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Publish'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.business), label: 'Playback'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.school), label: 'Preference'),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
+    final labels = [
+      context.studioText('Publish', '配信'),
+      context.studioText('Playback', '再生'),
+      context.studioText('Settings', '設定')
+    ];
+    const icons = [
+      Icons.videocam_outlined,
+      Icons.play_arrow_rounded,
+      Icons.settings_outlined
+    ];
+    final page = switch (_selectedIndex) {
+      0 => PublishPage(onOpenSettings: () => _select(2)),
+      1 => PlaybackPage(onOpenSettings: () => _select(2)),
+      _ => const PreferencePage(),
+    };
+    return PopScope(
+      canPop: _selectedIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && _selectedIndex != 0) _select(0);
+      },
+      child: LayoutBuilder(builder: (context, constraints) {
+        final rail = constraints.maxWidth >= 600;
+        return Scaffold(
+          body: Row(children: [
+            if (rail)
+              SafeArea(
+                  child: NavigationRail(
+                scrollable: true,
+                selectedIndex: _selectedIndex,
+                onDestinationSelected: _select,
+                labelType: NavigationRailLabelType.all,
+                destinations: List.generate(
+                    3,
+                    (index) => NavigationRailDestination(
+                          icon: Icon(icons[index],
+                              key: ValueKey('destination-$index')),
+                          label: Text(labels[index]),
+                        )),
+              )),
+            Expanded(
+                child:
+                    KeyedSubtree(key: ValueKey(_selectedIndex), child: page)),
+          ]),
+          bottomNavigationBar: rail
+              ? null
+              : NavigationBar(
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: _select,
+                  destinations: List.generate(
+                      3,
+                      (index) => NavigationDestination(
+                            icon: Icon(icons[index],
+                                key: ValueKey('destination-$index')),
+                            label: labels[index],
+                          )),
+                ),
+        );
+      }),
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  Future<void> _initPlatformState() async {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }
