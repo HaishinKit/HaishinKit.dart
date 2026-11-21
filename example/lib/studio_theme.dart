@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const studioBackground = Color(0xFF0B121C);
 const studioSurface = Color(0xFF101B28);
