@@ -1,3 +1,5 @@
+require 'fileutils'
+
 desc "[CI] Review PullRequest."
 lane :review do
   begin
@@ -10,6 +12,14 @@ lane :review do
     )
   rescue
   end
+end
+
+# dartdoc preserves the README's relative image URLs, so publish their assets too.
+def copy_example_screenshots(destination)
+  source = File.expand_path('../example/design/screenshots', __dir__)
+  target = File.join(destination, 'example', 'design')
+  FileUtils.mkdir_p(target)
+  FileUtils.cp_r(source, target)
 end
 
 desc "Creates documents."
@@ -31,9 +41,11 @@ lane :document do |options|
 
     sh "rm -rf ./docs.haishinkit.com/dart/latest"
     sh "dart doc . -o ./docs.haishinkit.com/dart/latest"
+    copy_example_screenshots('./docs.haishinkit.com/dart/latest')
  
     sh "rm -rf ./docs.haishinkit.com/dart/#{version}"
     sh "dart doc . -o ./docs.haishinkit.com/dart/#{version}"
+    copy_example_screenshots("./docs.haishinkit.com/dart/#{version}")
   end
 
   Dir.chdir("../docs.haishinkit.com") do
