@@ -5,3 +5,13 @@
 /website/*
 /codecov.yaml
 /dart_dependency_validator.yaml
+
+# Local build outputs and tool caches.
+/build/**
+/example/build/**
+**/.build/**
+**/.gradle/**
+**/.swiftpm/**
+**/.dart_tool/**
+/.idea/**
+/.ruby-version

@@ -19,7 +19,7 @@ enum CameraPosition {
 
 /// Represents a video input source.
 @freezed
-class VideoSource with _$VideoSource {
+abstract class VideoSource with _$VideoSource {
   const factory VideoSource({
     /// Unique identifier of the video source.
     required String id,

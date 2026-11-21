@@ -11,7 +11,7 @@ part 'screen_object_edge_insets.g.dart';
 ///
 /// The values are expressed in logical pixels.
 @freezed
-class ScreenObjectEdgeInsets with _$ScreenObjectEdgeInsets {
+abstract class ScreenObjectEdgeInsets with _$ScreenObjectEdgeInsets {
   /// Creates a [ScreenObjectEdgeInsets] with the given edge values.
   ///
   /// All values are required and represent spacing in logical pixels.

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -22,12 +24,13 @@ enum VideoRenderingMode {
 /// It is immutable and supports JSON serialization via `freezed` and
 /// `json_serializable`.
 @freezed
-class VideoMixerSettings with _$VideoMixerSettings {
+abstract class VideoMixerSettings with _$VideoMixerSettings {
   const factory VideoMixerSettings({
     /// Specifies how video frames are rendered.
     ///
     /// If the value is missing or an unknown enum value is received from JSON,
     /// [VideoRenderingMode.offscreen] will be used as the default.
+    // Freezed forwards this annotation to the generated field.
     @JsonKey(
       defaultValue: VideoRenderingMode.offscreen,
       unknownEnumValue: VideoRenderingMode.offscreen,

@@ -32,19 +32,36 @@ abstract class ScreenObject {
 
   ScreenObjectSize _size = ScreenObjectSize(width: 0, height: 0);
 
-  /// Returns the frame rectangle of this object.
+  /// The requested width and height of this object.
   ///
-  /// The frame defines the position and size of the object
-  /// in screen coordinates.
+  /// Position is determined by alignment and [layoutMargin] within its parent.
   ScreenObjectSize get size => _size;
 
-  /// Sets the frame rectangle of this object.
+  /// Sets the requested width and height of this object.
   ///
   /// If the value changes, the layout is invalidated and will be
   /// recalculated during the next layout pass.
   set size(ScreenObjectSize value) {
     if (_size == value) return;
     _size = value;
+    invalidateLayout();
+  }
+
+  double _cornerRadius = 0;
+
+  /// The corner radius in composition pixels. Supported on Android.
+  double get cornerRadius => _cornerRadius;
+
+  set cornerRadius(double value) {
+    if (!value.isFinite || value < 0) {
+      throw ArgumentError.value(
+        value,
+        'cornerRadius',
+        'Must be finite and non-negative',
+      );
+    }
+    if (_cornerRadius == value) return;
+    _cornerRadius = value;
     invalidateLayout();
   }
 
@@ -64,8 +81,12 @@ abstract class ScreenObject {
     invalidateLayout();
   }
 
-  ScreenObjectEdgeInsets _layoutMargin =
-      ScreenObjectEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
+  ScreenObjectEdgeInsets _layoutMargin = ScreenObjectEdgeInsets(
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  );
 
   /// The margin applied around this object during layout.
   ///
@@ -138,6 +159,10 @@ abstract class ScreenObject {
   }
 
   bool _shouldInvalidateLayout = false;
+  int _layoutUpdateDepth = 0;
+
+  /// Whether related layout changes are currently being batched.
+  bool get isUpdatingLayout => _layoutUpdateDepth > 0;
 
   /// Whether this object requires a layout update.
   bool get shouldInvalidateLayout => _shouldInvalidateLayout;
@@ -147,8 +172,7 @@ abstract class ScreenObject {
   /// The identifier is generated using the current timestamp and
   /// a random value to reduce the chance of collisions.
   ScreenObject()
-      : id =
-            '${DateTime.now().microsecondsSinceEpoch}-${_rand.nextInt(1 << 32)}';
+    : id = '${DateTime.now().microsecondsSinceEpoch}-${_rand.nextInt(1 << 32)}';
 
   /// Invalidates the current layout and propagates the change to parents.
   ///
@@ -156,12 +180,28 @@ abstract class ScreenObject {
   /// that parent containers are also updated.
   void invalidateLayout() {
     _shouldInvalidateLayout = true;
-    if (parent != null) {
+    if (_layoutUpdateDepth == 0 && parent != null) {
       parent?.invalidateLayout();
     }
   }
 
+  /// Applies related layout changes in a single native update.
+  ///
+  /// Nested updates are batched until the outer update finishes.
+  void updateLayout(void Function() update) {
+    _layoutUpdateDepth++;
+    try {
+      update();
+    } finally {
+      _layoutUpdateDepth--;
+      if (_layoutUpdateDepth == 0 && _shouldInvalidateLayout) {
+        invalidateLayout();
+      }
+    }
+  }
+
   /// Performs layout for this object using the given [renderer].
+
   ///
   /// Layout is only recalculated if [shouldInvalidateLayout] is `true`.
   void layout(ScreenRenderer renderer) {
@@ -182,10 +222,11 @@ abstract class ScreenObject {
       id: id,
       size: size,
       isVisible: isVisible,
+      cornerRadius: cornerRadius,
       layoutMargin: layoutMargin,
       horizontalAlignment: horizontalAlignment.rawValue,
       verticalAlignment: verticalAlignment.rawValue,
-      elements: elements,
+      elements: Map<String, String>.of(elements),
       children: [],
     );
   }

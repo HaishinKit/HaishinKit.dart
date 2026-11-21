@@ -6,16 +6,11 @@ part of 'screen_object_size.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ScreenObjectRectImpl _$$ScreenObjectRectImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ScreenObjectRectImpl(
+_ScreenObjectRect _$ScreenObjectRectFromJson(Map<String, dynamic> json) =>
+    _ScreenObjectRect(
       width: (json['width'] as num).toInt(),
       height: (json['height'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$ScreenObjectRectImplToJson(
-        _$ScreenObjectRectImpl instance) =>
-    <String, dynamic>{
-      'width': instance.width,
-      'height': instance.height,
-    };
+Map<String, dynamic> _$ScreenObjectRectToJson(_ScreenObjectRect instance) =>
+    <String, dynamic>{'width': instance.width, 'height': instance.height};

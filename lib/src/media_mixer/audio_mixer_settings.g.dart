@@ -6,9 +6,8 @@ part of 'audio_mixer_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AudioMixerSettingsImpl _$$AudioMixerSettingsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$AudioMixerSettingsImpl(
+_AudioMixerSettings _$AudioMixerSettingsFromJson(Map<String, dynamic> json) =>
+    _AudioMixerSettings(
       channels: (json['channels'] as num?)?.toInt() ?? 0,
       isMuted: json['isMuted'] as bool? ?? false,
       mainTrack: (json['mainTrack'] as num?)?.toInt() ?? 0,
@@ -17,8 +16,7 @@ _$AudioMixerSettingsImpl _$$AudioMixerSettingsImplFromJson(
       sampleRate: (json['sampleRate'] as num?)?.toDouble() ?? 0.0,
     );
 
-Map<String, dynamic> _$$AudioMixerSettingsImplToJson(
-        _$AudioMixerSettingsImpl instance) =>
+Map<String, dynamic> _$AudioMixerSettingsToJson(_AudioMixerSettings instance) =>
     <String, dynamic>{
       'channels': instance.channels,
       'isMuted': instance.isMuted,

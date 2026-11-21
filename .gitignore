@@ -5,7 +5,7 @@
 .DS_Store
 
 .vscode/
-**/.idea
+**/.idea/*
 **/.build
 
 # Files and directories created by pub
@@ -37,3 +37,6 @@ doc/api/
 !.idea/vcs.xml
 !haishin_kit.iml
 fastlane/report.xml
+
+# Keep the checked-in Ruby toolchain version visible to package validation.
+!/.ruby-version

@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,213 +9,275 @@ part of 'stream_session_view_texture_snapshot.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-StreamSessionViewTextureSnapshot _$StreamSessionViewTextureSnapshotFromJson(
-    Map<String, dynamic> json) {
-  return _StreamSessionViewTextureSnapshot.fromJson(json);
-}
 
 /// @nodoc
 mixin _$StreamSessionViewTextureSnapshot {
-  double get width => throw _privateConstructorUsedError;
-  double get height => throw _privateConstructorUsedError;
-  VideoGravity get videoGravity => throw _privateConstructorUsedError;
+
+ double get width; double get height; VideoGravity get videoGravity;
+/// Create a copy of StreamSessionViewTextureSnapshot
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StreamSessionViewTextureSnapshotCopyWith<StreamSessionViewTextureSnapshot> get copyWith => _$StreamSessionViewTextureSnapshotCopyWithImpl<StreamSessionViewTextureSnapshot>(this as StreamSessionViewTextureSnapshot, _$identity);
 
   /// Serializes this StreamSessionViewTextureSnapshot to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of StreamSessionViewTextureSnapshot
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $StreamSessionViewTextureSnapshotCopyWith<StreamSessionViewTextureSnapshot>
-      get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StreamSessionViewTextureSnapshot&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.videoGravity, videoGravity) || other.videoGravity == videoGravity));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,width,height,videoGravity);
+
+@override
+String toString() {
+  return 'StreamSessionViewTextureSnapshot(width: $width, height: $height, videoGravity: $videoGravity)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $StreamSessionViewTextureSnapshotCopyWith<$Res> {
-  factory $StreamSessionViewTextureSnapshotCopyWith(
-          StreamSessionViewTextureSnapshot value,
-          $Res Function(StreamSessionViewTextureSnapshot) then) =
-      _$StreamSessionViewTextureSnapshotCopyWithImpl<$Res,
-          StreamSessionViewTextureSnapshot>;
-  @useResult
-  $Res call({double width, double height, VideoGravity videoGravity});
-}
+abstract mixin class $StreamSessionViewTextureSnapshotCopyWith<$Res>  {
+  factory $StreamSessionViewTextureSnapshotCopyWith(StreamSessionViewTextureSnapshot value, $Res Function(StreamSessionViewTextureSnapshot) _then) = _$StreamSessionViewTextureSnapshotCopyWithImpl;
+@useResult
+$Res call({
+ double width, double height, VideoGravity videoGravity
+});
 
+
+
+
+}
 /// @nodoc
-class _$StreamSessionViewTextureSnapshotCopyWithImpl<$Res,
-        $Val extends StreamSessionViewTextureSnapshot>
+class _$StreamSessionViewTextureSnapshotCopyWithImpl<$Res>
     implements $StreamSessionViewTextureSnapshotCopyWith<$Res> {
-  _$StreamSessionViewTextureSnapshotCopyWithImpl(this._value, this._then);
+  _$StreamSessionViewTextureSnapshotCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final StreamSessionViewTextureSnapshot _self;
+  final $Res Function(StreamSessionViewTextureSnapshot) _then;
 
-  /// Create a copy of StreamSessionViewTextureSnapshot
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? width = null,
-    Object? height = null,
-    Object? videoGravity = null,
-  }) {
-    return _then(_value.copyWith(
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as double,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as double,
-      videoGravity: null == videoGravity
-          ? _value.videoGravity
-          : videoGravity // ignore: cast_nullable_to_non_nullable
-              as VideoGravity,
-    ) as $Val);
-  }
+/// Create a copy of StreamSessionViewTextureSnapshot
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? width = null,Object? height = null,Object? videoGravity = null,}) {
+  return _then(_self.copyWith(
+width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as double,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as double,videoGravity: null == videoGravity ? _self.videoGravity : videoGravity // ignore: cast_nullable_to_non_nullable
+as VideoGravity,
+  ));
 }
 
-/// @nodoc
-abstract class _$$StreamSessionViewTextureSnapshotImplCopyWith<$Res>
-    implements $StreamSessionViewTextureSnapshotCopyWith<$Res> {
-  factory _$$StreamSessionViewTextureSnapshotImplCopyWith(
-          _$StreamSessionViewTextureSnapshotImpl value,
-          $Res Function(_$StreamSessionViewTextureSnapshotImpl) then) =
-      __$$StreamSessionViewTextureSnapshotImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({double width, double height, VideoGravity videoGravity});
 }
 
-/// @nodoc
-class __$$StreamSessionViewTextureSnapshotImplCopyWithImpl<$Res>
-    extends _$StreamSessionViewTextureSnapshotCopyWithImpl<$Res,
-        _$StreamSessionViewTextureSnapshotImpl>
-    implements _$$StreamSessionViewTextureSnapshotImplCopyWith<$Res> {
-  __$$StreamSessionViewTextureSnapshotImplCopyWithImpl(
-      _$StreamSessionViewTextureSnapshotImpl _value,
-      $Res Function(_$StreamSessionViewTextureSnapshotImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of StreamSessionViewTextureSnapshot
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? width = null,
-    Object? height = null,
-    Object? videoGravity = null,
-  }) {
-    return _then(_$StreamSessionViewTextureSnapshotImpl(
-      width: null == width
-          ? _value.width
-          : width // ignore: cast_nullable_to_non_nullable
-              as double,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as double,
-      videoGravity: null == videoGravity
-          ? _value.videoGravity
-          : videoGravity // ignore: cast_nullable_to_non_nullable
-              as VideoGravity,
-    ));
-  }
+/// Adds pattern-matching-related methods to [StreamSessionViewTextureSnapshot].
+extension StreamSessionViewTextureSnapshotPatterns on StreamSessionViewTextureSnapshot {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _StreamSessionViewTextureSnapshot value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _StreamSessionViewTextureSnapshot() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _StreamSessionViewTextureSnapshot value)  $default,){
+final _that = this;
+switch (_that) {
+case _StreamSessionViewTextureSnapshot():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _StreamSessionViewTextureSnapshot value)?  $default,){
+final _that = this;
+switch (_that) {
+case _StreamSessionViewTextureSnapshot() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double width,  double height,  VideoGravity videoGravity)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _StreamSessionViewTextureSnapshot() when $default != null:
+return $default(_that.width,_that.height,_that.videoGravity);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double width,  double height,  VideoGravity videoGravity)  $default,) {final _that = this;
+switch (_that) {
+case _StreamSessionViewTextureSnapshot():
+return $default(_that.width,_that.height,_that.videoGravity);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double width,  double height,  VideoGravity videoGravity)?  $default,) {final _that = this;
+switch (_that) {
+case _StreamSessionViewTextureSnapshot() when $default != null:
+return $default(_that.width,_that.height,_that.videoGravity);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$StreamSessionViewTextureSnapshotImpl
-    implements _StreamSessionViewTextureSnapshot {
-  const _$StreamSessionViewTextureSnapshotImpl(
-      {this.width = 0.0,
-      this.height = 0.0,
-      this.videoGravity = VideoGravity.resizeAspect});
 
-  factory _$StreamSessionViewTextureSnapshotImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$StreamSessionViewTextureSnapshotImplFromJson(json);
+class _StreamSessionViewTextureSnapshot implements StreamSessionViewTextureSnapshot {
+  const _StreamSessionViewTextureSnapshot({this.width = 0.0, this.height = 0.0, this.videoGravity = VideoGravity.resizeAspect});
+  factory _StreamSessionViewTextureSnapshot.fromJson(Map<String, dynamic> json) => _$StreamSessionViewTextureSnapshotFromJson(json);
 
-  @override
-  @JsonKey()
-  final double width;
-  @override
-  @JsonKey()
-  final double height;
-  @override
-  @JsonKey()
-  final VideoGravity videoGravity;
+@override@JsonKey() final  double width;
+@override@JsonKey() final  double height;
+@override@JsonKey() final  VideoGravity videoGravity;
 
-  @override
-  String toString() {
-    return 'StreamSessionViewTextureSnapshot(width: $width, height: $height, videoGravity: $videoGravity)';
-  }
+/// Create a copy of StreamSessionViewTextureSnapshot
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StreamSessionViewTextureSnapshotCopyWith<_StreamSessionViewTextureSnapshot> get copyWith => __$StreamSessionViewTextureSnapshotCopyWithImpl<_StreamSessionViewTextureSnapshot>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$StreamSessionViewTextureSnapshotImpl &&
-            (identical(other.width, width) || other.width == width) &&
-            (identical(other.height, height) || other.height == height) &&
-            (identical(other.videoGravity, videoGravity) ||
-                other.videoGravity == videoGravity));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, width, height, videoGravity);
-
-  /// Create a copy of StreamSessionViewTextureSnapshot
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$StreamSessionViewTextureSnapshotImplCopyWith<
-          _$StreamSessionViewTextureSnapshotImpl>
-      get copyWith => __$$StreamSessionViewTextureSnapshotImplCopyWithImpl<
-          _$StreamSessionViewTextureSnapshotImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$StreamSessionViewTextureSnapshotImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$StreamSessionViewTextureSnapshotToJson(this, );
 }
 
-abstract class _StreamSessionViewTextureSnapshot
-    implements StreamSessionViewTextureSnapshot {
-  const factory _StreamSessionViewTextureSnapshot(
-          {final double width,
-          final double height,
-          final VideoGravity videoGravity}) =
-      _$StreamSessionViewTextureSnapshotImpl;
-
-  factory _StreamSessionViewTextureSnapshot.fromJson(
-          Map<String, dynamic> json) =
-      _$StreamSessionViewTextureSnapshotImpl.fromJson;
-
-  @override
-  double get width;
-  @override
-  double get height;
-  @override
-  VideoGravity get videoGravity;
-
-  /// Create a copy of StreamSessionViewTextureSnapshot
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$StreamSessionViewTextureSnapshotImplCopyWith<
-          _$StreamSessionViewTextureSnapshotImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StreamSessionViewTextureSnapshot&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.videoGravity, videoGravity) || other.videoGravity == videoGravity));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,width,height,videoGravity);
+
+@override
+String toString() {
+  return 'StreamSessionViewTextureSnapshot(width: $width, height: $height, videoGravity: $videoGravity)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StreamSessionViewTextureSnapshotCopyWith<$Res> implements $StreamSessionViewTextureSnapshotCopyWith<$Res> {
+  factory _$StreamSessionViewTextureSnapshotCopyWith(_StreamSessionViewTextureSnapshot value, $Res Function(_StreamSessionViewTextureSnapshot) _then) = __$StreamSessionViewTextureSnapshotCopyWithImpl;
+@override @useResult
+$Res call({
+ double width, double height, VideoGravity videoGravity
+});
+
+
+
+
+}
+/// @nodoc
+class __$StreamSessionViewTextureSnapshotCopyWithImpl<$Res>
+    implements _$StreamSessionViewTextureSnapshotCopyWith<$Res> {
+  __$StreamSessionViewTextureSnapshotCopyWithImpl(this._self, this._then);
+
+  final _StreamSessionViewTextureSnapshot _self;
+  final $Res Function(_StreamSessionViewTextureSnapshot) _then;
+
+/// Create a copy of StreamSessionViewTextureSnapshot
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? width = null,Object? height = null,Object? videoGravity = null,}) {
+  return _then(_StreamSessionViewTextureSnapshot(
+width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as double,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as double,videoGravity: null == videoGravity ? _self.videoGravity : videoGravity // ignore: cast_nullable_to_non_nullable
+as VideoGravity,
+  ));
+}
+
+
+}
+
+// dart format on

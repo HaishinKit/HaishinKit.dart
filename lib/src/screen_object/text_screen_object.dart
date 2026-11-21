@@ -1,27 +1,27 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
 import 'screen_object.dart';
 
-/// An object that manages offscreen rendering a text source.
+/// Displays a text overlay on the composition screen.
 final class TextScreenObject extends ScreenObject {
   @override
   final String type = "text";
 
   String _value = "";
 
-  /// Gets the text string.
+  /// The text to display.
   String get value => _value;
 
-  /// Sets the text string.
+  /// Updates the text and invalidates layout when it changes.
   set value(String value) {
     if (_value == value) return;
     _value = value;
     invalidateLayout();
   }
 
-  Color _color = Colors.white;
+  Color _color = const Color(0xFFFFFFFF);
 
-  /// Gets the text color in ARGB format (`0xAARRGGBB`).
+  /// The text color. Defaults to white.
   Color get color => _color;
 
   /// Sets the text color.
@@ -36,10 +36,10 @@ final class TextScreenObject extends ScreenObject {
 
   double _fontSize = 32.0;
 
-  /// Gets the text size.
+  /// The font size. Defaults to 32.
   double get fontSize => _fontSize;
 
-  /// Sets the text size.
+  /// Sets the font size.
   ///
   /// The layout is invalidated only when the value actually changes.
   set fontSize(double value) {
@@ -62,7 +62,7 @@ final class TextScreenObject extends ScreenObject {
   set elements(Map<String, String> value) {
     _value = value["value"] ?? "";
     _color = _colorFromHex((value["color"] ?? '#FFFFFFFF'));
-    _fontSize = double.tryParse(value["size"] ?? '') ?? 0.0;
+    _fontSize = double.tryParse(value["fontSize"] ?? '') ?? 0.0;
     invalidateLayout();
   }
 }
