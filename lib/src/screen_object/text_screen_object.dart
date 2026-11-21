@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
 import 'screen_object.dart';
 
@@ -19,7 +19,7 @@ final class TextScreenObject extends ScreenObject {
     invalidateLayout();
   }
 
-  Color _color = Colors.white;
+  Color _color = const Color(0xFFFFFFFF);
 
   /// The text color. Defaults to white.
   Color get color => _color;
