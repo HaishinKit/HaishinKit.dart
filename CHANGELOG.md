@@ -1,7 +1,9 @@
-## Unreleased
+## 0.19.1
 
 * Update Android native dependencies to HaishinKit.kt 0.20.5.
 * Update the iOS/macOS native dependency to HaishinKit.swift 2.3.1.
+* Replace deprecated Flutter Material imports in the library.
+* Refresh the example UI and update its development dependencies. The example requires Flutter 3.47 and Dart 3.13 or newer.
 * Remove obsolete CocoaPods wiring from the iOS example, which uses Swift Package Manager.
 * Align iOS example simulator builds with the arm64 native SRT/RTC binaries.
 

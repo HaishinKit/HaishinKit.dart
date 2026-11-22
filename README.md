@@ -27,7 +27,7 @@ Add the published package to your app's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  haishin_kit: ^0.19.0
+  haishin_kit: ^0.19.1
 ```
 
 ```sh
@@ -60,7 +60,7 @@ for permissions, Android build properties, Apple setup, and session lifecycle.
 Use the generated [dartdoc reference](https://docs.haishinkit.com/dart/latest/)
 for capture, composition, stream sessions, and protocol integration.
 
-The install example uses published **0.19.0**. The `main` branch contains the
+The install example targets **0.19.1**. The `main` branch contains the
 refreshed example and may include changes ahead of the published package or API
 reference; use a matching release tag when working with a published version.
 
