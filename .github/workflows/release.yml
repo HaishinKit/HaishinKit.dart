@@ -4,16 +4,29 @@ on:
     tags:
       - '*.*.*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: Existing release tag to regenerate documentation for
+        required: true
+        type: string
 permissions:
   contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      RELEASE_VERSION: ${{ github.ref_name }}
+      RELEASE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
+      DOCUMENTATION_SOURCE: ${{ github.event_name == 'workflow_dispatch' && format('{0}/release-source', github.workspace) || github.workspace }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
+      - name: Checkout release source
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.version }}
+          path: release-source
           persist-credentials: false
       - name: Validate documentation version
         shell: bash
@@ -44,4 +57,4 @@ jobs:
       - name: fastlane
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bundle exec fastlane document "version:$RELEASE_VERSION"
+        run: bundle exec fastlane document "version:$RELEASE_VERSION" "source_directory:$DOCUMENTATION_SOURCE"

@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'tmpdir'
 
 desc "[CI] Review PullRequest."
 lane :review do
@@ -23,45 +24,41 @@ lane :android_check do
 end
 
 # dartdoc preserves the README's relative image URLs, so publish their assets too.
-def copy_example_screenshots(destination)
-  source = File.expand_path('../example/design/screenshots', __dir__)
+def copy_example_screenshots(source_root, destination)
+  source = File.join(source_root, 'example', 'design', 'screenshots')
   target = File.join(destination, 'example', 'design')
   FileUtils.mkdir_p(target)
   FileUtils.cp_r(source, target)
 end
 
-desc "Creates documents."
+desc 'Creates documents.'
 lane :document do |options|
-  if options[:version] == ""
-    UI.error("Version is a required argument!")
-    next
-  end
+  version = options[:version].to_s
+  UI.user_error!('A valid version is required') unless version.match?(/\A[a-zA-Z0-9][a-zA-Z0-9.+-]*\z/)
+  source = File.expand_path(options[:source_directory] || '..', Dir.pwd)
+  Dir.chdir(source) { sh('flutter', 'pub', 'get') }
 
-  version = options[:version]
-
-  Dir.chdir("..") do
-    sh "git clone git@github.com:HaishinKit/docs.haishinkit.com.git"
-
-    if Helper.is_ci?
-      sh "git config --global user.email 'action@github.com'"
-      sh "git config --global user.name 'GitHub Action'"
+  Dir.mktmpdir('haishinkit-dart-documentation-') do |directory|
+    repository = File.join(directory, 'site')
+    sh('git', 'clone', '--depth', '1', 'git@github.com:HaishinKit/docs.haishinkit.com.git', repository)
+    %w[latest].push(version).uniq.each do |destination|
+      target = File.join(repository, 'dart', destination)
+      FileUtils.rm_rf(target)
+      sh('dart', 'doc', source, '-o', target)
+      copy_example_screenshots(source, target)
     end
-
-    sh "rm -rf ./docs.haishinkit.com/dart/latest"
-    sh "dart doc . -o ./docs.haishinkit.com/dart/latest"
-    copy_example_screenshots('./docs.haishinkit.com/dart/latest')
- 
-    sh "rm -rf ./docs.haishinkit.com/dart/#{version}"
-    sh "dart doc . -o ./docs.haishinkit.com/dart/#{version}"
-    copy_example_screenshots("./docs.haishinkit.com/dart/#{version}")
+    Dir.chdir(repository) do
+      if Helper.is_ci?
+        sh('git', 'config', 'user.email', 'action@github.com')
+        sh('git', 'config', 'user.name', 'GitHub Action')
+      end
+      sh('git', 'add', 'dart')
+      if system('git', 'diff', '--cached', '--quiet')
+        UI.message('Documentation is already up to date')
+      else
+        sh('git', 'commit', '-m', "Add HaishinKit.dart #{version}")
+        sh('git', 'push', 'origin', 'main')
+      end
+    end
   end
-
-  Dir.chdir("../docs.haishinkit.com") do
-    sh "git add ."
-    sh "git commit -m 'Add HaishinKit.dart #{version}'"
-    sh "git push origin main"
-  end
-
-  sh "rm -rf ../docs.haishinkit.com"
-
 end
