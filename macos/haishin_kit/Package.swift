@@ -15,7 +15,7 @@ let package = Package(
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(
             url: "https://github.com/HaishinKit/HaishinKit.swift",
-            exact: "2.3.1"
+            exact: "2.3.2"
         )
     ],
     targets: [
