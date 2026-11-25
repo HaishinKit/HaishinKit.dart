@@ -38,7 +38,7 @@ abstract class ScreenObjectSnapshot with _$ScreenObjectSnapshot {
     /// When `false`, the object should be ignored during rendering.
     required bool isVisible,
 
-    /// The corner radius in composition pixels on Android.
+    /// The corner radius in composition pixels on Android, iOS, and macOS.
     @Default(0.0) double cornerRadius,
 
     /// The margin applied around the object during layout.

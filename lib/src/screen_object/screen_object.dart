@@ -49,7 +49,7 @@ abstract class ScreenObject {
 
   double _cornerRadius = 0;
 
-  /// The corner radius in composition pixels. Supported on Android.
+  /// The corner radius in composition pixels on Android, iOS, and macOS.
   double get cornerRadius => _cornerRadius;
 
   set cornerRadius(double value) {

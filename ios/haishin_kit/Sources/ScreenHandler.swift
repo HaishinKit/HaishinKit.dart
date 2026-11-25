@@ -132,6 +132,7 @@ extension ScreenHandler: MethodCallHandler {
             return screenObjectFactory.make(snapshot)
         }
         screenObject.isVisible = snapshot.isVisible
+        screenObject.cornerRadius = CGFloat(snapshot.cornerRadius ?? 0)
         screenObject.layoutMargin = .init(
             top: CGFloat(snapshot.layoutMargin.top),
             left: CGFloat(snapshot.layoutMargin.left),
