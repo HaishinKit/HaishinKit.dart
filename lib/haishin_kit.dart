@@ -7,7 +7,7 @@
 /// ## Platform integration
 ///
 /// Use Flutter 3.44+, Dart 3.12+, and Xcode 26+ for Apple builds. The native Apple
-/// bridge uses HaishinKit.swift 2.3.1 through Swift Package Manager, targeting
+/// bridge uses HaishinKit.swift 2.3.2 through Swift Package Manager, targeting
 /// iOS 15 and macOS 12. CocoaPods installation of this plugin is not supported.
 /// Enable Swift Package Manager before resolving the consuming app:
 ///
@@ -29,7 +29,7 @@
 /// On macOS, enable `com.apple.security.device.audio-input` and
 /// `com.apple.security.device.camera` in the app's Debug and Release entitlements.
 ///
-/// Android uses HaishinKit.kt 0.20.5 modules from JitPack and OpenGL composition.
+/// Android uses HaishinKit.kt 0.20.6 modules from JitPack and OpenGL composition.
 /// Use compile SDK 37+. The native bridge declares API 23, while Flutter 3.44
 /// requires an Android app minimum of API 24. With the repository's current
 /// Kotlin plugin configuration, set these Android Gradle properties:
