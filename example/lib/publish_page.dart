@@ -223,7 +223,8 @@ class _PublishState extends State<PublishPage> {
         constraints: const BoxConstraints(maxWidth: 640),
         builder: (sheetContext) => StatefulBuilder(
             builder: (sheetContext, refreshSheet) => SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  padding: EdgeInsets.fromLTRB(20, 0, 20,
+                      24 + MediaQuery.viewPaddingOf(sheetContext).bottom),
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -19,8 +19,12 @@ void main() {
   testWidgets('sample loads and saves scenes, publishes restored size, and locks live loading', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(700, 1000);
+    tester.view.viewPadding = const FakeViewPadding(bottom: 48);
+    tester.view.padding = const FakeViewPadding(bottom: 48);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetViewPadding);
+    addTearDown(tester.view.resetPadding);
     final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
     const native = MethodChannel('com.haishinkit');
     const events = MethodChannel('com.haishinkit.eventchannel/3');
@@ -74,6 +78,10 @@ void main() {
       await tester.pump();
     }
     await tools();
+    final addVideo = find.widgetWithText(OutlinedButton, 'Add sample video');
+    await tester.ensureVisible(addVideo);
+    await tester.pump();
+    expect(tester.getBottomLeft(addVideo).dy, lessThanOrEqualTo(952));
     await press('Load scene');
     expect(calls.any((call) => call.method == 'Screen#importScene'), isTrue);
     await tools();
