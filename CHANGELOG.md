@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Add portable scene export/import with packaged local media and stable restored object IDs.
+* Add AssetScreenObject local video playback and a looping sample video in the example.
+* Add sample scene file dialogs and preserve loaded composition dimensions for publishing.
+
 * Add OS video encoder discovery and codec selection, including Android RTMP AV1, VP8, and VP9.
 * Add HLG capture and native HDR preview surfaces on supported iOS and Android devices.
 * Add sample settings for publishing codecs and HLG with protocol-aware choices.

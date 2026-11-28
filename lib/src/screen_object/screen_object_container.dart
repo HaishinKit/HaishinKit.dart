@@ -5,6 +5,8 @@ import 'screen_object_snapshot.dart';
 
 /// The [ScreenObjectContainer] represents a collection of screen objects.
 class ScreenObjectContainer extends ScreenObject {
+  ScreenObjectContainer({super.id});
+
   @override
   final String type = "container";
 

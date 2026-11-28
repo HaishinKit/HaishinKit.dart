@@ -16,10 +16,11 @@ import 'text_screen_object.dart';
 class ScreenObjectEditor {
   final Screen screen;
   final double minimumSize;
+  final bool Function(ScreenObject)? canEdit;
   Map<String, Rect> _rendered = {};
   final Map<String, Rect> _pending = {};
 
-  ScreenObjectEditor(this.screen, {this.minimumSize = 24}) {
+  ScreenObjectEditor(this.screen, {this.minimumSize = 24, this.canEdit}) {
     if (!minimumSize.isFinite || minimumSize <= 0) {
       throw ArgumentError.value(minimumSize, 'minimumSize');
     }
@@ -51,7 +52,7 @@ class ScreenObjectEditor {
   ScreenObject? hitTest(Offset point) {
     if (!screen.isVisible || !(Offset.zero & size).contains(point)) return null;
     for (final object in screen.children.reversed) {
-      if (object.isVisible && (boundsOf(object)?.contains(point) ?? false)) {
+      if ((canEdit?.call(object) ?? true) && object.isVisible && (boundsOf(object)?.contains(point) ?? false)) {
         return object;
       }
     }
@@ -112,6 +113,11 @@ class ScreenObjectEditor {
       );
       if (object is TextScreenObject && factor != 1) {
         object.fontSize *= factor;
+      } else if (object.type == 'text' && factor != 1) {
+        final fontSize = double.tryParse(object.elements['fontSize'] ?? '');
+        if (fontSize != null && fontSize.isFinite && fontSize > 0) {
+          object.elements = {...object.elements, 'fontSize': '${fontSize * factor}'};
+        }
       }
       if (factor != 1) {
         object.size = ScreenObjectSize(

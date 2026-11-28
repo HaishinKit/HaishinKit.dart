@@ -10,12 +10,14 @@ class ScreenObjectEditorView extends StatefulWidget {
   final Screen screen;
   final Widget child;
   final VideoGravity videoGravity;
+  final bool Function(ScreenObject)? canEdit;
 
   const ScreenObjectEditorView({
     super.key,
     required this.screen,
     required this.child,
     this.videoGravity = VideoGravity.resizeAspect,
+    this.canEdit,
   });
 
   @override
@@ -37,7 +39,7 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
   @override
   void initState() {
     super.initState();
-    _editor = ScreenObjectEditor(widget.screen);
+    _editor = ScreenObjectEditor(widget.screen, canEdit: widget.canEdit);
     _timer =
         Timer.periodic(const Duration(milliseconds: 60), (_) => _refresh());
     _refresh();
@@ -47,7 +49,7 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
   void didUpdateWidget(covariant ScreenObjectEditorView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.screen != widget.screen) {
-      _editor = ScreenObjectEditor(widget.screen);
+      _editor = ScreenObjectEditor(widget.screen, canEdit: widget.canEdit);
       _selected = null;
     }
   }
@@ -117,8 +119,8 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
                 }
                 final target = _editor.hitTest(point);
                 setState(() => _selected = target);
-                if (target is TextScreenObject) {
-                  await _editText(target);
+                if (target?.type == 'text') {
+                  await _editText(target!);
                 } else if (target == null) {
                   await _add(point);
                 }
@@ -271,10 +273,10 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
     }
   }
 
-  Future<void> _editText(TextScreenObject target) async {
+  Future<void> _editText(ScreenObject target) async {
     if (_dialogOpen) return;
     _dialogOpen = true;
-    final input = TextEditingController(text: target.value);
+    final input = TextEditingController(text: target.elements['value'] ?? '');
     try {
       final value = await showDialog<String>(
           context: context,
@@ -301,7 +303,11 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
       if (mounted && value != null && target.parent == widget.screen) {
         target.updateLayout(() {
           target.size = const ScreenObjectSize(width: 0, height: 0);
-          target.value = value;
+          if (target is TextScreenObject) {
+            target.value = value;
+          } else {
+            target.elements = {...target.elements, 'value': value};
+          }
         });
         _editor.invalidateBounds(target);
         await _refresh();

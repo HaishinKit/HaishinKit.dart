@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'method_channel_screen.dart';
+import 'dart:typed_data';
 
 abstract class ScreenPlatformInterface extends PlatformInterface {
   ScreenPlatformInterface() : super(token: _token);
@@ -39,4 +40,13 @@ abstract class ScreenPlatformInterface extends PlatformInterface {
   Future<void> dispose(Map<String, dynamic> params) {
     throw UnimplementedError('dispose() has not been implemented.');
   }
+
+  Future<Uint8List> exportScene(Map<String, dynamic> params) =>
+      throw UnimplementedError('exportScene() has not been implemented.');
+
+  Future<String> importScene(Map<String, dynamic> params) =>
+      throw UnimplementedError('importScene() has not been implemented.');
+
+  Future<String> cacheAsset(Map<String, dynamic> params) =>
+      throw UnimplementedError('cacheAsset() has not been implemented.');
 }

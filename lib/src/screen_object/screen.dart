@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'dart:ui';
+import 'dart:typed_data';
 
 import '../haishin_kit/platform_interface_haishin_kit.dart';
 import '../media_mixer/media_mixer.dart';
@@ -8,6 +9,8 @@ import 'screen_object.dart';
 import 'screen_object_size.dart';
 import 'screen_object_container.dart';
 import 'screen_renderer.dart';
+import 'screen_object_snapshot.dart';
+import 'restored_screen_object.dart';
 
 /// The root of a mixer's native video composition.
 ///
@@ -25,6 +28,8 @@ class Screen extends ScreenObjectContainer {
 
   int? _memory;
   late final ScreenRenderer _renderer = _createRenderer();
+  bool _restoring = false;
+  bool _sceneOperation = false;
 
   Screen._();
 
@@ -70,8 +75,77 @@ class Screen extends ScreenObjectContainer {
 
   @override
   void invalidateLayout() {
+    if (_restoring) return;
     if (!isUpdatingLayout) layout(_renderer);
     super.invalidateLayout();
+  }
+
+  /// Exports the actual native composition, including the default camera node,
+  /// as a portable `.scene` ZIP with embedded local media. Capture must be
+  /// running on Android. Archives/media are limited to 32 MiB in this bridge.
+  /// Connection credentials, capture devices and codec settings are not saved.
+  Future<Uint8List> exportScene() async {
+    if (_sceneOperation) throw StateError('A scene operation is in progress');
+    _sceneOperation = true;
+    try {
+      return await ScreenPlatformInterface.instance.exportScene({
+        'memory': _memory,
+      });
+    } finally {
+      _sceneOperation = false;
+    }
+  }
+
+  /// Replaces the composition after native validation and media preparation.
+  ///
+  /// Call while disconnected and await before disposing or editing the screen.
+  /// Android acknowledges the ordered render-thread update, not presentation.
+  /// Does not attach capture sources. Unknown nodes/resources survive export.
+  /// Restored children retain their IDs as [RestoredScreenObject] instances.
+  Future<void> importScene(Uint8List bytes) async {
+    if (bytes.length > 32 * 1024 * 1024) {
+      throw ArgumentError('Scene exceeds 32 MiB');
+    }
+    if (_sceneOperation) throw StateError('A scene operation is in progress');
+    _sceneOperation = true;
+    try {
+      final json = await ScreenPlatformInterface.instance.importScene({
+        'memory': _memory,
+        'bytes': bytes,
+      });
+      final snapshot = ScreenObjectSnapshot.fromJson(convert.json.decode(json));
+      final restored = snapshot.children
+          .map(RestoredScreenObject.fromSnapshot)
+          .toList();
+      _restoring = true;
+      try {
+        for (final child in children.toList()) {
+          super.removeChild(child);
+        }
+        super.size = snapshot.size;
+        for (final child in restored) {
+          super.addChild(child);
+        }
+      } finally {
+        _restoring = false;
+      }
+    } finally {
+      _sceneOperation = false;
+    }
+  }
+
+  /// Copies local video bytes into screen-owned storage and returns a file URI.
+  /// Storage is removed when this screen is disposed. Maximum size: 32 MiB.
+  Future<String> cacheAsset(Uint8List bytes, {String extension = 'mp4'}) {
+    if (bytes.length > 32 * 1024 * 1024 ||
+        !RegExp(r'^[a-zA-Z0-9]{1,8}$').hasMatch(extension)) {
+      throw ArgumentError('Invalid asset size or extension');
+    }
+    return ScreenPlatformInterface.instance.cacheAsset({
+      'memory': _memory,
+      'bytes': bytes,
+      'extension': extension,
+    });
   }
 
   /// Reads the latest native layout rectangles in composition pixels.
