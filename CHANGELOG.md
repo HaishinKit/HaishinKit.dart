@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Add OS video encoder discovery and codec selection, including Android RTMP AV1, VP8, and VP9.
+* Add HLG capture and native HDR preview surfaces on supported iOS and Android devices.
+* Add sample settings for publishing codecs and HLG with protocol-aware choices.
+
 * Match sample composition and encoder orientation before connecting; keep live output dimensions fixed.
 
 * Update Android native dependencies to HaishinKit.kt 0.21.1 and migrate to its renamed RTC APIs.

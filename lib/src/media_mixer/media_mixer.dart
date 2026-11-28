@@ -14,13 +14,14 @@ import 'platform_interface_media_mixer.dart';
 class MediaMixer {
   /// Creates a native mixer and its composition screen.
   ///
-  /// [options] configures capture session behavior on supported Apple platforms.
+  /// [options] selects the composition range and Apple capture session behavior.
   static Future<MediaMixer> create({
     MediaMixerOptions options = const MediaMixerOptions(),
   }) async {
     final object = MediaMixer._();
-    object._memory =
-    await HaishinKitPlatformInterface.instance.newMediaMixer(options);
+    object._memory = await HaishinKitPlatformInterface.instance.newMediaMixer(
+      options,
+    );
     object._screen = await Screen.create(object);
     return object;
   }
@@ -39,8 +40,10 @@ class MediaMixer {
   set frameRate(int frameRate) {
     assert(_memory != null);
     _frameRate = frameRate;
-    MediaMixerPlatformInterface.instance
-        .setFrameRate({"memory": _memory, "value": frameRate});
+    MediaMixerPlatformInterface.instance.setFrameRate({
+      "memory": _memory,
+      "value": frameRate,
+    });
   }
 
   AVCaptureSessionPreset _sessionPreset = AVCaptureSessionPreset.hd1280x720;
@@ -52,8 +55,10 @@ class MediaMixer {
   set sessionPreset(AVCaptureSessionPreset sessionPreset) {
     assert(_memory != null);
     _sessionPreset = sessionPreset;
-    MediaMixerPlatformInterface.instance.setSessionPreset(
-        {"memory": _memory, "value": sessionPreset.presetName});
+    MediaMixerPlatformInterface.instance.setSessionPreset({
+      "memory": _memory,
+      "value": sessionPreset.presetName,
+    });
   }
 
   VideoMixerSettings _videoMixerSettings = VideoMixerSettings();
@@ -67,7 +72,7 @@ class MediaMixer {
     _videoMixerSettings = videoMixerSettings;
     MediaMixerPlatformInterface.instance.setVideoMixerSettings({
       "memory": _memory,
-      "value": convert.json.encode(videoMixerSettings.toJson())
+      "value": convert.json.encode(videoMixerSettings.toJson()),
     });
   }
 
@@ -82,7 +87,7 @@ class MediaMixer {
     _audioMixerSettings = audioMixerSettings;
     MediaMixerPlatformInterface.instance.setAudioMixerSettings({
       "memory": _memory,
-      "value": convert.json.encode(audioMixerSettings.toJson())
+      "value": convert.json.encode(audioMixerSettings.toJson()),
     });
   }
 
@@ -99,8 +104,11 @@ class MediaMixer {
   Future<void> attachAudio(int track, AudioSource? audio) async {
     assert(_memory != null);
     try {
-      await MediaMixerPlatformInterface.instance.attachAudio(
-          {"memory": _memory, "source": audio?.toMap(), "track": track});
+      await MediaMixerPlatformInterface.instance.attachAudio({
+        "memory": _memory,
+        "source": audio?.toMap(),
+        "track": track,
+      });
     } on PlatformException catch (e) {
       throw _mapPlatformException(e);
     }
@@ -113,7 +121,7 @@ class MediaMixer {
       await MediaMixerPlatformInterface.instance.attachVideo({
         "memory": _memory,
         "track": track,
-        "value": video != null ? convert.json.encode(video.toJson()) : null
+        "value": video != null ? convert.json.encode(video.toJson()) : null,
       });
     } on PlatformException catch (e) {
       throw _mapPlatformException(e);
@@ -123,8 +131,9 @@ class MediaMixer {
   /// Starts audio and video capture and screen composition.
   Future<void> startRunning() async {
     assert(_memory != null);
-    await MediaMixerPlatformInterface.instance
-        .startRunning({"memory": _memory});
+    await MediaMixerPlatformInterface.instance.startRunning({
+      "memory": _memory,
+    });
   }
 
   /// Stops capture while retaining the mixer for reuse.
