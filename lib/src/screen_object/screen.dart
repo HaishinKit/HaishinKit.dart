@@ -38,14 +38,11 @@ class Screen extends ScreenObjectContainer {
   Future<void> resize(ScreenObjectSize value) {
     assert(_memory != null);
     super.size = value;
-    return _pendingResize = _pendingResize
-        .catchError((Object _) {})
-        .then(
-          (_) => ScreenPlatformInterface.instance.setSize({
-            "memory": _memory,
-            "value": convert.json.encode(value.toJson()),
-          }),
-        );
+    return _pendingResize = _pendingResize.catchError((Object _) {}).then((_) =>
+        ScreenPlatformInterface.instance.setSize({
+          "memory": _memory,
+          "value": convert.json.encode(value.toJson()),
+        }));
   }
 
   @override
