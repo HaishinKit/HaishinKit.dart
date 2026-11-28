@@ -29,7 +29,7 @@
 /// On macOS, enable `com.apple.security.device.audio-input` and
 /// `com.apple.security.device.camera` in the app's Debug and Release entitlements.
 ///
-/// Android uses HaishinKit.kt 0.20.6 modules from JitPack and OpenGL composition.
+/// Android uses HaishinKit.kt 0.21.0 modules from JitPack and OpenGL composition.
 /// Use compile SDK 37+. The native bridge declares API 23, while Flutter 3.44
 /// requires an Android app minimum of API 24. With the repository's current
 /// Kotlin plugin configuration, set these Android Gradle properties:
