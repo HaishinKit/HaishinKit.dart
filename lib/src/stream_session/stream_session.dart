@@ -20,12 +20,17 @@ final class StreamSession {
   /// `srt://` URL with any query options required by the server.
   /// Call [connect] when ready to start publishing or playback.
   static Future<StreamSession> create(
-      String url, StreamSessionMode mode) async {
+    String url,
+    StreamSessionMode mode,
+  ) async {
     var object = StreamSession._();
-    object._memory =
-        await HaishinKitPlatformInterface.instance.newSession(url, mode);
-    object._channel =
-        EventChannel("com.haishinkit.eventchannel/${object._memory}");
+    object._memory = await HaishinKitPlatformInterface.instance.newSession(
+      url,
+      mode,
+    );
+    object._channel = EventChannel(
+      "com.haishinkit.eventchannel/${object._memory}",
+    );
     return object;
   }
 
@@ -50,9 +55,20 @@ final class StreamSession {
   /// Applies video encoding settings to the native session.
   set videoSettings(VideoCodecSettings videoSettings) {
     assert(_memory != null);
-    _videoSettings = videoSettings;
-    StreamSessionPlatformInterface.instance.setVideoSettings(
-        {"memory": _memory, "settings": videoSettings.toMap()});
+    setVideoSettings(videoSettings);
+  }
+
+  /// Applies [settings] and waits for the native encoder configuration.
+  ///
+  /// Use this before [connect] when output dimensions must be set before startup.
+  /// Change dimensions only while the session is closed.
+  Future<void> setVideoSettings(VideoCodecSettings settings) async {
+    assert(_memory != null);
+    _videoSettings = settings;
+    await StreamSessionPlatformInterface.instance.setVideoSettings({
+      "memory": _memory,
+      "settings": settings.toMap(),
+    });
   }
 
   /// The current audio encoding settings.
@@ -62,40 +78,44 @@ final class StreamSession {
   set audioSettings(AudioCodecSettings audioSettings) {
     assert(_memory != null);
     _audioSettings = audioSettings;
-    StreamSessionPlatformInterface.instance.setAudioSettings(
-        {"memory": _memory, "settings": audioSettings.toMap()});
+    StreamSessionPlatformInterface.instance.setAudioSettings({
+      "memory": _memory,
+      "settings": audioSettings.toMap(),
+    });
   }
 
   /// Registers a Flutter texture for this session and returns its ID.
   Future<int?> registerTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
-    return await StreamSessionPlatformInterface.instance
-        .registerTexture(params);
+    return await StreamSessionPlatformInterface.instance.registerTexture(
+      params,
+    );
   }
 
   /// Unregisters the Flutter texture for this session.
   Future<void> unregisterTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
-    return await StreamSessionPlatformInterface.instance
-        .unregisterTexture(params);
+    return await StreamSessionPlatformInterface.instance.unregisterTexture(
+      params,
+    );
   }
 
   /// Updates the native texture configuration.
   Future<int?> updateTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
-    return await StreamSessionPlatformInterface.instance
-        .updateTexture(params);
+    return await StreamSessionPlatformInterface.instance.updateTexture(params);
   }
 
   /// Connects to the endpoint to publish or play the stream.
   Future<void> connect() async {
     assert(_memory != null);
     try {
-      return await StreamSessionPlatformInterface.instance
-          .connect({"memory": _memory});
+      return await StreamSessionPlatformInterface.instance.connect({
+        "memory": _memory,
+      });
     } on PlatformException catch (e) {
       throw _mapPlatformException(e);
     }
@@ -104,15 +124,17 @@ final class StreamSession {
   /// Disconnects the session from its endpoint.
   Future<void> close() async {
     assert(_memory != null);
-    return await StreamSessionPlatformInterface.instance
-        .close({"memory": _memory});
+    return await StreamSessionPlatformInterface.instance.close({
+      "memory": _memory,
+    });
   }
 
   /// Releases the native session resources.
   Future<void> dispose() async {
     assert(_memory != null);
-    return await StreamSessionPlatformInterface.instance
-        .dispose({"memory": _memory});
+    return await StreamSessionPlatformInterface.instance.dispose({
+      "memory": _memory,
+    });
   }
 }
 

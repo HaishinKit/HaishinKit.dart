@@ -24,18 +24,28 @@ class Screen extends ScreenObjectContainer {
   }
 
   int? _memory;
+  Future<void> _pendingResize = Future.value();
   late final ScreenRenderer _renderer = _createRenderer();
 
   Screen._();
 
   @override
   set size(ScreenObjectSize value) {
+    resize(value);
+  }
+
+  /// Updates the composition size and waits for the native screen to apply it.
+  Future<void> resize(ScreenObjectSize value) {
     assert(_memory != null);
-    ScreenPlatformInterface.instance.setSize({
-      "memory": _memory,
-      "value": convert.json.encode(value.toJson()),
-    });
     super.size = value;
+    return _pendingResize = _pendingResize
+        .catchError((Object _) {})
+        .then(
+          (_) => ScreenPlatformInterface.instance.setSize({
+            "memory": _memory,
+            "value": convert.json.encode(value.toJson()),
+          }),
+        );
   }
 
   @override
