@@ -89,6 +89,34 @@
 /// separate RTMP stream-name field. The Dart API currently uses native default
 /// ICE/authentication settings, without parameters for bearer tokens or STUN/TURN.
 ///
+/// ## Video assets and portable scenes
+///
+/// [AssetScreenObject] renders a local video's picture without mixing its audio.
+/// Supply a file URI or copy bundled/downloaded bytes into screen-owned storage:
+///
+/// ```dart
+/// final source = await mixer.screen!.cacheAsset(videoBytes, extension: 'mp4');
+/// final clip = AssetScreenObject()
+///   ..source = source
+///   ..isLooping = true
+///   ..size = const ScreenObjectSize(width: 320, height: 240);
+/// mixer.screen!.addChild(clip);
+/// ```
+///
+/// `await mixer.screen!.exportScene()` captures the actual native composition,
+/// including the default camera node, as a `.scene` ZIP with local media.
+/// Persist the returned bytes using your app's file-storage UI. Restore with
+/// `await mixer.screen!.importScene(bytes)` while disconnected. Capture must be
+/// running for Android's frame-coherent export. Await scene operations before
+/// editing or disposing. Scene archives and packaged resources are limited to
+/// 32 MiB by the Flutter bridge. The native reader validates the shared archive
+/// format. Scene files do not attach capture devices or restore session settings.
+///
+/// Imported children are [RestoredScreenObject] nodes with stable IDs, editable
+/// layout and retained type/element properties. Unsupported objects/resources
+/// survive subsequent exports without rendering. Screen-owned media URIs expire
+/// on disposal; export a scene before disposing to persist media elsewhere.
+///
 /// ## Developing the plugin
 ///
 /// Regenerate data classes after editing their source definitions:
@@ -97,6 +125,9 @@
 /// dart run build_runner build --delete-conflicting-outputs
 /// ```
 library;
+
+export 'src/screen_object/asset_screen_object.dart';
+export 'src/screen_object/restored_screen_object.dart';
 
 // HaishinKit
 export 'src/haishin_kit/platform_interface_haishin_kit.dart';

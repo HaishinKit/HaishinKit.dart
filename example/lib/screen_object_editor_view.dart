@@ -10,12 +10,14 @@ class ScreenObjectEditorView extends StatefulWidget {
   final Screen screen;
   final Widget child;
   final VideoGravity videoGravity;
+  final bool Function(ScreenObject)? canEdit;
 
   const ScreenObjectEditorView({
     super.key,
     required this.screen,
     required this.child,
     this.videoGravity = VideoGravity.resizeAspect,
+    this.canEdit,
   });
 
   @override
@@ -37,7 +39,7 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
   @override
   void initState() {
     super.initState();
-    _editor = ScreenObjectEditor(widget.screen);
+    _editor = ScreenObjectEditor(widget.screen, canEdit: widget.canEdit);
     _timer =
         Timer.periodic(const Duration(milliseconds: 60), (_) => _refresh());
     _refresh();
@@ -47,7 +49,7 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
   void didUpdateWidget(covariant ScreenObjectEditorView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.screen != widget.screen) {
-      _editor = ScreenObjectEditor(widget.screen);
+      _editor = ScreenObjectEditor(widget.screen, canEdit: widget.canEdit);
       _selected = null;
     }
   }

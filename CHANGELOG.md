@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Add portable scene export/import with packaged local media and stable restored object IDs.
+* Add AssetScreenObject local video playback and a looping sample video in the example.
+* Add sample scene file dialogs and preserve loaded composition dimensions for publishing.
+
 * Match sample composition and encoder orientation before connecting; keep live output dimensions fixed.
 
 * Update Android native dependencies to HaishinKit.kt 0.21.1 and migrate to its renamed RTC APIs.

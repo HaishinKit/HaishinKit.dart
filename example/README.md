@@ -48,6 +48,17 @@ and touch-based ScreenObject editing. Camera selection lives in a bottom sheet
 so the default view stays clear. Enable **Second camera** in that panel to add
 a picture-in-picture camera. Native camera availability varies by device.
 
+In **Camera tools → Scene**, use **Add sample video** to loop the same video
+asset as the Swift example. Drag or resize it in the preview. Only the video
+track is rendered; its audio is not mixed.
+
+**Save scene** packages the actual composition and its local media into a
+portable `.scene` file. **Load scene** replaces the composition while disconnected
+and retains its saved canvas dimensions when publishing. Files/media are limited
+to 32 MiB. Capture devices and connection/codec settings are not saved; track zero
+continues to use the current camera. Unknown platform-specific objects remain
+invisible and survive export. Temporary media is released when leaving Publish.
+
 ## ▶️ Playback
 
 Set the stream URL in **Settings**, open **Playback**, and tap **Play stream**.

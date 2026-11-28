@@ -26,6 +26,9 @@ final class ScreenHandler: NSObject {
     @ScreenActor
     private lazy var screenObjectFactory = ScreenObjectFactory()
 
+    @ScreenActor
+    private lazy var sceneFiles = ScreenSceneFiles()
+
     init(plugin: HaishinKitPlugin, screen: Screen?) {
         self.plugin = plugin
         self.screen = screen
@@ -42,6 +45,31 @@ extension ScreenHandler: MethodCallHandler {
             return
         }
         switch call.method {
+        case "Screen#cacheAsset":
+            guard let bytes = arguments["bytes"] as? FlutterStandardTypedData,
+                let suffix = arguments["extension"] as? String else {
+                result(ErrorCode.invalidArgument.makeFlutterError()); return
+            }
+            Task { @ScreenActor in
+                guard screen != nil else { result(ErrorCode.invalidArgument.makeFlutterError("Screen is disposed")); return }
+                do { result(try sceneFiles.cacheAsset(bytes.data, extension: suffix)) }
+                catch { result(ErrorCode.invalidArgument.makeFlutterError("Could not cache video: \(error)")) }
+            }
+        case "Screen#exportScene":
+            Task { @ScreenActor in
+                guard let screen else { result(ErrorCode.invalidArgument.makeFlutterError("Screen is disposed")); return }
+                do { result(FlutterStandardTypedData(bytes: try sceneFiles.encoded(screen))) }
+                catch { result(ErrorCode.invalidArgument.makeFlutterError("Could not export scene: \(error)")) }
+            }
+        case "Screen#importScene":
+            guard let bytes = arguments["bytes"] as? FlutterStandardTypedData else {
+                result(ErrorCode.invalidArgument.makeFlutterError()); return
+            }
+            Task { @ScreenActor in
+                guard let screen else { result(ErrorCode.invalidArgument.makeFlutterError("Screen is disposed")); return }
+                do { result(try sceneFiles.restore(bytes.data, screen: screen)) }
+                catch { result(ErrorCode.invalidArgument.makeFlutterError("Could not restore scene: \(error)")) }
+            }
         case "Screen#setSize":
             guard
                 let value = arguments["value"] as? String,
@@ -82,6 +110,11 @@ extension ScreenHandler: MethodCallHandler {
             }
             Task { @ScreenActor in
                 if let screenObject = screen?.findById(value) {
+                    @ScreenActor func close(_ node: ScreenObjectSnapshot) {
+                        (screen?.findById(node.id) as? AssetScreenObject)?.cancelReading()
+                        node.children.forEach(close)
+                    }
+                    close(ScreenObjectSnapshotFactory().make(screenObject))
                     screenObject.parent?.removeChild(screenObject)
                 }
                 result(nil)
@@ -116,10 +149,12 @@ extension ScreenHandler: MethodCallHandler {
                 result(values)
             }
         case "Screen#dispose":
-
-            screen = nil
-            plugin = nil
-            result(nil)
+            Task { @ScreenActor in
+                sceneFiles.close(screen)
+                screen = nil
+                plugin = nil
+                result(nil)
+            }
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -142,7 +177,12 @@ extension ScreenHandler: MethodCallHandler {
         screenObject.size = .init(width: .init(snapshot.size.width), height: .init(snapshot.size.height))
         screenObject.horizontalAlignment = .init(rawValue: snapshot.horizontalAlignment) ?? .left
         screenObject.verticalAlignment = .init(rawValue: snapshot.verticalAlignment) ?? .top
-        screenObject.elements = snapshot.elements
+        let elements = screenObject is AssetScreenObject ? [
+            "source": snapshot.elements["source"] ?? "",
+            "looping": String(snapshot.elements["looping"] == "true"),
+            "videoGravity": snapshot.elements["videoGravity"] ?? "resizeAspect"
+        ] : snapshot.elements
+        if screenObject.elements != elements { screenObject.elements = elements }
         screenObject.invalidateLayout()
         return screenObject
     }

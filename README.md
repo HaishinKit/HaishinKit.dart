@@ -18,6 +18,7 @@ RTMPS, SRT, WHIP, and WHEP.
 - Camera and microphone capture through a common `MediaMixer` interface.
 - RTMP/RTMPS and SRT publishing/playback, WHIP publishing, and WHEP playback.
 - Text, image, and video compositions, snapshots, and ScreenObject editing APIs.
+- Local video asset composition and portable scene files with embedded media.
 - Native video textures for Flutter previews and playback.
 - A common `StreamSession` lifecycle across supported platforms.
 

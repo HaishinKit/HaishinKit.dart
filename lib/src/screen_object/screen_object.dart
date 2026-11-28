@@ -171,8 +171,8 @@ abstract class ScreenObject {
   ///
   /// The identifier is generated using the current timestamp and
   /// a random value to reduce the chance of collisions.
-  ScreenObject()
-    : id = '${DateTime.now().microsecondsSinceEpoch}-${_rand.nextInt(1 << 32)}';
+  ScreenObject({String? id})
+    : id = id ?? '${DateTime.now().microsecondsSinceEpoch}-${_rand.nextInt(1 << 32)}';
 
   /// Invalidates the current layout and propagates the change to parents.
   ///

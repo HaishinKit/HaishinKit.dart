@@ -12,11 +12,13 @@ import 'publishing_orientation.dart';
 import 'screen_object_editor_view.dart';
 import 'studio_theme.dart';
 import 'studio_widgets.dart';
+import 'scene_files.dart';
 
 class PublishPage extends StatefulWidget {
-  const PublishPage({super.key, this.onOpenSettings});
+  const PublishPage({super.key, this.onOpenSettings, this.sceneFiles});
 
   final VoidCallback? onOpenSettings;
+  final SceneFiles? sceneFiles;
 
   @override
   State<PublishPage> createState() => _PublishState();
@@ -33,10 +35,17 @@ class _PublishState extends State<PublishPage> {
   bool _busy = false;
   bool _changingCamera = false;
   bool _secondaryCameraEnabled = false;
-  VideoScreenObject? _secondaryVideoObject;
+  ScreenObject? _secondaryVideoObject;
   bool _permissionDenied = false;
   String? _error;
   Future<void> _pendingPreviewResize = Future.value();
+  Future<void> _pendingScene = Future.value();
+  bool _sceneBusy = false;
+  bool _restoredScene = false;
+  int _sceneRevision = 0;
+  AssetScreenObject? _sampleClip;
+  String? _sampleClipSource;
+  StreamSessionReadyState _currentState = StreamSessionReadyState.closed;
 
   @override
   void initState() {
@@ -58,6 +67,7 @@ class _PublishState extends State<PublishPage> {
     }
     try {
       await _pendingPreviewResize;
+      await _pendingScene;
       await mixer?.dispose();
     } catch (error) {
       debugPrint('Could not release capture: $error');
@@ -72,7 +82,8 @@ class _PublishState extends State<PublishPage> {
       initialData: StreamSessionReadyState.closed,
       builder: (context, snapshot) {
         final state = snapshot.data ?? StreamSessionReadyState.closed;
-        if (state == StreamSessionReadyState.closed && !_busy &&
+        _currentState = state;
+        if (state == StreamSessionReadyState.closed && !_busy && !_sceneBusy &&
             _mixer != null && _orientation != orientation) {
           _orientation = orientation;
           unawaited(_resizePreview(orientation));
@@ -82,7 +93,9 @@ class _PublishState extends State<PublishPage> {
           child: Stack(fit: StackFit.expand, children: [
             if (_session != null && _mixer?.screen != null)
               ScreenObjectEditorView(
+                key: ValueKey(_sceneRevision),
                 screen: _mixer!.screen!,
+                canEdit: (object) => !isCameraBackground(object, _mixer!.screen!.size),
                 videoGravity: VideoGravity.resizeAspectFill,
                 child: StreamSessionViewTexture(_session,
                     key: ValueKey(_session!.memory),
@@ -131,7 +144,7 @@ class _PublishState extends State<PublishPage> {
                                   tooltip: context.studioText(
                                       'Camera tools', 'カメラ調整'),
                                   onPressed:
-                                      _changingCamera ? null : _showCameraTools,
+                                      _changingCamera || _sceneBusy ? null : _showCameraTools,
                                   icon: const Icon(Icons.tune,
                                       color: Colors.white),
                                 )),
@@ -161,7 +174,7 @@ class _PublishState extends State<PublishPage> {
                           child: Center(
                               child: StudioStreamAction(
                             state: state,
-                            busy: _busy,
+                            busy: _busy || _sceneBusy,
                             onPressed: () => _toggle(state),
                           )),
                         )),
@@ -175,7 +188,7 @@ class _PublishState extends State<PublishPage> {
 
   Future<void> _toggle(StreamSessionReadyState state) async {
     final session = _session;
-    if (session == null || _busy) return;
+    if (session == null || _busy || _sceneBusy) return;
     setState(() {
       _busy = true;
       _error = null;
@@ -185,7 +198,7 @@ class _PublishState extends State<PublishPage> {
         await session.close();
       } else {
         final orientation = MediaQuery.orientationOf(context);
-        final size = publishingSize(orientation);
+        final size = _restoredScene ? _mixer!.screen!.size : publishingSize(orientation);
         await _resizePreview(orientation);
         if (!mounted) return;
         await session.setVideoSize(width: size.width, height: size.height);
@@ -269,6 +282,39 @@ class _PublishState extends State<PublishPage> {
                             child: Text(context.studioText(
                                 'Connection settings', '接続設定')),
                           ),
+                        const Divider(height: 32),
+                        Text(context.studioText('Scene', 'シーン'),
+                            style: Theme.of(context).textTheme.titleMedium),
+                        const SizedBox(height: 8),
+                        Text(context.studioText(
+                            'Save the composition with its media. Capture devices and connection settings are not included. Load while disconnected.',
+                            '映像の構成を素材と一緒に保存します。カメラ・接続設定は含みません。読み込みは配信停止中に行えます。')),
+                        const SizedBox(height: 12),
+                        Wrap(spacing: 12, runSpacing: 8, children: [
+                          OutlinedButton.icon(
+                            onPressed: _sceneBusy || _busy ? null : () {
+                              Navigator.pop(sheetContext);
+                              _runScene(_saveScene);
+                            },
+                            icon: const Icon(Icons.save_outlined),
+                            label: Text(context.studioText('Save scene', 'シーンを保存'))),
+                          OutlinedButton.icon(
+                            onPressed: _sceneBusy || _busy || _currentState != StreamSessionReadyState.closed ? null : () {
+                              Navigator.pop(sheetContext);
+                              _runScene(_loadScene);
+                            },
+                            icon: const Icon(Icons.folder_open_outlined),
+                            label: Text(context.studioText('Load scene', 'シーンを読込'))),
+                          OutlinedButton.icon(
+                            onPressed: _sceneBusy || _busy ? null : () {
+                              Navigator.pop(sheetContext);
+                              _runScene(_toggleSampleClip);
+                            },
+                            icon: const Icon(Icons.movie_outlined),
+                            label: Text(_sampleClip == null
+                                ? context.studioText('Add sample video', 'サンプル動画を追加')
+                                : context.studioText('Remove sample video', 'サンプル動画を削除'))),
+                        ]),
                       ]),
                 )),
       );
@@ -331,12 +377,82 @@ class _PublishState extends State<PublishPage> {
   Future<void> _resizePreview(Orientation orientation) {
     final mixer = _mixer;
     final operation = _pendingPreviewResize.then((_) async {
-      await mixer?.screen?.resize(publishingSize(orientation));
+      if (!_restoredScene) await mixer?.screen?.resize(publishingSize(orientation));
     });
     _pendingPreviewResize = operation.catchError((Object error) {
       if (mounted) setState(() => _error = error.toString());
     });
     return operation;
+  }
+
+  Future<void> _runScene(Future<void> Function() operation) {
+    if (_sceneBusy || _busy) return Future.value();
+    setState(() { _sceneBusy = true; _error = null; });
+    final pending = () async {
+      try {
+        await _pendingPreviewResize;
+        if (mounted) await operation();
+      } catch (error) {
+        if (mounted) setState(() => _error = error.toString());
+      } finally {
+        if (mounted) setState(() => _sceneBusy = false);
+      }
+    }();
+    _pendingScene = pending;
+    return pending;
+  }
+
+  Future<void> _saveScene() async {
+    final bytes = await _mixer!.screen!.exportScene();
+    if (!mounted) return;
+    final saved = await (widget.sceneFiles ?? SceneFiles()).save(bytes);
+    if (mounted && saved) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+          content: Text(context.studioText('Scene saved', 'シーンを保存しました'))));
+    }
+  }
+
+  Future<void> _loadScene() async {
+    final bytes = await (widget.sceneFiles ?? SceneFiles()).open();
+    if (bytes == null || !mounted) return;
+    await _mixer!.screen!.importScene(bytes);
+    if (!mounted) return;
+    final secondary = _mixer!.screen!.children.where((object) => object.type == 'video' && object.elements['track'] == '1').firstOrNull;
+    setState(() {
+      _restoredScene = true;
+      _sceneRevision++;
+      _sampleClip = null;
+      _secondaryVideoObject = secondary;
+      _secondaryCameraEnabled = secondary != null && _videoSources.length > 1;
+    });
+    await _mixer!.attachVideo(1, _secondaryCameraEnabled
+        ? _videoSources.firstWhere((source) => source.id != _mainVideoSource!.id) : null);
+  }
+
+  Future<void> _toggleSampleClip() async {
+    final screen = _mixer!.screen!;
+    final previous = _sampleClip;
+    if (previous != null) {
+      screen.removeChild(previous);
+      if (mounted) setState(() => _sampleClip = null);
+      return;
+    }
+    var source = _sampleClipSource;
+    if (source == null) {
+      final data = await rootBundle.load('videos/SampleVideo_360x240_5mb.mp4');
+      source = await screen.cacheAsset(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+      _sampleClipSource = source;
+    }
+    if (!mounted) return;
+    final clip = AssetScreenObject()
+      ..source = source
+      ..size = const ScreenObjectSize(width: 320, height: 240)
+      ..horizontalAlignment = HorizontalAlignment.center
+      ..verticalAlignment = VerticalAlignment.middle;
+    screen.addChild(clip);
+    setState(() => _sampleClip = clip);
   }
 
   Future<void> _initialize() async {

@@ -16,10 +16,11 @@ import 'text_screen_object.dart';
 class ScreenObjectEditor {
   final Screen screen;
   final double minimumSize;
+  final bool Function(ScreenObject)? canEdit;
   Map<String, Rect> _rendered = {};
   final Map<String, Rect> _pending = {};
 
-  ScreenObjectEditor(this.screen, {this.minimumSize = 24}) {
+  ScreenObjectEditor(this.screen, {this.minimumSize = 24, this.canEdit}) {
     if (!minimumSize.isFinite || minimumSize <= 0) {
       throw ArgumentError.value(minimumSize, 'minimumSize');
     }
@@ -51,7 +52,7 @@ class ScreenObjectEditor {
   ScreenObject? hitTest(Offset point) {
     if (!screen.isVisible || !(Offset.zero & size).contains(point)) return null;
     for (final object in screen.children.reversed) {
-      if (object.isVisible && (boundsOf(object)?.contains(point) ?? false)) {
+      if ((canEdit?.call(object) ?? true) && object.isVisible && (boundsOf(object)?.contains(point) ?? false)) {
         return object;
       }
     }
