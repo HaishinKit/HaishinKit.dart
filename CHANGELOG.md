@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Update Android native dependencies to HaishinKit.kt 0.20.6.
+* Update Android native dependencies to HaishinKit.kt 0.21.1 and migrate to its renamed RTC APIs.
 * Update the iOS/macOS native dependency to HaishinKit.swift 2.3.2.
 * Keep screen object corner radius updates in sync on iOS and macOS.
 
