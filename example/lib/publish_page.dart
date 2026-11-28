@@ -36,6 +36,7 @@ class _PublishState extends State<PublishPage> {
   VideoScreenObject? _secondaryVideoObject;
   bool _permissionDenied = false;
   String? _error;
+  Future<void> _pendingPreviewResize = Future.value();
 
   @override
   void initState() {
@@ -56,6 +57,7 @@ class _PublishState extends State<PublishPage> {
       debugPrint('Could not release publishing session: $error');
     }
     try {
+      await _pendingPreviewResize;
       await mixer?.dispose();
     } catch (error) {
       debugPrint('Could not release capture: $error');
@@ -184,7 +186,8 @@ class _PublishState extends State<PublishPage> {
       } else {
         final orientation = MediaQuery.orientationOf(context);
         final size = publishingSize(orientation);
-        await _mixer?.screen?.resize(size);
+        await _resizePreview(orientation);
+        if (!mounted) return;
         await session.setVideoSize(width: size.width, height: size.height);
         if (!mounted) return;
         await session.connect();
@@ -325,12 +328,15 @@ class _PublishState extends State<PublishPage> {
     }
   }
 
-  Future<void> _resizePreview(Orientation orientation) async {
-    try {
-      await _mixer?.screen?.resize(publishingSize(orientation));
-    } catch (error) {
+  Future<void> _resizePreview(Orientation orientation) {
+    final mixer = _mixer;
+    final operation = _pendingPreviewResize.then((_) async {
+      await mixer?.screen?.resize(publishingSize(orientation));
+    });
+    _pendingPreviewResize = operation.catchError((Object error) {
       if (mounted) setState(() => _error = error.toString());
-    }
+    });
+    return operation;
   }
 
   Future<void> _initialize() async {

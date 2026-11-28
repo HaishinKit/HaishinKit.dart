@@ -18,7 +18,7 @@ void main() {
   );
 
   test(
-    'screen resizes reach native code in order even when a reply is delayed',
+    'resize acknowledgement can be awaited without delaying later submissions',
     () async {
       final firstReply = Completer<void>();
       final sizes = <Map<String, dynamic>>[];
@@ -44,9 +44,14 @@ void main() {
         const ScreenObjectSize(width: 1280, height: 720),
       );
       await pumpEventQueue();
-      expect(sizes.map((size) => size['width']), [720]);
+      expect(sizes.map((size) => size['width']), [720, 1280]);
+      var acknowledged = false;
+      final firstAcknowledged = first.then((_) => acknowledged = true);
+      await pumpEventQueue();
+      expect(acknowledged, isFalse);
       firstReply.complete();
-      await Future.wait([first, second]);
+      await Future.wait([firstAcknowledged, second]);
+      expect(acknowledged, isTrue);
       expect(sizes.map((size) => size['width']), [720, 1280]);
       await mixer.dispose();
     },
@@ -119,9 +124,11 @@ void main() {
   });
 
   test(
-    'legacy size setter reaches native code before an immediate connect',
+    'consecutive legacy size writes precede bounds queries and immediate connect',
     () async {
       final calls = <String>[];
+      final firstReply = Completer<void>();
+      var sizeCalls = 0;
       messenger.setMockMethodCallHandler(MethodChannelHaishinKit.channel, (
         call,
       ) async {
@@ -129,6 +136,10 @@ void main() {
         if (call.method == 'newScreen') return 2;
         if (call.method == 'newSession') return 3;
         calls.add(call.method);
+        if (call.method == 'Screen#setSize' && ++sizeCalls == 1) {
+          await firstReply.future;
+        }
+        if (call.method == 'Screen#getBounds') return <String, dynamic>{};
         return null;
       });
       final mixer = await MediaMixer.create();
@@ -136,61 +147,67 @@ void main() {
         'rtmp://example.com/live/test',
         StreamSessionMode.publish,
       );
+      mixer.screen!.size = const ScreenObjectSize(width: 720, height: 1280);
       mixer.screen!.size = const ScreenObjectSize(width: 1280, height: 720);
+      await mixer.screen!.getBounds();
       await session.connect();
-      expect(
-        calls.indexOf('Screen#setSize'),
-        lessThan(calls.indexOf('StreamSession#connect')),
-      );
+      final relevant = calls
+          .where(
+            (method) =>
+                method == 'Screen#setSize' ||
+                method == 'Screen#getBounds' ||
+                method == 'StreamSession#connect',
+          )
+          .toList();
+      expect(relevant, [
+        'Screen#setSize',
+        'Screen#setSize',
+        'Screen#getBounds',
+        'StreamSession#connect',
+      ]);
+      firstReply.complete();
+      await pumpEventQueue();
       await session.dispose();
       await mixer.dispose();
     },
   );
 
-  test('screen disposal drains queued resizes and rejects new ones', () async {
-    final firstReply = Completer<void>();
-    final calls = <String>[];
-    var sizes = 0;
-    messenger.setMockMethodCallHandler(MethodChannelHaishinKit.channel, (
-      call,
-    ) async {
-      if (call.method == 'newMediaMixer') return 1;
-      if (call.method == 'newScreen') return 2;
-      calls.add(call.method);
-      if (call.method == 'Screen#setSize' && ++sizes == 1) {
-        await firstReply.future;
-      }
-      return null;
-    });
-    final mixer = await MediaMixer.create();
-    final screen = mixer.screen!;
-    final first = screen.resize(
-      const ScreenObjectSize(width: 720, height: 1280),
-    );
-    final second = screen.resize(
-      const ScreenObjectSize(width: 1280, height: 720),
-    );
-    final disposal = screen.dispose();
-    await pumpEventQueue();
-    expect(calls.where((method) => method == 'Screen#setSize'), hasLength(1));
-    expect(calls, isNot(contains('Screen#dispose')));
-    expect(
-      () => screen.resize(const ScreenObjectSize(width: 720, height: 1280)),
-      throwsStateError,
-    );
-    firstReply.complete();
-    await Future.wait([first, second, disposal]);
-    final relevant = calls
-        .where(
-          (method) => method == 'Screen#setSize' || method == 'Screen#dispose',
-        )
-        .toList();
-    expect(relevant, ['Screen#setSize', 'Screen#setSize', 'Screen#dispose']);
-    await mixer.dispose();
-    expect(calls.where((method) => method == 'Screen#dispose'), hasLength(1));
-  });
+  test(
+    'legacy size writes reach native code before immediate disposal',
+    () async {
+      final firstReply = Completer<void>();
+      final calls = <String>[];
+      var sizes = 0;
+      messenger.setMockMethodCallHandler(MethodChannelHaishinKit.channel, (
+        call,
+      ) async {
+        if (call.method == 'newMediaMixer') return 1;
+        if (call.method == 'newScreen') return 2;
+        calls.add(call.method);
+        if (call.method == 'Screen#setSize' && ++sizes == 1) {
+          await firstReply.future;
+        }
+        return null;
+      });
+      final mixer = await MediaMixer.create();
+      final screen = mixer.screen!;
+      screen.size = const ScreenObjectSize(width: 720, height: 1280);
+      screen.size = const ScreenObjectSize(width: 1280, height: 720);
+      await mixer.dispose();
+      final relevant = calls
+          .where(
+            (method) =>
+                method == 'Screen#setSize' || method == 'Screen#dispose',
+          )
+          .toList();
+      expect(relevant, ['Screen#setSize', 'Screen#setSize', 'Screen#dispose']);
+      firstReply.complete();
+      await pumpEventQueue();
+      expect(calls.where((method) => method == 'Screen#dispose'), hasLength(1));
+    },
+  );
 
-  test('a failed resize does not prevent the next queued resize', () async {
+  test('a failed resize does not prevent a subsequent update', () async {
     var attempts = 0;
     messenger.setMockMethodCallHandler(MethodChannelHaishinKit.channel, (
       call,
