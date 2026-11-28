@@ -259,10 +259,11 @@ class PreferenceState extends State<PreferencePage> {
                     onChanged: _checkingCodecs || _codecs.isEmpty
                         ? null
                         : (codec) {
-                            if (codec != null)
+                            if (codec != null) {
                               setState(
                                 () => Preference.shared.videoCodec = codec,
                               );
+                            }
                           },
                   ),
                   const SizedBox(height: 12),

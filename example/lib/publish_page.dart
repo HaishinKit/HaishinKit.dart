@@ -441,10 +441,11 @@ class _PublishState extends State<PublishPage> {
         android: Platform.isAndroid,
         range: range,
       );
-      if (codecs.isEmpty)
+      if (codecs.isEmpty) {
         throw StateError(
           'No compatible OS encoder is available for this URL and video range.',
         );
+      }
       final codec = codecs.contains(requestedCodec)
           ? requestedCodec
           : codecs.first;
