@@ -18,6 +18,11 @@ public final class HaishinKitPlugin: NSObject {
         instance.registrar = registrar
         let channel = FlutterMethodChannel(name: "com.haishinkit", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel)
+        #if os(iOS)
+        MainActor.assumeIsolated {
+            registrar.register(HdrViewFactory(plugin: instance), withId: "com.haishinkit.hdr")
+        }
+        #endif
     }
 
     private(set) var handlers: [Int: MethodCallHandler] = [:]
@@ -59,18 +64,26 @@ extension HaishinKitPlugin: FlutterPlugin {
             Task {
                 let mode: StreamSessionMode = arguments["mode"] as? String == "publish" ? .publish : .playback
                 do {
+                    guard let range = PluginDynamicRangeMode(rawValue: arguments["dynamicRangeMode"] as? String ?? "sdr") else {
+                        throw NSError(domain: "HaishinKit", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown dynamic range"])
+                    }
+                    try range.validate()
+                    if range == .hlg && !["rtmp", "rtmps"].contains(url.scheme?.lowercased() ?? "") {
+                        throw NSError(domain: "HaishinKit", code: -1, userInfo: [NSLocalizedDescriptionKey: "HLG sessions require RTMP"])
+                    }
                     let session = try await StreamSessionBuilderFactory.shared.make(url).setMode(mode).build()
                     if let session {
                         if mode == .publish {
                             for handler in handlers {
-                                if let handler = handler.value as? MediaMixerHandler {
+                                if let handler = handler.value as? MediaMixerHandler, handler.dynamicRangeMode == range {
                                     Task {
                                         handler.addOutput(await session.stream)
                                     }
                                 }
                             }
                         }
-                        let handler = StreamSessionHandler(plugin: self, session: session)
+                        let handler = StreamSessionHandler(plugin: self, session: session, dynamicRangeMode: range,
+                                                           protocolScheme: url.scheme?.lowercased() ?? "", mode: mode)
                         let memory = Int(bitPattern: ObjectIdentifier(handler))
                         handlers[memory] = handler
                         result(NSNumber(value: memory))
@@ -78,7 +91,7 @@ extension HaishinKitPlugin: FlutterPlugin {
                         result(nil)
                     }
                 } catch {
-                    result(nil)
+                    result(FlutterError(code: "INVALID_ARGUMENT", message: error.localizedDescription, details: nil))
                 }
             }
         case "newScreen":
@@ -95,11 +108,36 @@ extension HaishinKitPlugin: FlutterPlugin {
                 result(NSNumber(value: memory))
             }
         case "newMediaMixer":
-            let options: MediaMixerOptions? = try? PluginUtil.decode(call: call)
-            let handler = MediaMixerHandler(options: options ?? .init())
-            let memory = Int(bitPattern: ObjectIdentifier(handler))
-            handlers[memory] = handler
-            result(NSNumber(value: memory))
+            do {
+                let options: MediaMixerOptions = try PluginUtil.decode(call: call)
+                let handler = MediaMixerHandler(options: options)
+                Task { @MainActor in
+                    do {
+                        try await handler.configureDynamicRange()
+                        let memory = Int(bitPattern: ObjectIdentifier(handler))
+                        handlers[memory] = handler
+                        result(NSNumber(value: memory))
+                    } catch {
+                        result(FlutterError(code: "INVALID_ARGUMENT", message: error.localizedDescription, details: nil))
+                    }
+                }
+            } catch {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: error.localizedDescription, details: nil))
+            }
+        case "getSupportedVideoCodecs":
+            let arguments = call.arguments as? [String: Any?] ?? [:]
+            guard let range = PluginDynamicRangeMode(rawValue: arguments["dynamicRangeMode"] as? String ?? "sdr") else {
+                result(FlutterError(code: "INVALID_ARGUMENT", message: "Unknown dynamic range", details: nil))
+                return
+            }
+            Task { @MainActor in
+                do {
+                    let codecs = try await Task.detached { try NativeVideoCodecs.supported(range: range) }.value
+                    result(codecs)
+                } catch {
+                    result(FlutterError(code: "CODEC_QUERY_FAILED", message: error.localizedDescription, details: nil))
+                }
+            }
         case "getPlatformVersion":
             result(kHaishinKitIdentifier)
         case "getVideoSources":

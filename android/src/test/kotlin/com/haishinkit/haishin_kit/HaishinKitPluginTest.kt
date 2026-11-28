@@ -15,13 +15,22 @@ import kotlin.test.Test
 
 internal class HaishinKitPluginTest {
     @Test
-    fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
+    fun onMethodCall_getPlatformVersion_returnsLibraryIdentifier() {
         val plugin = HaishinKitPlugin()
 
         val call = MethodCall("getPlatformVersion", null)
         val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)
         plugin.onMethodCall(call, mockResult)
 
-        Mockito.verify(mockResult).success("Android " + android.os.Build.VERSION.RELEASE)
+        Mockito.verify(mockResult).success("com.haishinkit")
+    }
+
+    @Test
+    fun onMethodCall_unknownHandle_doesNotRouteToGlobalMethod() {
+        val plugin = HaishinKitPlugin()
+        val result = Mockito.mock(MethodChannel.Result::class.java)
+        plugin.onMethodCall(MethodCall("getPlatformVersion", mapOf("memory" to -1)), result)
+        Mockito.verify(result).notImplemented()
+        Mockito.verifyNoMoreInteractions(result)
     }
 }

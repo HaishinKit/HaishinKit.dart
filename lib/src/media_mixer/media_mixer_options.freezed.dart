@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'media_mixer_options.dart';
@@ -9,13 +9,15 @@ part of 'media_mixer_options.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$MediaMixerOptions {
 
-/// The capture session mode. Defaults to [CaptureSessionMode.single].
+/// Immutable capture/composition range; recreate the mixer to change it.
+ DynamicRangeMode get dynamicRangeMode;/// The capture session mode. Defaults to [CaptureSessionMode.single].
  CaptureSessionMode get captureSessionMode;/// Whether to mix multiple audio tracks. Defaults to `false`.
  bool get multiTrackAudioMixingEnabled;
 /// Create a copy of MediaMixerOptions
@@ -30,16 +32,21 @@ $MediaMixerOptionsCopyWith<MediaMixerOptions> get copyWith => _$MediaMixerOption
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MediaMixerOptions&&(identical(other.captureSessionMode, captureSessionMode) || other.captureSessionMode == captureSessionMode)&&(identical(other.multiTrackAudioMixingEnabled, multiTrackAudioMixingEnabled) || other.multiTrackAudioMixingEnabled == multiTrackAudioMixingEnabled));
+  final _this = this as MediaMixerOptions;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MediaMixerOptions&&(identical(other.dynamicRangeMode, _this.dynamicRangeMode) || other.dynamicRangeMode == _this.dynamicRangeMode)&&(identical(other.captureSessionMode, _this.captureSessionMode) || other.captureSessionMode == _this.captureSessionMode)&&(identical(other.multiTrackAudioMixingEnabled, _this.multiTrackAudioMixingEnabled) || other.multiTrackAudioMixingEnabled == _this.multiTrackAudioMixingEnabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,captureSessionMode,multiTrackAudioMixingEnabled);
+int get hashCode {
+  final _this = this as MediaMixerOptions;
+  return Object.hash(runtimeType,_this.dynamicRangeMode,_this.captureSessionMode,_this.multiTrackAudioMixingEnabled);
+}
 
 @override
 String toString() {
-  return 'MediaMixerOptions(captureSessionMode: $captureSessionMode, multiTrackAudioMixingEnabled: $multiTrackAudioMixingEnabled)';
+  final _this = this as MediaMixerOptions;
+  return 'MediaMixerOptions(dynamicRangeMode: ${_this.dynamicRangeMode}, captureSessionMode: ${_this.captureSessionMode}, multiTrackAudioMixingEnabled: ${_this.multiTrackAudioMixingEnabled})';
 }
 
 
@@ -50,7 +57,7 @@ abstract mixin class $MediaMixerOptionsCopyWith<$Res>  {
   factory $MediaMixerOptionsCopyWith(MediaMixerOptions value, $Res Function(MediaMixerOptions) _then) = _$MediaMixerOptionsCopyWithImpl;
 @useResult
 $Res call({
- CaptureSessionMode captureSessionMode, bool multiTrackAudioMixingEnabled
+ DynamicRangeMode dynamicRangeMode, CaptureSessionMode captureSessionMode, bool multiTrackAudioMixingEnabled
 });
 
 
@@ -67,9 +74,10 @@ class _$MediaMixerOptionsCopyWithImpl<$Res>
 
 /// Create a copy of MediaMixerOptions
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? captureSessionMode = null,Object? multiTrackAudioMixingEnabled = null,}) {
-  return _then(_self.copyWith(
-captureSessionMode: null == captureSessionMode ? _self.captureSessionMode : captureSessionMode // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') @override $Res call({Object? dynamicRangeMode = null,Object? captureSessionMode = null,Object? multiTrackAudioMixingEnabled = null,}) {
+  return _then(MediaMixerOptions(
+dynamicRangeMode: null == dynamicRangeMode ? _self.dynamicRangeMode : dynamicRangeMode // ignore: cast_nullable_to_non_nullable
+as DynamicRangeMode,captureSessionMode: null == captureSessionMode ? _self.captureSessionMode : captureSessionMode // ignore: cast_nullable_to_non_nullable
 as CaptureSessionMode,multiTrackAudioMixingEnabled: null == multiTrackAudioMixingEnabled ? _self.multiTrackAudioMixingEnabled : multiTrackAudioMixingEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -156,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CaptureSessionMode captureSessionMode,  bool multiTrackAudioMixingEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DynamicRangeMode dynamicRangeMode,  CaptureSessionMode captureSessionMode,  bool multiTrackAudioMixingEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MediaMixerOptions() when $default != null:
-return $default(_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);case _:
+return $default(_that.dynamicRangeMode,_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);case _:
   return orElse();
 
 }
@@ -177,10 +185,10 @@ return $default(_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CaptureSessionMode captureSessionMode,  bool multiTrackAudioMixingEnabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DynamicRangeMode dynamicRangeMode,  CaptureSessionMode captureSessionMode,  bool multiTrackAudioMixingEnabled)  $default,) {final _that = this;
 switch (_that) {
 case _MediaMixerOptions():
-return $default(_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);case _:
+return $default(_that.dynamicRangeMode,_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +205,10 @@ return $default(_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CaptureSessionMode captureSessionMode,  bool multiTrackAudioMixingEnabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DynamicRangeMode dynamicRangeMode,  CaptureSessionMode captureSessionMode,  bool multiTrackAudioMixingEnabled)?  $default,) {final _that = this;
 switch (_that) {
 case _MediaMixerOptions() when $default != null:
-return $default(_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);case _:
+return $default(_that.dynamicRangeMode,_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);case _:
   return null;
 
 }
@@ -212,9 +220,11 @@ return $default(_that.captureSessionMode,_that.multiTrackAudioMixingEnabled);cas
 @JsonSerializable()
 
 class _MediaMixerOptions implements MediaMixerOptions {
-  const _MediaMixerOptions({this.captureSessionMode = CaptureSessionMode.single, this.multiTrackAudioMixingEnabled = false});
+  const _MediaMixerOptions({this.dynamicRangeMode = DynamicRangeMode.sdr, this.captureSessionMode = CaptureSessionMode.single, this.multiTrackAudioMixingEnabled = false});
   factory _MediaMixerOptions.fromJson(Map<String, dynamic> json) => _$MediaMixerOptionsFromJson(json);
 
+/// Immutable capture/composition range; recreate the mixer to change it.
+@override@JsonKey() final  DynamicRangeMode dynamicRangeMode;
 /// The capture session mode. Defaults to [CaptureSessionMode.single].
 @override@JsonKey() final  CaptureSessionMode captureSessionMode;
 /// Whether to mix multiple audio tracks. Defaults to `false`.
@@ -233,16 +243,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MediaMixerOptions&&(identical(other.captureSessionMode, captureSessionMode) || other.captureSessionMode == captureSessionMode)&&(identical(other.multiTrackAudioMixingEnabled, multiTrackAudioMixingEnabled) || other.multiTrackAudioMixingEnabled == multiTrackAudioMixingEnabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MediaMixerOptions&&(identical(other.dynamicRangeMode, dynamicRangeMode) || other.dynamicRangeMode == dynamicRangeMode)&&(identical(other.captureSessionMode, captureSessionMode) || other.captureSessionMode == captureSessionMode)&&(identical(other.multiTrackAudioMixingEnabled, multiTrackAudioMixingEnabled) || other.multiTrackAudioMixingEnabled == multiTrackAudioMixingEnabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,captureSessionMode,multiTrackAudioMixingEnabled);
+int get hashCode {
+    return Object.hash(runtimeType,dynamicRangeMode,captureSessionMode,multiTrackAudioMixingEnabled);
+}
 
 @override
 String toString() {
-  return 'MediaMixerOptions(captureSessionMode: $captureSessionMode, multiTrackAudioMixingEnabled: $multiTrackAudioMixingEnabled)';
+    return 'MediaMixerOptions(dynamicRangeMode: $dynamicRangeMode, captureSessionMode: $captureSessionMode, multiTrackAudioMixingEnabled: $multiTrackAudioMixingEnabled)';
 }
 
 
@@ -253,7 +265,7 @@ abstract mixin class _$MediaMixerOptionsCopyWith<$Res> implements $MediaMixerOpt
   factory _$MediaMixerOptionsCopyWith(_MediaMixerOptions value, $Res Function(_MediaMixerOptions) _then) = __$MediaMixerOptionsCopyWithImpl;
 @override @useResult
 $Res call({
- CaptureSessionMode captureSessionMode, bool multiTrackAudioMixingEnabled
+ DynamicRangeMode dynamicRangeMode, CaptureSessionMode captureSessionMode, bool multiTrackAudioMixingEnabled
 });
 
 
@@ -270,9 +282,10 @@ class __$MediaMixerOptionsCopyWithImpl<$Res>
 
 /// Create a copy of MediaMixerOptions
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? captureSessionMode = null,Object? multiTrackAudioMixingEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? dynamicRangeMode = null,Object? captureSessionMode = null,Object? multiTrackAudioMixingEnabled = null,}) {
   return _then(_MediaMixerOptions(
-captureSessionMode: null == captureSessionMode ? _self.captureSessionMode : captureSessionMode // ignore: cast_nullable_to_non_nullable
+dynamicRangeMode: null == dynamicRangeMode ? _self.dynamicRangeMode : dynamicRangeMode // ignore: cast_nullable_to_non_nullable
+as DynamicRangeMode,captureSessionMode: null == captureSessionMode ? _self.captureSessionMode : captureSessionMode // ignore: cast_nullable_to_non_nullable
 as CaptureSessionMode,multiTrackAudioMixingEnabled: null == multiTrackAudioMixingEnabled ? _self.multiTrackAudioMixingEnabled : multiTrackAudioMixingEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

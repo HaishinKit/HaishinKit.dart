@@ -1,9 +1,14 @@
 package com.haishinkit.haishin_kit
 
 import android.graphics.Rect
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
+import android.hardware.camera2.params.DynamicRangeProfiles
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.haishinkit.device.CameraDevice
+import com.haishinkit.graphics.DynamicRangeMode
 import com.haishinkit.media.AudioMixerSettings
 import com.haishinkit.media.MediaMixer
 import com.haishinkit.media.MediaOutput
@@ -22,7 +27,8 @@ import kotlinx.serialization.json.Json
 
 @Suppress("UNUSED")
 class MediaMixerHandler(
-    private var plugin: HaishinKitPlugin
+    private var plugin: HaishinKitPlugin,
+    val dynamicRangeMode: DynamicRangeMode = DynamicRangeMode.SDR,
 ) : MethodChannel.MethodCallHandler {
     companion object {
         private const val TAG = "MediaMixer"
@@ -43,7 +49,7 @@ class MediaMixerHandler(
     private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
-        mixer = MediaMixer(plugin.flutterPluginBinding.applicationContext)
+        mixer = MediaMixer(plugin.flutterPluginBinding.applicationContext, dynamicRangeMode)
         mixer?.screen?.let { screen ->
             screen.horizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER
             screen.verticalAlignment = VERTICAL_ALIGNMENT_MIDDLE
@@ -127,12 +133,26 @@ class MediaMixerHandler(
                     }
                 } else {
                     scope.launch {
-                        val videoSource = json.decodeFromString<CameraDevice>(value)
-                        val cameraSource = Camera2Source(
-                            plugin.flutterPluginBinding.applicationContext, videoSource.id
-                        )
-                        mixer?.attachVideo(track, cameraSource)
-                        result.success(null)
+                        try {
+                            val videoSource = json.decodeFromString<CameraDevice>(value)
+                            if (dynamicRangeMode == DynamicRangeMode.HLG && Build.VERSION.SDK_INT >= 33) {
+                                val manager = requireNotNull(plugin.flutterPluginBinding.applicationContext
+                                    .getSystemService(CameraManager::class.java)) { "Camera service is unavailable" }
+                                val profiles = manager.getCameraCharacteristics(videoSource.id)
+                                    .get(CameraCharacteristics.REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES)
+                                require(profiles?.supportedProfiles?.contains(DynamicRangeProfiles.HLG10) == true) {
+                                    "Camera ${videoSource.id} does not support HLG capture"
+                                }
+                            }
+                            val cameraSource = Camera2Source(
+                                plugin.flutterPluginBinding.applicationContext, videoSource.id,
+                                dynamicRangeMode = dynamicRangeMode,
+                            )
+                            mixer?.attachVideo(track, cameraSource)?.getOrThrow()
+                            result.success(null)
+                        } catch (error: Exception) {
+                            result.error("FAILED_TO_ATTACH", error.message, null)
+                        }
                     }
                 }
             }

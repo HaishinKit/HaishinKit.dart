@@ -1,3 +1,9 @@
+/// The video codec requested from the native OS encoder.
+///
+/// H.264 and HEVC are available on supported Apple devices. AV1, VP8 and VP9
+/// publishing are Android-only. Server and protocol support are also required.
+enum VideoCodec { h264, hevc, av1, vp8, vp9 }
+
 /// The H.264 profile and level requested for video encoding.
 enum ProfileLevel {
   h264Baseline31('H264_Baseline_3_1'),
@@ -38,8 +44,7 @@ enum ProfileLevel {
 
   //  The following values are supported only on the iOS 15.0 and above
   h264ConstrainedBaselineAutoLevel('H264_ConstrainedBaseline_AutoLevel'),
-  h264ConstrainedHighAutoLevel('H264_ConstrainedHigh_AutoLevel'),
-  ;
+  h264ConstrainedHighAutoLevel('H264_ConstrainedHigh_AutoLevel');
 
   const ProfileLevel(this.profileLevelName);
 
@@ -50,18 +55,25 @@ enum ProfileLevel {
 class VideoCodecSettings {
   /// The encoded video width in pixels.
   final int width;
+
+  /// The requested native codec. No additional codecs are bundled.
+  final VideoCodec codec;
+
   /// The encoded video height in pixels.
   final int height;
+
   /// The target video bitrate in bits per second.
   final int bitrate;
   final int frameInterval;
+
   /// The requested H.264 profile and level.
   final ProfileLevel profileLevel;
 
-//<editor-fold desc="Data Methods">
+  //<editor-fold desc="Data Methods">
 
   const VideoCodecSettings({
     this.width = 480,
+    this.codec = VideoCodec.h264,
     this.height = 272,
     this.bitrate = 160 * 1000,
     this.frameInterval = 2,
@@ -77,6 +89,7 @@ class VideoCodecSettings {
       identical(this, other) ||
       (other is VideoCodecSettings &&
           runtimeType == other.runtimeType &&
+          codec == other.codec &&
           width == other.width &&
           height == other.height &&
           bitrate == other.bitrate &&
@@ -85,6 +98,7 @@ class VideoCodecSettings {
 
   @override
   int get hashCode =>
+      codec.hashCode ^
       width.hashCode ^
       height.hashCode ^
       bitrate.hashCode ^
@@ -93,11 +107,12 @@ class VideoCodecSettings {
 
   @override
   String toString() {
-    return 'VideoSettings{width: $width, height: $height, bitrate: $bitrate, frameInterval: $frameInterval, profileLevel: ${profileLevel.profileLevelName}}';
+    return 'VideoSettings{codec: ${codec.name}, width: $width, height: $height, bitrate: $bitrate, frameInterval: $frameInterval, profileLevel: ${profileLevel.profileLevelName}}';
   }
 
   VideoCodecSettings copyWith({
     int? width,
+    VideoCodec? codec,
     int? height,
     int? bitrate,
     int? frameInterval,
@@ -105,6 +120,7 @@ class VideoCodecSettings {
   }) {
     return VideoCodecSettings(
       width: width ?? this.width,
+      codec: codec ?? this.codec,
       height: height ?? this.height,
       bitrate: bitrate ?? this.bitrate,
       frameInterval: frameInterval ?? this.frameInterval,
@@ -115,6 +131,7 @@ class VideoCodecSettings {
   Map<String, dynamic> toMap() {
     return {
       'width': width,
+      'codec': codec.name,
       'height': height,
       'bitrate': bitrate,
       'frameInterval': frameInterval,
@@ -125,6 +142,7 @@ class VideoCodecSettings {
   factory VideoCodecSettings.fromMap(Map<String, dynamic> map) {
     return VideoCodecSettings(
       width: map['width'] as int,
+      codec: VideoCodec.values.byName(map['codec'] as String? ?? 'h264'),
       height: map['height'] as int,
       bitrate: map['bitrate'] as int,
       frameInterval: map['frameInterval'] as int,
@@ -132,5 +150,5 @@ class VideoCodecSettings {
     );
   }
 
-//</editor-fold>
+  //</editor-fold>
 }

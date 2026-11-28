@@ -30,12 +30,24 @@ final class MediaMixerHandler: NSObject {
     private let options: MediaMixerOptions
     private lazy var decoder = JSONDecoder()
 
+    var dynamicRangeMode: PluginDynamicRangeMode { options.dynamicRangeMode }
+
     init(options: MediaMixerOptions) {
         self.options = options
         super.init()
         #if canImport(UIKit)
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         #endif
+    }
+
+    func configureDynamicRange() async throws {
+        try options.dynamicRangeMode.validate()
+        if options.dynamicRangeMode == .hlg && options.captureSessionMode != .single {
+            throw NSError(domain: "HaishinKit", code: -1, userInfo: [
+                NSLocalizedDescriptionKey: "HLG capture requires a single camera session."
+            ])
+        }
+        try await mixer.setDynamicRangeMode(options.dynamicRangeMode.nativeValue)
     }
 
     func addOutput(_ output: some MediaMixerOutput) {

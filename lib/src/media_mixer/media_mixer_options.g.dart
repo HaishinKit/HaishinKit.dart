@@ -8,6 +8,12 @@ part of 'media_mixer_options.dart';
 
 _MediaMixerOptions _$MediaMixerOptionsFromJson(Map<String, dynamic> json) =>
     _MediaMixerOptions(
+      dynamicRangeMode:
+          $enumDecodeNullable(
+            _$DynamicRangeModeEnumMap,
+            json['dynamicRangeMode'],
+          ) ??
+          DynamicRangeMode.sdr,
       captureSessionMode:
           $enumDecodeNullable(
             _$CaptureSessionModeEnumMap,
@@ -20,10 +26,16 @@ _MediaMixerOptions _$MediaMixerOptionsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$MediaMixerOptionsToJson(_MediaMixerOptions instance) =>
     <String, dynamic>{
+      'dynamicRangeMode': _$DynamicRangeModeEnumMap[instance.dynamicRangeMode]!,
       'captureSessionMode':
           _$CaptureSessionModeEnumMap[instance.captureSessionMode]!,
       'multiTrackAudioMixingEnabled': instance.multiTrackAudioMixingEnabled,
     };
+
+const _$DynamicRangeModeEnumMap = {
+  DynamicRangeMode.sdr: 'sdr',
+  DynamicRangeMode.hlg: 'hlg',
+};
 
 const _$CaptureSessionModeEnumMap = {
   CaptureSessionMode.single: 'single',

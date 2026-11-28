@@ -20,6 +20,8 @@ RTMPS, SRT, WHIP, and WHEP.
 - Text, image, and video compositions, snapshots, and ScreenObject editing APIs.
 - Local video asset composition and portable scene files with embedded media.
 - Native video textures for Flutter previews and playback.
+- OS video encoder selection, including AV1/VP8/VP9 for Android RTMP.
+- HLG capture and native HDR previews on supported iOS and Android devices.
 - A common `StreamSession` lifecycle across supported platforms.
 
 ## 📦 Installation
@@ -60,6 +62,9 @@ for permissions, Android build properties, Apple setup, and session lifecycle.
 
 Use the generated [dartdoc reference](https://docs.haishinkit.com/dart/latest/)
 for capture, composition, stream sessions, and protocol integration.
+
+The [library documentation source](lib/haishin_kit.dart) includes a versioned
+Swift/Kotlin feature comparison and tracks which native features Flutter exposes.
 
 The install example targets **0.19.1**. The `main` branch contains the
 refreshed example and may include changes ahead of the published package or API

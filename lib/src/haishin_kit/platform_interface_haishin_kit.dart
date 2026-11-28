@@ -26,6 +26,29 @@ abstract class HaishinKitPlatformInterface extends PlatformInterface {
     throw UnimplementedError('newSession() has not been implemented.');
   }
 
+  /// Creates a session with an explicit range without breaking older implementations.
+  Future<int?> newSessionWithOptions(
+    String url,
+    StreamSessionMode mode,
+    DynamicRangeMode dynamicRangeMode,
+  ) {
+    if (dynamicRangeMode != DynamicRangeMode.sdr) {
+      throw UnsupportedError(
+        'This platform implementation does not support HDR.',
+      );
+    }
+    return newSession(url, mode);
+  }
+
+  /// OS encoders available for the selected range, independent of protocol support.
+  Future<List<VideoCodec>> supportedVideoCodecs({
+    DynamicRangeMode dynamicRangeMode = DynamicRangeMode.sdr,
+  }) {
+    throw UnimplementedError(
+      'supportedVideoCodecs() has not been implemented.',
+    );
+  }
+
   /// Creates a native media mixer and returns its handle.
   Future<int?> newMediaMixer(MediaMixerOptions options) {
     throw UnimplementedError('newMediaMixer() has not been implemented.');
