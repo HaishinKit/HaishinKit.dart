@@ -62,6 +62,9 @@ for permissions, Android build properties, Apple setup, and session lifecycle.
 Use the generated [dartdoc reference](https://docs.haishinkit.com/dart/latest/)
 for capture, composition, stream sessions, and protocol integration.
 
+The [library documentation source](lib/haishin_kit.dart) includes a versioned
+Swift/Kotlin feature comparison and tracks which native features Flutter exposes.
+
 The install example targets **0.19.1**. The `main` branch contains the
 refreshed example and may include changes ahead of the published package or API
 reference; use a matching release tag when working with a published version.
