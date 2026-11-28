@@ -104,12 +104,14 @@ class ScreenHandler(
                     containsAssets = containsAssets || hasAsset(loaded.snapshot)
                     ScreenSceneFiles.configureCameras(container)
                     val response = json.encodeToString(loaded.snapshot)
-                    // The wrapper queues transition and bounds before the next frame callback.
                     val active = checkNotNull(screen)
-                    onFrame { value -> value.getChildren().forEach(ScreenSceneFiles::closeAssets) }
+                    // A timed-out preparation must not stop the current scene.
+                    val previous = onFrame { value -> value.getChildren() }
                     active.transition(container)
                     active.frame = Rect(0, 0, loaded.snapshot.size.width, loaded.snapshot.size.height)
                     files.install(loaded)
+                    runCatching { previous.forEach(ScreenSceneFiles::closeAssets) }
+                        .onFailure { Log.w(TAG, "Could not release video assets from the previous scene", it) }
                     response
                 } catch (error: Exception) {
                     // The prepared directory may already belong to the render thread.
