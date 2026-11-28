@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 import '../haishin_kit/platform_interface_haishin_kit.dart';
 import 'audio_codec_settings.dart';
+import '../media_mixer/dynamic_range_mode.dart';
 import 'platform_interface_stream_session.dart';
 import 'stream_session_exception.dart';
 import 'stream_session_mode.dart';
@@ -20,16 +21,25 @@ final class StreamSession {
   /// `srt://` URL with any query options required by the server.
   /// Call [connect] when ready to start publishing or playback.
   static Future<StreamSession> create(
-      String url, StreamSessionMode mode) async {
+    String url,
+    StreamSessionMode mode, {
+    DynamicRangeMode dynamicRangeMode = DynamicRangeMode.sdr,
+  }) async {
     var object = StreamSession._();
-    object._memory =
-        await HaishinKitPlatformInterface.instance.newSession(url, mode);
-    object._channel =
-        EventChannel("com.haishinkit.eventchannel/${object._memory}");
+    object._memory = await HaishinKitPlatformInterface.instance
+        .newSessionWithOptions(url, mode, dynamicRangeMode);
+    object._dynamicRangeMode = dynamicRangeMode;
+    object._channel = EventChannel(
+      "com.haishinkit.eventchannel/${object._memory}",
+    );
     return object;
   }
 
   int? _memory;
+  DynamicRangeMode _dynamicRangeMode = DynamicRangeMode.sdr;
+
+  /// The range selected before native session creation.
+  DynamicRangeMode get dynamicRangeMode => _dynamicRangeMode;
   late EventChannel _channel;
   VideoCodecSettings _videoSettings = VideoCodecSettings();
   AudioCodecSettings _audioSettings = AudioCodecSettings();
@@ -60,8 +70,10 @@ final class StreamSession {
   Future<void> setVideoSettings(VideoCodecSettings settings) async {
     assert(_memory != null);
     _videoSettings = settings;
-    await StreamSessionPlatformInterface.instance.setVideoSettings(
-        {"memory": _memory, "settings": settings.toMap()});
+    await StreamSessionPlatformInterface.instance.setVideoSettings({
+      "memory": _memory,
+      "settings": settings.toMap(),
+    });
   }
 
   /// Changes only the encoded dimensions, preserving native bitrate and profile.
@@ -80,6 +92,19 @@ final class StreamSession {
     });
   }
 
+  /// Selects an OS video encoder without changing native bitrate or dimensions.
+  ///
+  /// Select before connecting. HLG publishing requires [VideoCodec.hevc] or,
+  /// on supported Android devices, [VideoCodec.av1]. Server support is required.
+  Future<void> setVideoCodec(VideoCodec codec) async {
+    assert(_memory != null);
+    _videoSettings = _videoSettings.copyWith(codec: codec);
+    await StreamSessionPlatformInterface.instance.setVideoSettings({
+      'memory': _memory,
+      'settings': {'codec': codec.name},
+    });
+  }
+
   /// The current audio encoding settings.
   AudioCodecSettings get audioSettings => _audioSettings;
 
@@ -87,40 +112,44 @@ final class StreamSession {
   set audioSettings(AudioCodecSettings audioSettings) {
     assert(_memory != null);
     _audioSettings = audioSettings;
-    StreamSessionPlatformInterface.instance.setAudioSettings(
-        {"memory": _memory, "settings": audioSettings.toMap()});
+    StreamSessionPlatformInterface.instance.setAudioSettings({
+      "memory": _memory,
+      "settings": audioSettings.toMap(),
+    });
   }
 
   /// Registers a Flutter texture for this session and returns its ID.
   Future<int?> registerTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
-    return await StreamSessionPlatformInterface.instance
-        .registerTexture(params);
+    return await StreamSessionPlatformInterface.instance.registerTexture(
+      params,
+    );
   }
 
   /// Unregisters the Flutter texture for this session.
   Future<void> unregisterTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
-    return await StreamSessionPlatformInterface.instance
-        .unregisterTexture(params);
+    return await StreamSessionPlatformInterface.instance.unregisterTexture(
+      params,
+    );
   }
 
   /// Updates the native texture configuration.
   Future<int?> updateTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
     params["memory"] = _memory;
-    return await StreamSessionPlatformInterface.instance
-        .updateTexture(params);
+    return await StreamSessionPlatformInterface.instance.updateTexture(params);
   }
 
   /// Connects to the endpoint to publish or play the stream.
   Future<void> connect() async {
     assert(_memory != null);
     try {
-      return await StreamSessionPlatformInterface.instance
-          .connect({"memory": _memory});
+      return await StreamSessionPlatformInterface.instance.connect({
+        "memory": _memory,
+      });
     } on PlatformException catch (e) {
       throw _mapPlatformException(e);
     }
@@ -129,15 +158,17 @@ final class StreamSession {
   /// Disconnects the session from its endpoint.
   Future<void> close() async {
     assert(_memory != null);
-    return await StreamSessionPlatformInterface.instance
-        .close({"memory": _memory});
+    return await StreamSessionPlatformInterface.instance.close({
+      "memory": _memory,
+    });
   }
 
   /// Releases the native session resources.
   Future<void> dispose() async {
     assert(_memory != null);
-    return await StreamSessionPlatformInterface.instance
-        .dispose({"memory": _memory});
+    return await StreamSessionPlatformInterface.instance.dispose({
+      "memory": _memory,
+    });
   }
 }
 

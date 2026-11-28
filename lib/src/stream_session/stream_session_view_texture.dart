@@ -6,7 +6,9 @@ import 'stream_session_view_texture_snapshot.dart';
 import 'stream_session.dart';
 import '../haishin_kit/video_gravity.dart';
 
-/// Displays a native video texture from a [StreamSession].
+/// Displays an SDR video texture from a [StreamSession].
+///
+/// Use `StreamSessionView` for HLG sessions to preserve HDR in a native surface.
 class StreamSessionViewTexture extends StatefulWidget {
   /// Displays video from [session], or an empty view when [session] is null.
   ///
@@ -78,9 +80,7 @@ class _StreamSessionViewTextureState extends State<StreamSessionViewTexture>
   @override
   Widget build(BuildContext context) {
     if (_textureId == null) {
-      return Container(
-        color: const Color(0xFF000000),
-      );
+      return Container(color: const Color(0xFF000000));
     }
 
     return Texture(textureId: _textureId!);
@@ -89,9 +89,10 @@ class _StreamSessionViewTextureState extends State<StreamSessionViewTexture>
   Future<void> _updatePlatformState(Size size) async {
     StreamSessionViewTextureSnapshot snapshot =
         StreamSessionViewTextureSnapshot(
-            width: size.width,
-            height: size.height,
-            videoGravity: widget.videoGravity);
+          width: size.width,
+          height: size.height,
+          videoGravity: widget.videoGravity,
+        );
     final textureId = await widget.session?.updateTexture({
       "value": convert.json.encode(snapshot.toJson()),
     });

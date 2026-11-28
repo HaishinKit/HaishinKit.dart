@@ -48,6 +48,13 @@ and touch-based ScreenObject editing. Camera selection lives in a bottom sheet
 so the default view stays clear. Enable **Second camera** in that panel to add
 a picture-in-picture camera. Native camera availability varies by device.
 
+In **Settings → Video**, choose from the device's OS encoders supported by the
+URL's protocol. Android RTMP includes AV1, VP8, and VP9 when available. The
+streaming server must also support the selected codec. **HLG HDR** uses native
+HDR preview surfaces and requires iOS 16+ or Android 13+, compatible camera,
+encoder, and display hardware. HLG is RTMP-only and disables the second camera.
+Reopen Publish or Playback after changing settings.
+
 ## ▶️ Playback
 
 Set the stream URL in **Settings**, open **Playback**, and tap **Play stream**.

@@ -43,6 +43,8 @@ void main() {
     );
     messenger.setMockMethodCallHandler(native, (call) async {
       switch (call.method) {
+        case 'getSupportedVideoCodecs':
+          return ['h264'];
         case 'getVideoSources':
           return jsonEncode([
             {'id': '0', 'name': 'Back', 'position': 'back'},
@@ -68,8 +70,11 @@ void main() {
         case 'StreamSession#updateTexture':
           return 1;
         case 'StreamSession#setVideoSettings':
-          encoderWrites += 1;
-          videoSize = (call.arguments as Map)['settings'] as Map;
+          final settings = (call.arguments as Map)['settings'] as Map;
+          if (settings.containsKey('width')) {
+            encoderWrites += 1;
+            videoSize = settings;
+          }
           return null;
         case 'StreamSession#connect':
           starts.add({

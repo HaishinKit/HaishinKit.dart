@@ -1,13 +1,9 @@
 package com.haishinkit.haishin_kit
 
-import android.media.MediaFormat.KEY_LEVEL
-import android.media.MediaFormat.KEY_PROFILE
-import android.os.Build
 import android.util.Log
-import com.haishinkit.codec.CodecOption
-import com.haishinkit.codec.VideoCodecProfileLevel
-import com.haishinkit.rtc.RtcSession
+import com.haishinkit.graphics.DynamicRangeMode
 import com.haishinkit.stream.StreamSession
+import com.haishinkit.view.StreamView
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -23,6 +19,8 @@ import kotlinx.serialization.json.Json
 class StreamSessionHandler(
     private val plugin: HaishinKitPlugin,
     var session: StreamSession?,
+    val dynamicRangeMode: DynamicRangeMode = DynamicRangeMode.SDR,
+    private val protocol: String = "rtmp",
 ) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
     companion object Companion {
         private const val TAG = "StreamSession"
@@ -57,6 +55,16 @@ class StreamSessionHandler(
         }?.launchIn(scope)
     }
 
+    internal fun registerHdrView(view: StreamView) {
+        require(dynamicRangeMode == DynamicRangeMode.HLG) { "A native HDR view requires an HLG session" }
+        requireNotNull(session) { "The stream session is disposed" }.stream.registerOutput(view)
+    }
+
+    internal fun unregisterHdrView(view: StreamView) {
+        session?.stream?.unregisterOutput(view)
+        view.dataSource = null
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d(TAG, "onMethodCall: " + call.method + "()")
         if (session == null) {
@@ -86,7 +94,30 @@ class StreamSessionHandler(
             }
 
             "$TAG#setVideoSettings" -> {
-                val source = call.argument<Map<String, Any?>>("settings") ?: return
+                val source = call.argument<Map<String, Any?>>("settings")
+                if (source == null) {
+                    result.error(HaishinKitPlugin.INVALID_ARGUMENTS, "Video settings are required", null)
+                    return
+                }
+                try {
+                    val activeSession = requireNotNull(session)
+                    val settings = activeSession.stream.videoSetting
+                    val profile = if (source["codec"] == null && source["profileLevel"] == null) {
+                        settings.profileLevel
+                    } else NativeVideoCodecs.profile(
+                        source["codec"] as? String ?: "h264",
+                        source["profileLevel"] as? String ?: settings.profileLevel.takeIf { it.mime == "video/avc" }?.rawValue,
+                        dynamicRangeMode,
+                        protocol,
+                    )
+                    require(activeSession.readyState.value == StreamSession.ReadyState.CLOSED ||
+                        (profile == settings.profileLevel &&
+                            (source["width"] == null || source["width"] == settings.width) &&
+                            (source["height"] == null || source["height"] == settings.height) &&
+                            (source["frameInterval"] == null || source["frameInterval"] == settings.IFrameInterval))) {
+                        "Close the session before changing video dimensions, codec or profile"
+                    }
+                    settings.profileLevel = profile
                 (source["width"] as? Int)?.let {
                     session?.stream?.videoSetting?.width = it
                 }
@@ -99,29 +130,17 @@ class StreamSessionHandler(
                 (source["bitrate"] as? Int)?.let {
                     session?.stream?.videoSetting?.bitRate = it
                 }
-                (source["profileLevel"] as? String)?.let {
-                    val activeSession = session
-                    if (activeSession is RtcSession) {
-                        VideoCodecProfileLevel.entries.firstOrNull { profile -> profile.rawValue == it }
-                            ?.let { profile -> activeSession.stream.videoSetting.profileLevel = profile }
-                        return@let
-                    }
-                    try {
-                        val profileLevel = ProfileLevel.valueOf(it)
-                        val options = mutableListOf<CodecOption>()
-                        options.add(CodecOption(KEY_PROFILE, profileLevel.profile))
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            options.add(CodecOption(KEY_LEVEL, profileLevel.level))
-                        }
-                        session?.stream?.videoSetting?.options = options
-                    } catch (ignored: Exception) {
-                        // Do nothing, use default setting
-                    }
-                }
                 result.success(null)
+                } catch (error: Exception) {
+                    result.error(HaishinKitPlugin.INVALID_ARGUMENTS, error.message, null)
+                }
             }
 
             "$TAG#registerTexture" -> {
+                if (dynamicRangeMode == DynamicRangeMode.HLG) {
+                    result.error(HaishinKitPlugin.INVALID_ARGUMENTS, "HLG previews require a native HDR view", null)
+                    return
+                }
                 val texture = StreamViewTexture(plugin.flutterPluginBinding)
                 this.texture = texture
                 session?.stream?.registerOutput(texture)

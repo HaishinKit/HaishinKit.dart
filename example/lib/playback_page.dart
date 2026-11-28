@@ -46,78 +46,97 @@ class _PlaybackState extends State<PlaybackPage> {
 
   @override
   Widget build(BuildContext context) => StreamBuilder<StreamSessionReadyState>(
-        stream: _states,
-        initialData: StreamSessionReadyState.closed,
-        builder: (context, snapshot) {
-          final state = snapshot.data ?? StreamSessionReadyState.closed;
-          return ColoredBox(
-              color: Colors.black,
-              child: Stack(fit: StackFit.expand, children: [
-                if (_session != null)
-                  StreamSessionViewTexture(_session,
-                      key: ValueKey(_session!.memory)),
-                SafeArea(
-                    child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(children: [
-                    Row(children: [
-                      Expanded(
+    stream: _states,
+    initialData: StreamSessionReadyState.closed,
+    builder: (context, snapshot) {
+      final state = snapshot.data ?? StreamSessionReadyState.closed;
+      return ColoredBox(
+        color: Colors.black,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (_session != null)
+              StreamSessionView(_session, key: ValueKey(_session!.memory)),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
                           child: Align(
-                              alignment: Alignment.centerLeft,
-                              child:
-                                  StudioStatus(state: state, playback: true))),
-                      const SizedBox(width: 12),
-                      IconButton.filledTonal(
+                            alignment: Alignment.centerLeft,
+                            child: StudioStatus(state: state, playback: true),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        IconButton.filledTonal(
                           onPressed: widget.onOpenSettings,
                           tooltip: context.studioText('Settings', '設定'),
-                          icon: const Icon(Icons.settings_outlined)),
-                    ]),
+                          icon: const Icon(Icons.settings_outlined),
+                        ),
+                      ],
+                    ),
                     Expanded(
-                        child: state == StreamSessionReadyState.open &&
-                                _error == null
-                            ? const SizedBox.expand()
-                            : StudioStatePanel(
-                                title: context.studioText(
-                                    _initializing
-                                        ? 'Preparing stream…'
-                                        : _error != null
-                                            ? 'Couldn’t play the stream'
-                                            : 'Your stream appears here',
-                                    _initializing
-                                        ? 'ストリームを準備しています…'
-                                        : _error != null
-                                            ? 'ストリームを再生できませんでした'
-                                            : 'ここに映像が表示されます'),
-                                message: _error ??
-                                    context.studioText(
-                                        'Set a connection in Settings, then tap Play stream.',
-                                        '設定で接続先を入力し、ストリームを再生してください。'),
-                                loading: _initializing,
-                                onRetry: _session == null && !_initializing
-                                    ? _initialize
-                                    : null,
-                                onSettings: widget.onOpenSettings,
-                              )),
+                      child:
+                          state == StreamSessionReadyState.open &&
+                              _error == null
+                          ? const SizedBox.expand()
+                          : StudioStatePanel(
+                              title: context.studioText(
+                                _initializing
+                                    ? 'Preparing stream…'
+                                    : _error != null
+                                    ? 'Couldn’t play the stream'
+                                    : 'Your stream appears here',
+                                _initializing
+                                    ? 'ストリームを準備しています…'
+                                    : _error != null
+                                    ? 'ストリームを再生できませんでした'
+                                    : 'ここに映像が表示されます',
+                              ),
+                              message:
+                                  _error ??
+                                  context.studioText(
+                                    'Set a connection in Settings, then tap Play stream.',
+                                    '設定で接続先を入力し、ストリームを再生してください。',
+                                  ),
+                              loading: _initializing,
+                              onRetry: _session == null && !_initializing
+                                  ? _initialize
+                                  : null,
+                              onSettings: widget.onOpenSettings,
+                            ),
+                    ),
                     Container(
                       width: double.infinity,
                       decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.transparent, previewScrim])),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, previewScrim],
+                        ),
+                      ),
                       padding: const EdgeInsets.only(top: 16, bottom: 8),
                       child: StudioStreamAction(
-                          state: state,
-                          busy: _busy,
-                          playback: true,
-                          onPressed:
-                              _session == null ? null : () => _toggle(state)),
+                        state: state,
+                        busy: _busy,
+                        playback: true,
+                        onPressed: _session == null
+                            ? null
+                            : () => _toggle(state),
+                      ),
                     ),
-                  ]),
-                )),
-              ]));
-        },
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       );
+    },
+  );
 
   Future<void> _toggle(StreamSessionReadyState state) async {
     final session = _session;
@@ -134,8 +153,11 @@ class _PlaybackState extends State<PlaybackPage> {
       }
     } catch (error) {
       if (mounted) {
-        setState(() => _error =
-            error is StreamSessionException ? error.message : error.toString());
+        setState(
+          () => _error = error is StreamSessionException
+              ? error.message
+              : error.toString(),
+        );
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -151,13 +173,18 @@ class _PlaybackState extends State<PlaybackPage> {
     StreamSession? session;
     try {
       final audio = await AudioSession.instance;
-      await audio.configure(const AudioSessionConfiguration(
-        avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
-        avAudioSessionCategoryOptions:
-            AVAudioSessionCategoryOptions.allowBluetooth,
-      ));
+      await audio.configure(
+        const AudioSessionConfiguration(
+          avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+          avAudioSessionCategoryOptions:
+              AVAudioSessionCategoryOptions.allowBluetooth,
+        ),
+      );
       session = await StreamSession.create(
-          Preference.shared.makeUrl(), StreamSessionMode.playback);
+        Preference.shared.makeUrl(),
+        StreamSessionMode.playback,
+        dynamicRangeMode: Preference.shared.dynamicRangeMode,
+      );
       if (!mounted) {
         await _release(session);
         return;
