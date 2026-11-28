@@ -185,8 +185,7 @@ class _PublishState extends State<PublishPage> {
         final orientation = MediaQuery.orientationOf(context);
         final size = publishingSize(orientation);
         await _mixer?.screen?.resize(size);
-        await session.setVideoSettings(session.videoSettings.copyWith(
-            width: size.width, height: size.height));
+        await session.setVideoSize(width: size.width, height: size.height);
         if (!mounted) return;
         await session.connect();
       }

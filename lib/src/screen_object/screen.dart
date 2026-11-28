@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert' as convert;
 import 'dart:ui';
 
@@ -24,25 +25,51 @@ class Screen extends ScreenObjectContainer {
   }
 
   int? _memory;
-  Future<void> _pendingResize = Future.value();
+  Future<void>? _pendingResize;
+  Future<void>? _disposal;
   late final ScreenRenderer _renderer = _createRenderer();
 
   Screen._();
 
   @override
   set size(ScreenObjectSize value) {
-    resize(value);
+    unawaited(
+      resize(value).catchError((Object error, StackTrace stack) {
+        Zone.current.handleUncaughtError(error, stack);
+      }),
+    );
   }
 
-  /// Updates the composition size and waits for the native screen to apply it.
+  /// Sends the composition size in order and awaits the native acknowledgement.
+  ///
+  /// The first update is sent immediately; later updates wait for earlier ones.
+  /// Android applies accepted updates on its render thread, so this is not a
+  /// frame-presentation barrier. Configure encoder dimensions separately before
+  /// connecting with `StreamSession.setVideoSize`.
   Future<void> resize(ScreenObjectSize value) {
+    if (_disposal != null) throw StateError('The screen is being disposed.');
     assert(_memory != null);
     super.size = value;
-    return _pendingResize = _pendingResize.catchError((Object _) {}).then((_) =>
-        ScreenPlatformInterface.instance.setSize({
-          "memory": _memory,
-          "value": convert.json.encode(value.toJson()),
-        }));
+    Future<void> send() => ScreenPlatformInterface.instance.setSize({
+      "memory": _memory,
+      "value": convert.json.encode(value.toJson()),
+    });
+    final previous = _pendingResize;
+    final operation = previous == null
+        ? send()
+        : previous.catchError((Object _) {}).then((_) => send());
+    _pendingResize = operation;
+    void clear() {
+      if (identical(_pendingResize, operation)) _pendingResize = null;
+    }
+
+    unawaited(
+      operation.then<void>(
+        (_) => clear(),
+        onError: (Object _, StackTrace _) => clear(),
+      ),
+    );
+    return operation;
   }
 
   @override
@@ -102,11 +129,14 @@ class Screen extends ScreenObjectContainer {
     });
   }
 
-  /// Releases the native screen handle.
+  /// Finishes queued resizes, then releases the native screen handle.
+  Future<void> dispose() => _disposal ??= _disposeScreen();
 
-  Future<void> dispose() async {
+  Future<void> _disposeScreen() async {
     assert(_memory != null);
+    await _pendingResize?.catchError((Object _) {});
     await ScreenPlatformInterface.instance.dispose({"memory": _memory});
+    _memory = null;
   }
 
   ScreenRenderer _createRenderer() {

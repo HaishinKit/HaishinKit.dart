@@ -44,7 +44,7 @@ final class StreamSession {
       .receiveBroadcastStream()
       .map((value) => StreamSessionReadyState.values.byName(value));
 
-  /// The current video encoding settings.
+  /// Locally cached video encoding settings.
   VideoCodecSettings get videoSettings => _videoSettings;
 
   /// Applies video encoding settings to the native session.
@@ -62,6 +62,22 @@ final class StreamSession {
     _videoSettings = settings;
     await StreamSessionPlatformInterface.instance.setVideoSettings(
         {"memory": _memory, "settings": settings.toMap()});
+  }
+
+  /// Changes only the encoded dimensions, preserving native bitrate and profile.
+  ///
+  /// Await this before [connect]. Change dimensions only while closed. The
+  /// cached [videoSettings] dimensions are updated immediately.
+  Future<void> setVideoSize({required int width, required int height}) async {
+    assert(_memory != null);
+    if (width <= 0 || height <= 0) {
+      throw ArgumentError('Video dimensions must be positive.');
+    }
+    _videoSettings = _videoSettings.copyWith(width: width, height: height);
+    await StreamSessionPlatformInterface.instance.setVideoSettings({
+      'memory': _memory,
+      'settings': {'width': width, 'height': height},
+    });
   }
 
   /// The current audio encoding settings.
