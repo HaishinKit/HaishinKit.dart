@@ -1,3 +1,9 @@
+## Unreleased
+
+* Update Android native dependencies to HaishinKit.kt 0.20.6.
+* Update the iOS/macOS native dependency to HaishinKit.swift 2.3.2.
+* Keep screen object corner radius updates in sync on iOS and macOS.
+
 ## 0.19.1
 
 * Update Android native dependencies to HaishinKit.kt 0.20.5.

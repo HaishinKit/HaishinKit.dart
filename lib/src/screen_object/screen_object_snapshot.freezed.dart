@@ -27,7 +27,7 @@ mixin _$ScreenObjectSnapshot {
  ScreenObjectSize get size;/// Whether the object is currently visible.
 ///
 /// When `false`, the object should be ignored during rendering.
- bool get isVisible;/// The corner radius in composition pixels on Android.
+ bool get isVisible;/// The corner radius in composition pixels on Android, iOS, and macOS.
  double get cornerRadius;/// The margin applied around the object during layout.
 ///
 /// This value affects how the object is positioned relative to its
@@ -287,7 +287,7 @@ class _ScreenObjectSnapshot implements ScreenObjectSnapshot {
 ///
 /// When `false`, the object should be ignored during rendering.
 @override final  bool isVisible;
-/// The corner radius in composition pixels on Android.
+/// The corner radius in composition pixels on Android, iOS, and macOS.
 @override@JsonKey() final  double cornerRadius;
 /// The margin applied around the object during layout.
 ///
