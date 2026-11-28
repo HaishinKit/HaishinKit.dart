@@ -113,6 +113,11 @@ class ScreenObjectEditor {
       );
       if (object is TextScreenObject && factor != 1) {
         object.fontSize *= factor;
+      } else if (object.type == 'text' && factor != 1) {
+        final fontSize = double.tryParse(object.elements['fontSize'] ?? '');
+        if (fontSize != null && fontSize.isFinite && fontSize > 0) {
+          object.elements = {...object.elements, 'fontSize': '${fontSize * factor}'};
+        }
       }
       if (factor != 1) {
         object.size = ScreenObjectSize(

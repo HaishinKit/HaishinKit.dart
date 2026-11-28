@@ -119,8 +119,8 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
                 }
                 final target = _editor.hitTest(point);
                 setState(() => _selected = target);
-                if (target is TextScreenObject) {
-                  await _editText(target);
+                if (target?.type == 'text') {
+                  await _editText(target!);
                 } else if (target == null) {
                   await _add(point);
                 }
@@ -273,10 +273,10 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
     }
   }
 
-  Future<void> _editText(TextScreenObject target) async {
+  Future<void> _editText(ScreenObject target) async {
     if (_dialogOpen) return;
     _dialogOpen = true;
-    final input = TextEditingController(text: target.value);
+    final input = TextEditingController(text: target.elements['value'] ?? '');
     try {
       final value = await showDialog<String>(
           context: context,
@@ -303,7 +303,11 @@ class _ScreenObjectEditorViewState extends State<ScreenObjectEditorView> {
       if (mounted && value != null && target.parent == widget.screen) {
         target.updateLayout(() {
           target.size = const ScreenObjectSize(width: 0, height: 0);
-          target.value = value;
+          if (target is TextScreenObject) {
+            target.value = value;
+          } else {
+            target.elements = {...target.elements, 'value': value};
+          }
         });
         _editor.invalidateBounds(target);
         await _refresh();

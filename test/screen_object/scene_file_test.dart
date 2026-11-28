@@ -47,6 +47,8 @@ void main() {
               return Uint8List.fromList([80, 75, 3, 4]);
             case 'Screen#cacheAsset':
               return 'file:///cache/clip.mp4';
+        case 'Screen#getBounds':
+          return {'title': [0.0, 0.0, 100.0, 40.0]};
             default:
               return null;
           }
@@ -56,6 +58,22 @@ void main() {
     () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null),
   );
+
+  test('restored text scales its glyph size while retaining unknown elements', () async {
+    final screen = (await MediaMixer.create()).screen!;
+    await screen.resize(const ScreenObjectSize(width: 640, height: 360));
+    final text = RestoredScreenObject.fromSnapshot(
+      TextScreenObject().snapshot().copyWith(id: 'title', elements: {
+        'value': 'Saved title', 'fontSize': '20', 'color': '#FFFFFFFF', 'future': 'retained',
+      }),
+    );
+    screen.addChild(text);
+    final editor = ScreenObjectEditor(screen);
+    await editor.refresh();
+    editor.transform(text, anchor: Offset.zero, scale: 2);
+    expect(text.elements['fontSize'], '40.0');
+    expect(text.elements['future'], 'retained');
+  });
 
   test(
     'restore adopts native IDs and graph without replaying native changes',
