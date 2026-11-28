@@ -12,7 +12,7 @@ void main() {
       range: DynamicRangeMode.sdr,
     );
     expect(available('rtmp://example.com/live/test'), encoders);
-    expect(available('srt://example.com:9000'), [VideoCodec.h264]);
+    expect(available('srt://example.com:9000'), [VideoCodec.h264, VideoCodec.hevc]);
     expect(available('https://example.com/whip'), [
       VideoCodec.h264,
       VideoCodec.vp8,

@@ -47,7 +47,7 @@ internal object NativeVideoCodecs {
     fun profile(codec: String, h264Profile: String?, range: DynamicRangeMode, protocol: String): VideoCodecProfileLevel {
         val allowed = when (protocol.lowercase()) {
             "rtmp", "rtmps" -> mimeTypes.keys
-            "srt" -> setOf("h264")
+            "srt" -> setOf("h264", "hevc")
             "http", "https" -> setOf("h264", "vp8", "vp9")
             else -> emptySet()
         }

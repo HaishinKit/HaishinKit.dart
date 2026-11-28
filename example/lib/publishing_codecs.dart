@@ -11,7 +11,7 @@ List<VideoCodec> publishingCodecs(
   final allowed = switch (scheme) {
     'rtmp' ||
     'rtmps' => android ? VideoCodec.values : [VideoCodec.h264, VideoCodec.hevc],
-    'srt' => android ? [VideoCodec.h264] : [VideoCodec.h264, VideoCodec.hevc],
+    'srt' => [VideoCodec.h264, VideoCodec.hevc],
     'http' || 'https' =>
       android
           ? [VideoCodec.h264, VideoCodec.vp8, VideoCodec.vp9]

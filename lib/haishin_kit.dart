@@ -95,7 +95,7 @@
 /// encoders. Server/protocol support is a separate requirement: Android RTMP
 /// publishing supports H.264, HEVC, AV1, VP8 and VP9; Apple RTMP publishing
 /// supports H.264 and HEVC.
-/// Android SRT publishes H.264, while Apple SRT also supports HEVC. Android WHIP
+/// SRT publishes H.264 and HEVC on both platforms. Android WHIP
 /// supports H.264/VP8/VP9; Apple WHIP uses H.264. No codecs are added by this API.
 ///
 /// Use `await session.setVideoCodec(codec)` before connecting to preserve native
