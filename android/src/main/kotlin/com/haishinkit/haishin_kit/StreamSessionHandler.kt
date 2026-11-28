@@ -5,8 +5,8 @@ import android.media.MediaFormat.KEY_PROFILE
 import android.os.Build
 import android.util.Log
 import com.haishinkit.codec.CodecOption
-import com.haishinkit.rtc.RTCSession
 import com.haishinkit.codec.VideoCodecProfileLevel
+import com.haishinkit.rtc.RtcSession
 import com.haishinkit.stream.StreamSession
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -101,7 +101,7 @@ class StreamSessionHandler(
                 }
                 (source["profileLevel"] as? String)?.let {
                     val activeSession = session
-                    if (activeSession is RTCSession) {
+                    if (activeSession is RtcSession) {
                         VideoCodecProfileLevel.entries.firstOrNull { profile -> profile.rawValue == it }
                             ?.let { profile -> activeSession.stream.videoSetting.profileLevel = profile }
                         return@let
