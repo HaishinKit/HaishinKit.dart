@@ -8,6 +8,7 @@ import 'package:haishin_kit/haishin_kit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'preference.dart';
+import 'publishing_orientation.dart';
 import 'screen_object_editor_view.dart';
 import 'studio_theme.dart';
 import 'studio_widgets.dart';
@@ -35,6 +36,7 @@ class _PublishState extends State<PublishPage> {
   VideoScreenObject? _secondaryVideoObject;
   bool _permissionDenied = false;
   String? _error;
+  Future<void> _pendingPreviewResize = Future.value();
 
   @override
   void initState() {
@@ -55,6 +57,7 @@ class _PublishState extends State<PublishPage> {
       debugPrint('Could not release publishing session: $error');
     }
     try {
+      await _pendingPreviewResize;
       await mixer?.dispose();
     } catch (error) {
       debugPrint('Could not release capture: $error');
@@ -64,17 +67,16 @@ class _PublishState extends State<PublishPage> {
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.orientationOf(context);
-    if (_mixer != null && _orientation != orientation) {
-      _orientation = orientation;
-      _mixer!.screen?.size = orientation == Orientation.portrait
-          ? const ScreenObjectSize(width: 720, height: 1280)
-          : const ScreenObjectSize(width: 1280, height: 720);
-    }
     return StreamBuilder<StreamSessionReadyState>(
       stream: _states,
       initialData: StreamSessionReadyState.closed,
       builder: (context, snapshot) {
         final state = snapshot.data ?? StreamSessionReadyState.closed;
+        if (state == StreamSessionReadyState.closed && !_busy &&
+            _mixer != null && _orientation != orientation) {
+          _orientation = orientation;
+          unawaited(_resizePreview(orientation));
+        }
         return ColoredBox(
           color: Colors.black,
           child: Stack(fit: StackFit.expand, children: [
@@ -182,6 +184,12 @@ class _PublishState extends State<PublishPage> {
       if (state == StreamSessionReadyState.open) {
         await session.close();
       } else {
+        final orientation = MediaQuery.orientationOf(context);
+        final size = publishingSize(orientation);
+        await _resizePreview(orientation);
+        if (!mounted) return;
+        await session.setVideoSize(width: size.width, height: size.height);
+        if (!mounted) return;
         await session.connect();
       }
     } catch (error) {
@@ -318,6 +326,17 @@ class _PublishState extends State<PublishPage> {
     } finally {
       if (mounted) setState(() => _changingCamera = false);
     }
+  }
+
+  Future<void> _resizePreview(Orientation orientation) {
+    final mixer = _mixer;
+    final operation = _pendingPreviewResize.then((_) async {
+      await mixer?.screen?.resize(publishingSize(orientation));
+    });
+    _pendingPreviewResize = operation.catchError((Object error) {
+      if (mounted) setState(() => _error = error.toString());
+    });
+    return operation;
   }
 
   Future<void> _initialize() async {

@@ -30,12 +30,22 @@ class Screen extends ScreenObjectContainer {
 
   @override
   set size(ScreenObjectSize value) {
+    resize(value);
+  }
+
+  /// Sends the composition size immediately and awaits native acknowledgement.
+  ///
+  /// Android applies accepted updates on its render thread, so this is not a
+  /// frame-presentation barrier. Await updates before changing related encoder
+  /// settings or disposing the screen.
+  Future<void> resize(ScreenObjectSize value) {
     assert(_memory != null);
-    ScreenPlatformInterface.instance.setSize({
+    final operation = ScreenPlatformInterface.instance.setSize({
       "memory": _memory,
       "value": convert.json.encode(value.toJson()),
     });
     super.size = value;
+    return operation;
   }
 
   @override
